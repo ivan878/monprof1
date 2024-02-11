@@ -32,8 +32,28 @@ class Classe {
       'libelle': libelle,
       'short_name': shortName,
       'description': description,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
+      if (createdAt != null) 'created_at': createdAt?.toIso8601String(),
+      if (updatedAt != null) 'updated_at': updatedAt?.toIso8601String(),
     };
+  }
+
+  // Méthode pour comparer deux instances Classe
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Classe &&
+        other.libelle == libelle &&
+        other.shortName == shortName &&
+        other.description == description &&
+        other.id == id;
+  }
+
+  // Méthode pour obtenir le hash code de l'instance Classe
+  @override
+  int get hashCode {
+    return libelle.hashCode ^
+        shortName.hashCode ^
+        description.hashCode ^
+        id.hashCode;
   }
 }

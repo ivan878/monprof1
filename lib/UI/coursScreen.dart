@@ -1,15 +1,13 @@
-// ignore_for_file: sort_child_properties_last
-
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:monprof/UI/paiementScreen.dart';
 import 'package:monprof/UI/questionScreen.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:monprof/UI/lecteurvideoScreen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
+// ignore_for_file: sort_child_properties_last
 
 class Cours extends StatefulWidget {
   final String idmat;
@@ -225,149 +223,149 @@ class _CoursState extends State<Cours> {
                               ),
                               child: Column(
                                 children: [
-                                  ListTile(
-                                    leading: FutureBuilder<bool>(
-                                        // future: 10,
-                                        builder: (context, snapshot) {
-                                      return CircleAvatar(
-                                        backgroundColor: Colors.blue,
-                                        child: (snapshot.hasData &&
-                                                snapshot.data! &&
-                                                (!loading &&
-                                                    downloadIndex != index))
-                                            ? const Icon(Icons.play_circle,
-                                                color: Colors.white)
-                                            : (!loading &&
-                                                    downloadIndex != index)
-                                                ? const Icon(Icons.download,
-                                                    color: Colors.white)
-                                                : Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      value: progress,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                      );
-                                    }),
-                                    title: const Text('libelle'),
-                                    subtitle: const Text('description'),
-                                    trailing: Container(
-                                      child: statut == '1'
-                                          ? const Icon(Icons.lock)
-                                          : PopupMenuButton(
-                                              itemBuilder: ((context) => [
-                                                    PopupMenuItem(
-                                                        child: const Text(
-                                                            'retélécharger'),
-                                                        onTap: () async {
-                                                          setState(() {
-                                                            downloadIndex =
-                                                                index;
-                                                          });
+                                  // ListTile(
+                                  //   leading: FutureBuilder<bool>(
+                                  //       // future: 10,
+                                  //       builder: (context, snapshot) {
+                                  //     return CircleAvatar(
+                                  //       backgroundColor: Colors.blue,
+                                  //       child: (snapshot.hasData &&
+                                  //               snapshot.data! &&
+                                  //               (!loading &&
+                                  //                   downloadIndex != index))
+                                  //           ? const Icon(Icons.play_circle,
+                                  //               color: Colors.white)
+                                  //           : (!loading &&
+                                  //                   downloadIndex != index)
+                                  //               ? const Icon(Icons.download,
+                                  //                   color: Colors.white)
+                                  //               : Padding(
+                                  //                   padding:
+                                  //                       const EdgeInsets.all(
+                                  //                           8.0),
+                                  //                   child:
+                                  //                       CircularProgressIndicator(
+                                  //                     value: progress,
+                                  //                     color: Colors.white,
+                                  //                   ),
+                                  //                 ),
+                                  //     );
+                                  //   }),
+                                  //   title: const Text('libelle'),
+                                  //   subtitle: const Text('description'),
+                                  //   trailing: Container(
+                                  //     child: statut == '1'
+                                  //         ? const Icon(Icons.lock)
+                                  //         : PopupMenuButton(
+                                  //             itemBuilder: ((context) => [
+                                  //                   PopupMenuItem(
+                                  //                       child: const Text(
+                                  //                           'retélécharger'),
+                                  //                       onTap: () async {
+                                  //                         setState(() {
+                                  //                           downloadIndex =
+                                  //                               index;
+                                  //                         });
 
-                                                          // var result =
-                                                          //     await supprimer(
-                                                          //         url,
-                                                          //         namecours);
-                                                          // if (result) {
-                                                          //   downloadvideo(
-                                                          //       url, namecours);
-                                                          // } else if (!result) {
-                                                          //   downloadvideo(
-                                                          //       url, namecours);
-                                                          // } else {
-                                                          //   Fluttertoast
-                                                          //       .showToast(
-                                                          //     msg:
-                                                          //         'une erreur est survenue',
-                                                          //     toastLength: Toast
-                                                          //         .LENGTH_LONG,
-                                                          //     backgroundColor:
-                                                          //         Colors.red
-                                                          //             .shade400
-                                                          //             .withOpacity(
-                                                          //                 0.9),
-                                                          //     timeInSecForIosWeb:
-                                                          //         4,
-                                                          //  );
-                                                          // }
-                                                          // setState(() {
-                                                          //   loading = false;
-                                                          // });
-                                                        }),
-                                                    PopupMenuItem(
-                                                        child: const Text(
-                                                            'Supprimer'),
-                                                        onTap: () async {
-                                                          // var result =
-                                                          //     await supprimer(
-                                                          //         url,
-                                                          //         namecours);
-                                                          // if (result) {
-                                                          //   Fluttertoast
-                                                          //       .showToast(
-                                                          //     msg:
-                                                          //         'vidéo supprimer avec succes',
-                                                          //     toastLength: Toast
-                                                          //         .LENGTH_LONG,
-                                                          //     backgroundColor:
-                                                          //         Colors.blue
-                                                          //             .shade400
-                                                          //             .withOpacity(
-                                                          //                 0.9),
-                                                          //     timeInSecForIosWeb:
-                                                          //         4,
-                                                          //   );
-                                                        }
-                                                        // Fluttertoast
-                                                        //     .showToast(
-                                                        //   msg:
-                                                        //       "la video n'existe pas ",
-                                                        //   toastLength: Toast
-                                                        //       .LENGTH_LONG,
-                                                        //   backgroundColor:
-                                                        //       const Color.fromARGB(
-                                                        //               255,
-                                                        //               248,
-                                                        //               108,
-                                                        //               120)
-                                                        //           .withOpacity(
-                                                        //               0.9),
-                                                        //   timeInSecForIosWeb:
-                                                        //       4,
-                                                        // );
+                                  //                         // var result =
+                                  //                         //     await supprimer(
+                                  //                         //         url,
+                                  //                         //         namecours);
+                                  //                         // if (result) {
+                                  //                         //   downloadvideo(
+                                  //                         //       url, namecours);
+                                  //                         // } else if (!result) {
+                                  //                         //   downloadvideo(
+                                  //                         //       url, namecours);
+                                  //                         // } else {
+                                  //                         //   Fluttertoast
+                                  //                         //       .showToast(
+                                  //                         //     msg:
+                                  //                         //         'une erreur est survenue',
+                                  //                         //     toastLength: Toast
+                                  //                         //         .LENGTH_LONG,
+                                  //                         //     backgroundColor:
+                                  //                         //         Colors.red
+                                  //                         //             .shade400
+                                  //                         //             .withOpacity(
+                                  //                         //                 0.9),
+                                  //                         //     timeInSecForIosWeb:
+                                  //                         //         4,
+                                  //                         //  );
+                                  //                         // }
+                                  //                         // setState(() {
+                                  //                         //   loading = false;
+                                  //                         // });
+                                  //                       }),
+                                  //                   PopupMenuItem(
+                                  //                       child: const Text(
+                                  //                           'Supprimer'),
+                                  //                       onTap: () async {
+                                  //                         // var result =
+                                  //                         //     await supprimer(
+                                  //                         //         url,
+                                  //                         //         namecours);
+                                  //                         // if (result) {
+                                  //                         //   Fluttertoast
+                                  //                         //       .showToast(
+                                  //                         //     msg:
+                                  //                         //         'vidéo supprimer avec succes',
+                                  //                         //     toastLength: Toast
+                                  //                         //         .LENGTH_LONG,
+                                  //                         //     backgroundColor:
+                                  //                         //         Colors.blue
+                                  //                         //             .shade400
+                                  //                         //             .withOpacity(
+                                  //                         //                 0.9),
+                                  //                         //     timeInSecForIosWeb:
+                                  //                         //         4,
+                                  //                         //   );
+                                  //                       }
+                                  //                       // Fluttertoast
+                                  //                       //     .showToast(
+                                  //                       //   msg:
+                                  //                       //       "la video n'existe pas ",
+                                  //                       //   toastLength: Toast
+                                  //                       //       .LENGTH_LONG,
+                                  //                       //   backgroundColor:
+                                  //                       //       const Color.fromARGB(
+                                  //                       //               255,
+                                  //                       //               248,
+                                  //                       //               108,
+                                  //                       //               120)
+                                  //                       //           .withOpacity(
+                                  //                       //               0.9),
+                                  //                       //   timeInSecForIosWeb:
+                                  //                       //       4,
+                                  //                       // );
 
-                                                        // }
-                                                        ),
-                                                  ])),
-                                    ),
-                                    onTap: () {
-                                      if (statut != '1') {
-                                        downloadIndex = index;
-                                      }
+                                  //                       // }
+                                  //                       ),
+                                  //                 ])),
+                                  //   ),
+                                  //   onTap: () {
+                                  //     if (statut != '1') {
+                                  //       downloadIndex = index;
+                                  //     }
 
-                                      setState(() {});
+                                  //     setState(() {});
 
-                                      statut == '1'
-                                          ? Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                curve: Curves.easeInOut,
-                                                type: PageTransitionType
-                                                    .leftToRight,
-                                                child: const Paiement(),
-                                              ))
-                                          : const CircularProgressIndicator();
-                                      // : downloadvideo(url, namecours);
-                                      setState(() {});
-                                    },
-                                  ),
+                                  //     statut == '1'
+                                  //         ? Navigator.push(
+                                  //             context,
+                                  //             PageTransition(
+                                  //               alignment:
+                                  //                   Alignment.bottomCenter,
+                                  //               curve: Curves.easeInOut,
+                                  //               type: PageTransitionType
+                                  //                   .leftToRight,
+                                  //               child: const Paiement(),
+                                  //             ))
+                                  //         : const CircularProgressIndicator();
+                                  //     // : downloadvideo(url, namecours);
+                                  //     setState(() {});
+                                  //   },
+                                  // ),
                                 ],
                               ),
                             );
