@@ -1,6 +1,6 @@
-import 'package:architecture/auths/datas/models/eleve_modele.dart';
-import 'package:architecture/auths/datas/models/user_modele.dart';
 import 'package:dio/dio.dart';
+import 'package:monprof/auths/datas/models/user_modele.dart';
+import 'package:monprof/auths/datas/models/eleve_modele.dart';
 
 class UserService {
   Dio dio;
@@ -14,7 +14,10 @@ class UserService {
         ...eleve.toJson(),
         'password': password,
       };
-      final response = await dio.post('eleve/register', data: data);
+      final response = await dio.post(
+        'eleve/register',
+        data: FormData.fromMap(data),
+      );
       return response.data;
     } catch (e) {
       rethrow;
@@ -27,7 +30,10 @@ class UserService {
         'email': email,
         'password': password,
       };
-      final response = await dio.post('eleve/login', data: data);
+      final response = await dio.post(
+        'eleve/login',
+        data: FormData.fromMap(data),
+      );
       return response.data;
     } catch (e) {
       rethrow;

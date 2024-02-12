@@ -1,5 +1,6 @@
-import 'package:monprof/auths/datas/models/eleve_modele.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
+import 'package:monprof/auths/datas/models/classe_model.dart';
+import 'package:monprof/auths/datas/models/eleve_modele.dart';
 import 'package:monprof/auths/datas/services/user_services.dart';
 
 class UserRepository {
@@ -56,4 +57,6 @@ class UserRepository {
       rethrow;
     }
   }
+
+  ///
 }
