@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Matiere {
   int? id;
   String? libelle;
@@ -35,5 +36,27 @@ class Matiere {
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
+  }
+
+  @override
+  bool operator ==(covariant Matiere other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.libelle == libelle &&
+        other.shortName == shortName &&
+        other.description == description &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        libelle.hashCode ^
+        shortName.hashCode ^
+        description.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }

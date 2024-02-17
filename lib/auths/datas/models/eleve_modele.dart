@@ -14,7 +14,7 @@ class Eleve {
     return Eleve(
       sexe: json['sexe'],
       etablissement: json['etablissement'],
-      classeId: json['classe_id'],
+      classeId: int.parse(json['classe_id'].toString()),
       userId: json['user_id'],
       updatedAt: DateTime.parse(json['updated_at']),
       createdAt: DateTime.parse(json['created_at']),
@@ -27,7 +27,7 @@ class Eleve {
       'sexe': sexe,
       'etablissement': etablissement,
       'classe_id': classeId,
-      'user_id': userId,
+      if (userId != null) 'user_id': userId,
       if (createdAt != null) 'created_at': createdAt?.toIso8601String(),
       if (updatedAt != null) 'updated_at': updatedAt?.toIso8601String(),
       'id': id,

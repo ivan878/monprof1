@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:monprof/UI/homeScreen.dart';
-import 'package:monprof/UI/onboarding.dart';
-import 'package:monprof/UI/avantPageScreen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:monprof/splash/splash_controller.dart';
+import 'package:monprof/home/presentation/home_screen.dart';
 import 'package:monprof/auths/presentation/login-screen.dart';
 // ignore_for_file: file_names
 

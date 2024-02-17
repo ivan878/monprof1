@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:monprof/corps/uri.dart';
-import 'package:monprof/corps/helper.dart';
+import 'package:monprof/corps/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monprof/auths/datas/services/user_storage.dart';
 
@@ -27,10 +27,6 @@ class PublicAPI {
     baseUrl: BASE_URL, // URL de base
     // connectTimeout: 5000, // Délai d'attente pour établir une connexion (en millisecondes)
     // receiveTimeout: 3000, // Délai d'attente pour recevoir des données (en millisecondes)
-    headers: {
-      // 'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
   ));
   Dio get dio => dios;
   PublicAPI() {

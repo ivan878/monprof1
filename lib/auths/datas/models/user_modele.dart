@@ -1,7 +1,10 @@
+import 'dart:developer';
+import 'package:monprof/corps/utils/helper.dart';
+
 class Users {
   Users({
     required this.name,
-    required this.lastName,
+    this.lastName,
     required this.email,
     required this.phone,
     this.ruleId,
@@ -12,6 +15,7 @@ class Users {
   });
   // Méthode pour créer une instance Users à partir d'un Map JSON
   factory Users.fromJson(Map<String, dynamic> json) {
+    log(json['name'].toString());
     return Users(
       name: json['name'],
       lastName: json['last_name'],
@@ -54,7 +58,7 @@ class Users {
   }
 
   String name;
-  String lastName;
+  String? lastName;
   String email;
   String phone;
   int? ruleId;

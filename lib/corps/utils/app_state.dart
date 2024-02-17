@@ -1,12 +1,12 @@
-import 'package:monprof/commons/error_model.dart';
+import 'package:monprof/corps/utils/error_model.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 enum AppStatus { starting, error, loading, data }
 
-class AppState {
+class AppState<T> {
   AppStatus status;
-  dynamic data;
+  T? data;
   ErrorModel? errorModel;
 
   AppState({

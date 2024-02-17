@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:monprof/commons/constantes.dart';
+import 'package:monprof/corps/utils/helper.dart';
+import 'package:monprof/corps/utils/constantes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/models/eleve_modele.dart';
@@ -9,8 +10,8 @@ class UserLocalStorageService {
   SharedPreferences preference;
   UserLocalStorageService({required this.preference});
 
-  storeToken(String user) async {
-    await preference.setString(userStorage, localToken);
+  storeToken(String token) async {
+    await preference.setString(localToken, token);
   }
 
   String? getToken() {
@@ -31,6 +32,7 @@ class UserLocalStorageService {
     if ((userstring ?? '').trim().isEmpty) {
       return null;
     }
+    printer(userstring ?? '');
     final user = Users.fromJson(jsonDecode(userstring!));
     return user;
   }
@@ -61,5 +63,13 @@ class UserLocalStorageService {
     }
     final eleve = Eleve.fromJson(jsonDecode(studentStorage));
     return eleve;
+  }
+
+  static Future logout() async {
+    final preference = await SharedPreferences.getInstance();
+    await preference.remove(userStorage);
+    await preference.remove(classeStorage);
+    await preference.remove(studentStorage);
+    await preference.remove(localToken);
   }
 }

@@ -1,16 +1,19 @@
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:monprof/commons/notify.dart';
-import 'package:monprof/UI/avantPageScreen.dart';
+import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:monprof/corps/utils/navigation.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
+import 'package:monprof/home/presentation/home_screen.dart';
+import 'package:monprof/auths/presentation/register_scren.dart';
 import 'package:monprof/auths/logique_metier/login_controller.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
+// import 'package:monprof/UI/avantPageScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -99,7 +102,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           DefaultButton(
                               onPressed: () async {
                                 await controller.login().then((value) {
-                                  if (controller.state.hasError) {
+                                  if (controller.state.hasData) {
+                                    Notify.showSuccess(
+                                        context, 'Opérations réusite');
+                                    changeScreen(
+                                      context,
+                                      const Home(),
+                                    );
+                                  } else {
                                     Notify.showFailure(
                                         context,
                                         controller.state.errorModel?.error ??
@@ -109,14 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                               text: 'CONNEXION',
                               wdiget: controller.state.isLoading
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                       height: 50,
                                       width: 50,
                                       child: Center(
-                                          child: CircularProgressIndicator()),
+                                          child: CircularProgressIndicator(
+                                        color: white,
+                                      )),
                                     )
                                   : null,
-                              fontSize: 17),
+                              fontSize: 20),
                           const SizedBox(height: 15),
                           InkWell(
                             onTap: () {},
@@ -144,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       PageTransition(
                                         alignment: Alignment.bottomCenter,
                                         type: PageTransitionType.rightToLeft,
-                                        child: const AvantPage(),
+                                        child: const RegisterScreen(),
                                         childCurrent: const LoginScreen(),
                                       ),
                                     );

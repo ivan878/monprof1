@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 loger(Object object) {
@@ -32,3 +33,33 @@ var logger = Logger(
       printTime: false // Should each log print contain a timestamp
       ),
 );
+
+class SpacerHeight extends StatelessWidget {
+  dynamic value;
+  SpacerHeight(val, {super.key}) {
+    value = val;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: double.parse(value.toString()),
+    );
+  }
+}
+
+class SpacerWidth extends StatelessWidget {
+  dynamic value;
+  SpacerWidth(val, {super.key}) {
+    value = val;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.parse(value.toString()),
+    );
+  }
+}
+
+Size taille(BuildContext context) => MediaQuery.sizeOf(context);

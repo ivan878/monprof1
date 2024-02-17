@@ -14,10 +14,14 @@ class UserService {
         ...eleve.toJson(),
         'password': password,
       };
-      final response = await dio.post(
-        'eleve/register',
-        data: FormData.fromMap(data),
-      );
+      final response = await dio.post('eleve/register',
+          data: FormData.fromMap(data),
+          options: Options(
+            headers: {
+              // 'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          ));
       return response.data;
     } catch (e) {
       rethrow;
@@ -30,10 +34,14 @@ class UserService {
         'email': email,
         'password': password,
       };
-      final response = await dio.post(
-        'eleve/login',
-        data: FormData.fromMap(data),
-      );
+      final response = await dio.post('eleve/login',
+          data: FormData.fromMap(data),
+          options: Options(
+            headers: {
+              // 'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          ));
       return response.data;
     } catch (e) {
       rethrow;
@@ -42,7 +50,13 @@ class UserService {
 
   Future<Map<String, dynamic>> getClasse() async {
     try {
-      final response = await dio.get('classe');
+      final response = await dio.get('classe',
+          options: Options(
+            headers: {
+              // 'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          ));
       return response.data;
     } catch (e) {
       rethrow;

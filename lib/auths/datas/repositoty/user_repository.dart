@@ -15,8 +15,9 @@ class UserRepository {
       if (response['status']) {
         return {
           'user': Users.fromJson(response['data']['user']),
-          'eleve': Users.fromJson(response['data']['eleve']),
-          'classe': Users.fromJson(response['data']['classe']),
+          'eleve': Eleve.fromJson(response['data']['student']),
+          'classe': Classe.fromJson(response['data']['classe']),
+          'token': response['auth']['token']
         };
       } else {
         throw Exception(response['error']);
@@ -32,8 +33,9 @@ class UserRepository {
       if (response['status']) {
         return {
           'user': Users.fromJson(response['data']['user']),
-          'eleve': Users.fromJson(response['data']['eleve']),
-          'classe': Users.fromJson(response['data']['classe']),
+          'eleve': Eleve.fromJson(response['data']['student']),
+          'classe': Classe.fromJson(response['data']['classe']),
+          'token': response['auth']['token']
         };
       } else {
         throw Exception(response['error']);
