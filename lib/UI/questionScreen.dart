@@ -44,6 +44,7 @@ class _QuestionState extends State<Question> {
                           } else {
                             null;
                           }
+                          return null;
                         },
                         decoration: InputDecoration(
                           fillColor: Colors.blue.withOpacity(0.2),
@@ -70,6 +71,7 @@ class _QuestionState extends State<Question> {
                           } else {
                             null;
                           }
+                          return null;
                         },
                         decoration: InputDecoration(
                           fillColor: Colors.blue.withOpacity(0.2),
@@ -137,7 +139,7 @@ class _QuestionState extends State<Question> {
                             // }
                           },
                           style: TextButton.styleFrom(
-                            primary: Colors.white,
+                            // primary: Colors.white,
                             backgroundColor: Colors.blue,
                             elevation: 3,
                           ),

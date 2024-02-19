@@ -8,7 +8,7 @@ import 'package:monprof/home/logique_metier/home_controller.dart';
 import 'package:monprof/cours/logique_metier/cous_controller.dart';
 import 'package:monprof/cours/presentation/componens/cour_body.dart';
 import 'package:monprof/cours/data/repository/cours_repository.dart';
-import 'package:monprof/cours/presentation/componens/question_body.dart';
+import 'package:monprof/questions/presentation/question_body.dart';
 // import 'package:monprof/auths/datas/models/classe_model.dart';
 
 class CoursScreen extends StatefulWidget {

@@ -61,7 +61,7 @@ class UserLocalStorageService {
     if ((elevestring ?? '').trim().isEmpty) {
       return null;
     }
-    final eleve = Eleve.fromJson(jsonDecode(studentStorage));
+    final eleve = Eleve.fromJson(jsonDecode(elevestring!));
     return eleve;
   }
 

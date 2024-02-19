@@ -11,19 +11,24 @@ class TextFielApp extends StatefulWidget {
   final BorderSide? side;
   final EdgeInsets? padding;
   final int? lenght;
+  final int? maxLines;
+  final int? minLine;
 
-  const TextFielApp(
-      {super.key,
-      this.controller,
-      this.obscureTexte,
-      this.inputType,
-      this.prefixIcon,
-      this.suffixIcon,
-      this.hinText,
-      this.validator,
-      this.lenght,
-      this.side,
-      this.padding});
+  const TextFielApp({
+    super.key,
+    this.controller,
+    this.obscureTexte,
+    this.inputType,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.hinText,
+    this.validator,
+    this.lenght,
+    this.side,
+    this.padding,
+    this.maxLines,
+    this.minLine,
+  });
 
   @override
   State<TextFielApp> createState() => _TextFielAppState();
@@ -38,6 +43,8 @@ class _TextFielAppState extends State<TextFielApp> {
       obscureText: widget.obscureTexte ?? false,
       validator: widget.validator,
       maxLength: widget.lenght,
+      minLines: widget.minLine,
+      maxLines: widget.maxLines,
       decoration: appInputDecoration(
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.suffixIcon,

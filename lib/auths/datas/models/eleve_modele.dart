@@ -1,3 +1,5 @@
+import 'package:monprof/corps/utils/helper.dart';
+
 class Eleve {
   Eleve({
     required this.etablissement,
@@ -11,6 +13,7 @@ class Eleve {
 
   // Méthode pour créer une instance Eleve à partir d'un Map JSON
   factory Eleve.fromJson(Map<String, dynamic> json) {
+    loger(json);
     return Eleve(
       sexe: json['sexe'],
       etablissement: json['etablissement'],
