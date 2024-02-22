@@ -40,7 +40,7 @@ class _TextFielAppState extends State<TextFielApp> {
     return TextFormField(
       controller: widget.controller,
       keyboardType: widget.inputType,
-      obscureText: widget.obscureTexte ?? false,
+      obscureText: false,
       validator: widget.validator,
       maxLength: widget.lenght,
       minLines: widget.minLine,

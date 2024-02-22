@@ -36,7 +36,6 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                 children: [
                   const SimpleText(
                     text: 'Titre (facultatif)',
-                    weight: FontWeight.w600,
                   ),
                   SpacerHeight(5),
                   TextFielApp(
@@ -45,7 +44,6 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                   SpacerHeight(20),
                   const SimpleText(
                     text: 'Contenue de la question *',
-                    weight: FontWeight.w600,
                   ),
                   SpacerHeight(5),
                   TextFielApp(
@@ -64,7 +62,7 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                     onPressed: () async {
                       if (formkey.currentState!.validate()) {
                         await controller.createQuestion().then((value) {
-                          if (controller.createQuestionState.hasError) {                            
+                          if (controller.createQuestionState.hasError) {
                             Notify.showFailure(
                                 context,
                                 controller.createQuestionState.errorModel

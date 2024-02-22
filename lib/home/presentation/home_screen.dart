@@ -97,7 +97,7 @@ class _HomeState extends State<Home> {
                                         value: controller.matiere,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir un matière"
+                                              ? "choisir une matière"
                                               : null;
                                         },
                                         alignment:
@@ -138,7 +138,7 @@ class _HomeState extends State<Home> {
                                         value: controller.categorie,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir un catégorie"
+                                              ? "choisir une catégorie"
                                               : null;
                                         },
                                         alignment:
