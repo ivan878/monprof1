@@ -82,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             inputType: TextInputType.visiblePassword,
                             controller: controller.controllerPassword,
                             obscureTexte: controller.obscureText,
+                            maxLines: 1,
                             suffixIcon: GestureDetector(
                               onTap: () => controller
                                   .chanObscureText(controller.obscureText),

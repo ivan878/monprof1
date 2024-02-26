@@ -221,6 +221,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 inputType: TextInputType.visiblePassword,
                                 controller: controller.controllerPassword,
                                 obscureTexte: controller.obscureText,
+                                maxLines: 1,
                                 suffixIcon: GestureDetector(
                                   onTap: () => controller
                                       .chanObscureText(controller.obscureText),
@@ -244,6 +245,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 inputType: TextInputType.visiblePassword,
                                 obscureTexte: controller.obscureText,
                                 prefixIcon: const Icon(Icons.lock),
+                                maxLines: 1,
                                 validator: (val) {
                                   if (val ==
                                       controller.controllerPassword.text) {

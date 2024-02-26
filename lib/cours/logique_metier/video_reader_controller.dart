@@ -14,13 +14,13 @@ class VideoController extends GetxController {
   //Request permission
   Future<bool> requestPermission(Permission permission) async {
     var result = await permission.request();
-    if (await permission.isGranted) {
+    if ( result.isGranted) {
       return true;
-    } else {
-      var result = await permission.request();
-      if (result == PermissionStatus.granted) {
-        return true;
-      }
+    // } else {
+    //   // var result = await permission.request();
+    //   if (result == PermissionStatus.granted) {
+    //     return true;
+    //   }
     }
     return false;
   }

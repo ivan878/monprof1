@@ -77,7 +77,7 @@ class QuestionController extends GetxController {
           status: AppStatus.error, data: null, errorModel: returnError(e));
       update();
     }
-  }
+  } 
 
   ///
 }
