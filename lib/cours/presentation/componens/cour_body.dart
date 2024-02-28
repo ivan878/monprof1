@@ -37,26 +37,32 @@ class _CoursBodyState extends State<CoursBody> {
                     await controller.getCours();
                   },
                 )
-              : ListView(
-                  children: [
-                    ...controller.coursState.data!.map(
-                      (cours) => Container(
-                        margin: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              width: 1,
-                              style: BorderStyle.solid,
-                              color: Colors.blue),
-                        ),
-                        child: Column(
-                          children: [
-                            BuildCourComponen(cours: cours),
-                          ],
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    await controller.getCours();
+                  },
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      ...controller.coursState.data!.map(
+                        (cours) => Container(
+                          margin: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                width: 1,
+                                style: BorderStyle.solid,
+                                color: Colors.blue),
+                          ),
+                          child: Column(
+                            children: [
+                              BuildCourComponen(cours: cours),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
     );
   }
