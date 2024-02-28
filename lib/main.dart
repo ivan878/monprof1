@@ -12,7 +12,7 @@ void main() {
   setupDependencies();
   Get.put(SplaController());
 
-  // UserLocalStorageService.logout();
+  UserLocalStorageService.logout();
   runApp(const MyApp());
 }
 

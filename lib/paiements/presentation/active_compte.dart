@@ -44,7 +44,6 @@ class _ActiveCompteState extends State<ActiveCompte> {
                           text:
                               "S'il vous plait, veuillez entrer le code d'activation"
                               "reçu par SMS ou par mail.",
-                          weight: FontWeight.bold,
                         ),
                         const SizedBox(height: 10),
                         TextFielApp(

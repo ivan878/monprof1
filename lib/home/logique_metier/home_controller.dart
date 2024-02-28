@@ -21,7 +21,7 @@ class HomeController extends GetxController {
   AppState<List<CategorieStatus>?> categorieState =
       AppState<List<CategorieStatus>?>(status: AppStatus.loading);
 
-  Categorie? categorie;
+  CategorieStatus? categorie;
   Matiere? matiere;
   Users? users;
   Eleve? eleve;
@@ -56,7 +56,7 @@ class HomeController extends GetxController {
     update();
   }
 
-  changeCategorie(Categorie? newCategorie) {
+  changeCategorie(CategorieStatus? newCategorie) {
     categorie = newCategorie;
     update();
   }

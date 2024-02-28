@@ -12,7 +12,7 @@ import 'package:monprof/questions/presentation/question_body.dart';
 // import 'package:monprof/auths/datas/models/classe_model.dart';
 
 class CoursScreen extends StatefulWidget {
-  final Categorie categorie;
+  final CategorieStatus categorie;
   final Matiere matiere;
   const CoursScreen(
       {super.key, required this.categorie, required this.matiere});
@@ -22,7 +22,7 @@ class CoursScreen extends StatefulWidget {
 }
 
 class _CoursScreenState extends State<CoursScreen> {
-  late Categorie categorie;
+  late CategorieStatus categorie;
   late Matiere matiere;
   int indextab = 0;
 
@@ -39,7 +39,7 @@ class _CoursScreenState extends State<CoursScreen> {
         init: CoursController(
           repository: GetIt.instance<CoursRepository>(),
           matiere: matiere,
-          categorie: categorie,
+          categorie: categorie.categorie,
         ),
         builder: (CoursController controller) {
           return DefaultTabController(

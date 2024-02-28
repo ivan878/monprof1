@@ -14,6 +14,8 @@ class RegisterController extends GetxController {
   final UserRepository repository;
 
   RegisterController({required this.repository});
+
+  
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
   TextEditingController controllerName = TextEditingController();

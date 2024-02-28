@@ -113,8 +113,7 @@ class _CompteUserState extends State<CompteUser> {
                         children: [
                           Text(
                             'Statut du Compte',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15),
+                            style: TextStyle(fontSize: 15),
                           ),
                           Text(
                             " Statut",
@@ -161,8 +160,8 @@ class _CompteUserState extends State<CompteUser> {
                                                                 .libelle ??
                                                             '')
                                                         .toUpperCase(),
-                                                    size: 17,
-                                                    weight: FontWeight.w600,
+                                                    size: 15,
+                                                    weight: FontWeight.normal,
                                                   ),
                                                   Icon(
                                                     Icons.check_circle,
@@ -241,6 +240,7 @@ class _CompteUserState extends State<CompteUser> {
                         onTap: () {},
                         child: const CircleAvatar(
                           maxRadius: 20,
+                          backgroundImage: AssetImage('assets/web.png'),
                         ),
                       ),
                       InkWell(
@@ -248,6 +248,7 @@ class _CompteUserState extends State<CompteUser> {
                         child: const CircleAvatar(
                           maxRadius: 20,
                           backgroundColor: Colors.green,
+                          backgroundImage: AssetImage('assets/whatsapp.png'),
                         ),
                       ),
                       InkWell(
@@ -261,6 +262,10 @@ class _CompteUserState extends State<CompteUser> {
                         child: const CircleAvatar(
                           maxRadius: 20,
                           backgroundColor: Colors.blue,
+                          child: Icon(
+                            Icons.facebook_sharp,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
