@@ -12,15 +12,18 @@ import 'package:permission_handler/permission_handler.dart';
 
 class VideoController extends GetxController {
   //Request permission
+  double progrees = 0;
+  var downloadIndex = -1;
+  bool loading = false;
   Future<bool> requestPermission(Permission permission) async {
     var result = await permission.request();
-    if ( result.isGranted) {
+    if (result.isGranted) {
       return true;
-    // } else {
-    //   // var result = await permission.request();
-    //   if (result == PermissionStatus.granted) {
-    //     return true;
-    //   }
+      // } else {
+      //   // var result = await permission.request();
+      //   if (result == PermissionStatus.granted) {
+      //     return true;
+      //   }
     }
     return false;
   }

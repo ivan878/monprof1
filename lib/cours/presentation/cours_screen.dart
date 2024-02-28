@@ -71,7 +71,9 @@ class _CoursScreenState extends State<CoursScreen> {
                 ),
                 body: TabBarView(
                   children: [
-                    CoursBody(controller: controller),
+                    CoursBody(
+                      controller: controller,
+                    ),
                     QuestionBody(controller: controller),
                   ],
                 ),
