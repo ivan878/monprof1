@@ -4,11 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:monprof/corps/api_service.dart';
 import 'package:monprof/corps/utils/helper.dart';
-import 'package:monprof/corps/utils/notify.dart';
+// import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/cours/data/models/cours_model.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:monprof/UI/lecteurvideoScreen.dart';
-import 'package:monprof/corps/utils/navigation.dart';
+// import 'package:monprof/UI/lecteurvideoScreen.dart';
+// import 'package:monprof/corps/utils/navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class VideoController extends GetxController {
