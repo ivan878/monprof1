@@ -148,6 +148,8 @@ class BuildCourComponen extends StatelessWidget {
     );
   }
 }
+
+//commentaires 
 // import 'package:monprof/UI/loading.dart';
 // import 'package:flutter/material.dart';
 // import 'package:monprof/corps/utils/navigation.dart';
