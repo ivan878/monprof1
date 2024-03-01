@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
+import 'package:monprof/UI/lecteurvideoScreen.dart';
 import 'package:monprof/UI/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/navigation.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
@@ -82,69 +82,90 @@ class BuildCourComponen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.blue,
-          child: videoController.isDownloaded.value
-              ? const Icon(Icons.play_circle, color: Colors.white)
-              : !videoController.loading.value
-                  ? const Icon(Icons.download, color: Colors.white)
-                  : Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        value: videoController.progrees.value,
+    return Builder(builder: (_) {
+      videoController.existCour();
+      return Obx(
+        () => ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Colors.blue,
+            child: videoController.files.value.path.isNotEmpty
+                ? const Icon(Icons.play_circle, color: Colors.white)
+                : !videoController.loading.value
+                    ? const Icon(Icons.download, color: Colors.white)
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          value: videoController.progrees.value,
+                        ),
                       ),
-                    ),
-        ),
-        title: SimpleText(
-          text: cours.libelle,
-          maxlines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: SimpleText(
-          text: cours.description,
-          maxlines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: Container(
-          child: !cours.open
-              ? const Icon(Icons.lock)
-              : PopupMenuButton(
-                  itemBuilder: ((context) => [
-                        PopupMenuItem(
-                            child: const Text('retélécharger'),
-                            onTap: () async {
-                              await videoController
-                                  .downloadvideo()
-                                  .then((value) {
-                                if (!value) {
-                                  Notify.toastError(
-                                      "Erreur de téléchargement de la vidéo");
-                                }
-                              });
-                            }),
-                        PopupMenuItem(
-                            child: const Text('Supprimer'),
-                            onTap: () async {
-                              await videoController.supprimer();
-                            }),
-                      ])),
-        ),
-        onTap: () async {
-          if (!cours.open) {
-            changeScreen(context, const PaiementsScreen());
-          } else {
-            await videoController.downloadvideo().then((value) {
-              if (!value) {
-                loger('echec');
-                // Notify.toastError("Erreur de téléchargement de la vidéo");
+          ),
+          title: SimpleText(
+            text: cours.libelle,
+            maxlines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: SimpleText(
+            text: cours.description,
+            maxlines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Container(
+            child: !cours.open
+                ? const Icon(Icons.lock)
+                : PopupMenuButton(
+                    itemBuilder: ((context) => [
+                          PopupMenuItem(
+                              child: const Text('retélécharger'),
+                              onTap: () async {
+                                await videoController
+                                    .downloadvideo()
+                                    .then((value) {
+                                  if (!value) {
+                                    Notify.toastError(
+                                        "Erreur de téléchargement de la vidéo");
+                                  }
+                                });
+                              }),
+                          PopupMenuItem(
+                              child: const Text('Supprimer'),
+                              onTap: () async {
+                                await videoController.supprimer();
+                              }),
+                        ])),
+          ),
+          onTap: () async {
+            if (!cours.open) {
+              changeScreen(context, const PaiementsScreen());
+            } else {
+              if (videoController.files.value.path.isNotEmpty) {
+                changeScreen(
+                  context,
+                  LectureCoursVideo(
+                    video: videoController.files.value,
+                  ),
+                );
               }
-            });
-          }
-        },
-      ),
+              await videoController.downloadvideo().then((value) {
+                if (!value) {
+                  // loger('echec');
+                  Notify.toastError("Erreur de téléchargement de la vidéo");
+                }
+              });
+            }
+          },
+        ),
+      );
+    });
+  }
+
+  BuildCourComponen copyWith({
+    Cours? cours,
+    VideoController? videoController,
+  }) {
+    return BuildCourComponen(
+      cours: cours ?? this.cours,
+      videoController: videoController ?? this.videoController,
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -16,15 +15,10 @@ class VideoController extends GetxController {
 
   VideoController({required this.cours});
 
-  @override
-  void onInit() async {
-    await existCour();
-    super.onInit();
-  }
-
   RxDouble progrees = 0.0.obs;
   RxBool loading = false.obs;
-  RxBool isDownloaded = false.obs;
+  // RxBool isDownloaded = false.obs;
+  Rx<File> files = File('').obs;
 
   //Request permission
 
@@ -53,6 +47,7 @@ class VideoController extends GetxController {
         .replaceAll('-', '_')
         .replaceAll(':', '_')
         .replaceAll('.', '');
+
     Directory? dir = Platform.isIOS
         ? await getApplicationSupportDirectory()
         : await getExternalStorageDirectory();
@@ -75,13 +70,14 @@ class VideoController extends GetxController {
         .replaceAll(':', '_')
         .replaceAll('.', '');
     try {
-      final permission = await getPersmission();
+      // final permission =
+      await getPersmission();
       directory = await getDirectory();
 
-      if (!permission) {
-        loger('Permission non accordé');
-        return false;
-      }
+      // if (!permission) {
+      //   loger('Permission non accordé');
+      //   return false;
+      // }
 
       if (!await directory!.exists()) {
         await directory!.create(recursive: true);
@@ -90,7 +86,7 @@ class VideoController extends GetxController {
       loading.value = true;
       update();
       final head = await header();
-      final response = await Dio().download(
+      await Dio().download(
         cours.video_url,
         saveFile.path,
         options: Options(headers: head),
@@ -99,12 +95,16 @@ class VideoController extends GetxController {
           update();
         },
       );
-      debugger(message: response.data.toString());
-      await saveFile.writeAsBytes(response.data);
+      files.value = saveFile;
+      // debugger(message: response.data.toString());
+      // loger(response.data);
+      // await saveFile.writeAsString(response.data);
+      await existCour();
       loading.value = false;
+      progrees.value = 0.0;
       return true;
     } catch (e) {
-      printer(e);
+      loger(e);
       return false;
     }
   }
@@ -118,13 +118,14 @@ class VideoController extends GetxController {
         .replaceAll('-', '_')
         .replaceAll(':', '_')
         .replaceAll('.', '');
-    Directory? dir = Platform.isIOS
-        ? await getApplicationSupportDirectory()
-        : await getExternalStorageDirectory();
-
-    File targetFile = File("${dir!.path}/$fileName");
-    if (targetFile.existsSync()) {
-      isDownloaded.value = true;
+    await getPersmission();
+    directory = await getDirectory();
+    File targetFile = File("${directory!.path}/$fileName");
+    final exist = await targetFile.exists();
+    loger(exist);
+    if (exist) {
+      // isDownloaded.value = true;
+      files.value = targetFile;
       update();
     }
   }

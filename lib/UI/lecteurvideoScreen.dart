@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class Lecteurvideo extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
-  final bool looping;
+  final File file;
 
   const Lecteurvideo({
-    required this.videoPlayerController,
-    required this.looping,
+    // required this.videoPlayerController,
+    required this.file,
     Key? key,
   }) : super(key: key);
   @override
@@ -19,15 +18,18 @@ class Lecteurvideo extends StatefulWidget {
 
 class _LecteurvideoState extends State<Lecteurvideo> {
   late ChewieController _chewieController;
+  late VideoPlayerController videoPlayerController;
+
   @override
   void initState() {
     super.initState();
+    videoPlayerController = VideoPlayerController.file(widget.file);
     _chewieController = ChewieController(
-        videoPlayerController: widget.videoPlayerController,
+        videoPlayerController: videoPlayerController,
         aspectRatio: 16 / 9,
         autoInitialize: true,
         autoPlay: true,
-        looping: widget.looping,
+        // looping: widget.looping,
         errorBuilder: (context, erromessage) {
           return Center(
             child: Text(erromessage),
@@ -38,7 +40,7 @@ class _LecteurvideoState extends State<Lecteurvideo> {
   @override
   void dispose() {
     super.dispose();
-    widget.videoPlayerController.dispose();
+    videoPlayerController.dispose();
     _chewieController.dispose();
   }
 
@@ -63,12 +65,8 @@ class _LectureCoursVideState extends State<LectureCoursVideo> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Lecteurvideo(
-          videoPlayerController: VideoPlayerController.file(widget.video,
-              videoPlayerOptions:
-                  VideoPlayerOptions(allowBackgroundPlayback: false)),
-          looping: true,
-        ),
+        child: Lecteurvideo(file: widget.video),
+        // looping: true,
       ),
     );
   }
