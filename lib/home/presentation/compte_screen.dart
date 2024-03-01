@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/utils/helper.dart';
@@ -56,12 +57,15 @@ class _CompteUserState extends State<CompteUser> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SimpleText(
-                            text:
-                                "${controller.users?.name} ${controller.users?.lastName ?? ''}",
-                            weight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                            size: 17,
+                          SizedBox(
+                            width: taille(context).width * 0.55,
+                            child: SimpleText(
+                              text:
+                                  "${controller.users?.name} ${controller.users?.lastName ?? ''}",
+                              weight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis,
+                              size: 17,
+                            ),
                           ),
                           SpacerHeight(10),
                           SimpleText(
