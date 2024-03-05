@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/UI/loading.dart';
+import 'package:monprof/components/input.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/UI/contatUserScreen.dart';
 import 'package:monprof/corps/widgets/theme.dart';
@@ -39,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            title: const SimpleText(text: "Inscription"),
+            title: const SimpleText(text: "I N S C R I P T I O N"),
             elevation: 0,
             actions: [
               Container(
@@ -78,52 +79,174 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     )
                   : SingleChildScrollView(
                       child: Container(
-                        margin: const EdgeInsets.all(30),
+                        margin: const EdgeInsets.all(15),
                         child: Form(
                           key: controller.formkey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Center(
-                                child: Container(
-                                    height: 150,
-                                    margin: const EdgeInsets.all(10),
-                                    padding: const EdgeInsets.all(20),
-                                    child: Image.asset('assets/book.png')),
+                              // Center(
+                              //   child: Container(
+                              //       height: 150,
+                              //       margin: const EdgeInsets.all(10),
+                              //       padding: const EdgeInsets.all(20),
+                              //       child: Image.asset('assets/book.png')),
+                              // ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: input(
+                                      ValidationBuilder(
+                                              requiredMessage:
+                                                  "Renseignez le nom")
+                                          .minLength(3, 'Nom incorrect')
+                                          .required()
+                                          .build(),
+                                      controller.controllerName,
+                                      'Nom',
+                                      const Icon(Icons.person_outline),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: input(
+                                      ValidationBuilder(
+                                              requiredMessage:
+                                                  "Renseignez le nom")
+                                          .minLength(3, 'Nom incorrect')
+                                          .build(),
+                                      controller.controllerLastName,
+                                      'Prenom',
+                                      const Icon(Icons.person_outline),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextFielApp(
-                                controller: controller.controllerName,
-                                hinText: 'Nom',
-                                prefixIcon: const Icon(Icons.person_outline),
-                                validator: ValidationBuilder(
-                                        requiredMessage: "Renseignez le nom")
-                                    .minLength(3, 'Nom incorrect')
-                                    .required()
-                                    .build(),
-                              ),
+                              // TextFielApp(
+                              //   controller: controller.controllerName,
+                              //   hinText: 'Nom',
+                              //   prefixIcon: const Icon(Icons.person_outline),
+                              //   validator: ValidationBuilder(
+                              //           requiredMessage: "Renseignez le nom")
+                              //       .minLength(3, 'Nom incorrect')
+                              //       .required()
+                              //       .build(),
+                              // ),
                               const SizedBox(height: 10),
-                              TextFielApp(
-                                controller: controller.controllerLastName,
-                                hinText: 'Prenom',
-                                prefixIcon: const Icon(Icons.person),
-                                validator: ValidationBuilder(
-                                        requiredMessage: "Renseignez le nom")
-                                    .minLength(3, 'Nom incorrect')
-                                    .build(),
-                              ),
-                              const SizedBox(height: 10),
-                              TextFielApp(
-                                controller: controller.controllerEmail,
-                                hinText: 'Email',
-                                inputType: TextInputType.emailAddress,
-                                prefixIcon: const Icon(Icons.email_outlined),
-                                validator: ValidationBuilder(
+                              // TextFielApp(
+                              //   controller: controller.controllerLastName,
+                              //   hinText: 'Prenom',
+                              //   prefixIcon: const Icon(Icons.person),
+                              //   validator: ValidationBuilder(
+                              //           requiredMessage: "Renseignez le nom")
+                              //       .minLength(3, 'Nom incorrect')
+                              //       .build(),
+                              // ),
+                              input(
+                                ValidationBuilder(
                                         requiredMessage:
                                             "Renseignez l'adresse E-mail")
                                     .email("Email incorrecte")
                                     .required()
                                     .build(),
+                                controller.controllerEmail,
+                                'Email',
+                                const Icon(Icons.email_outlined),
                               ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: input(
+                                      ValidationBuilder(
+                                              requiredMessage: "Votre école")
+                                          .required()
+                                          .build(),
+                                      controller.controllerEtablissement,
+                                      'Etablissement',
+                                      const Icon(Icons.school_outlined),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    flex: 1,
+                                    child: (controller.classeState.data ?? [])
+                                            .isEmpty
+                                        ? const SizedBox.shrink()
+                                        : DropdownButtonFormField<Classe?>(
+                                            focusColor: Colors.white,
+                                            value: controller.classe,
+                                            alignment: AlignmentDirectional
+                                                .centerStart,
+                                            isExpanded: true,
+                                            style: textStyle.copyWith(
+                                                color: white),
+                                            iconEnabledColor: Colors.black,
+                                            iconSize: 30,
+                                            elevation: 16,
+                                            decoration: appInputDecoration(),
+                                            items: (controller
+                                                        .classeState.data ??
+                                                    [])
+                                                .map<DropdownMenuItem<Classe?>>(
+                                                    (Classe value) {
+                                              return DropdownMenuItem<Classe>(
+                                                value: value,
+                                                child: SimpleText(
+                                                  text: value.libelle ?? '',
+                                                  color: Colors.black,
+                                                ),
+                                              );
+                                            }).toList(),
+                                            hint: const Text(
+                                              "Classe",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            onChanged: (Classe? value) {
+                                              controller.changeClasse(value);
+                                            }),
+                                  )
+                                ],
+                              ),
+
+                              const SizedBox(height: 10),
+                              inputPhone(
+                                ValidationBuilder(
+                                        requiredMessage:
+                                            "Renseignez un numéro de téléphone")
+                                    .maxLength(9, 'le numéro a 9 chiffre')
+                                    .minLength(9, 'le numéro a 9 chiffre')
+                                    .required()
+                                    .build(),
+                                controller.controllerPhone,
+                                9,
+                                'Téléphone',
+                                const Icon(Icons.phone_outlined),
+                              ),
+
+                              // TextFielApp(
+                              //   controller: controller.controllerEmail,
+                              //   hinText: 'Email',
+                              //   inputType: TextInputType.emailAddress,
+                              //   prefixIcon: const Icon(Icons.email_outlined),
+                              //   validator: ValidationBuilder(
+                              //           requiredMessage:
+                              //               "Renseignez l'adresse E-mail")
+                              //       .email("Email incorrecte")
+                              //       .required()
+                              //       .build(),
+                              // ),
                               const SizedBox(height: 10),
                               DropdownButtonFormField<String>(
                                   focusColor: Colors.white,
@@ -157,64 +280,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     controller.changeSexe(value);
                                   }),
                               const SizedBox(height: 10),
-                              TextFielApp(
-                                controller: controller.controllerPhone,
-                                hinText: 'Téléphone',
-                                lenght: 9,
-                                inputType: TextInputType.phone,
-                                prefixIcon: const Icon(Icons.phone_outlined),
-                                validator: ValidationBuilder(
-                                        requiredMessage:
-                                            "Renseignez un numéro de téléphone")
-                                    .maxLength(9, 'le numéro a 9 chiffre')
-                                    .minLength(9, 'le numéro a 9 chiffre')
-                                    .required()
-                                    .build(),
-                              ),
+
+                              // TextFielApp(
+                              //   controller: controller.controllerPhone,
+                              //   hinText: 'Téléphone',
+                              //   lenght: 9,
+                              //   inputType: TextInputType.phone,
+                              //   prefixIcon: const Icon(Icons.phone_outlined),
+                              //   validator: ValidationBuilder(
+                              //           requiredMessage:
+                              //               "Renseignez un numéro de téléphone")
+                              //       .maxLength(9, 'le numéro a 9 chiffre')
+                              //       .minLength(9, 'le numéro a 9 chiffre')
+                              //       .required()
+                              //       .build(),
+                              // ),
                               const SizedBox(height: 10),
-                              (controller.classeState.data ?? []).isEmpty
-                                  ? const SizedBox.shrink()
-                                  : DropdownButtonFormField<Classe?>(
-                                      focusColor: Colors.white,
-                                      value: controller.classe,
-                                      alignment:
-                                          AlignmentDirectional.centerStart,
-                                      isExpanded: true,
-                                      style: textStyle.copyWith(color: white),
-                                      iconEnabledColor: Colors.black,
-                                      iconSize: 30,
-                                      elevation: 16,
-                                      decoration: appInputDecoration(),
-                                      items: (controller.classeState.data ?? [])
-                                          .map<DropdownMenuItem<Classe?>>(
-                                              (Classe value) {
-                                        return DropdownMenuItem<Classe>(
-                                          value: value,
-                                          child: SimpleText(
-                                            text: value.libelle ?? '',
-                                            color: Colors.black,
-                                          ),
-                                        );
-                                      }).toList(),
-                                      hint: const Text(
-                                        "Classe",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      onChanged: (Classe? value) {
-                                        controller.changeClasse(value);
-                                      }),
-                              const SizedBox(height: 10),
-                              TextFielApp(
-                                controller: controller.controllerEtablissement,
-                                hinText: 'Etablissement',
-                                prefixIcon: const Icon(Icons.school),
-                                validator: ValidationBuilder(
-                                        requiredMessage: "Votre école")
-                                    .required()
-                                    .build(),
-                              ),
+
+                              // TextFielApp(
+                              //   controller: controller.controllerEtablissement,
+                              //   hinText: 'Etablissement',
+                              //   prefixIcon: const Icon(Icons.school),
+                              //   validator: ValidationBuilder(
+                              //           requiredMessage: "Votre école")
+                              //       .required()
+                              //       .build(),
+                              // ),
                               const SizedBox(height: 10),
                               TextFielApp(
                                 hinText: 'Mot de passe',
@@ -260,8 +351,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   style:
                                       TextStyle(fontWeight: FontWeight.w300)),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Checkbox(
                                       shape: RoundedRectangleBorder(
@@ -293,37 +382,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Visibility(
                                 visible: controller.politiqueAccepted,
                                 child: DefaultButton(
-                                    onPressed: () async {
-                                      await controller.register().then((value) {
-                                        if (controller.state.hasData) {
-                                          Notify.showSuccess(
-                                              context, 'Opérations réusite');
-                                          changeScreen(
+                                  onPressed: () async {
+                                    await controller.register().then((value) {
+                                      if (controller.state.hasData) {
+                                        Notify.showSuccess(
+                                            context, 'Opérations réusite');
+                                        changeScreen(
+                                          context,
+                                          const Home(),
+                                        );
+                                      } else {
+                                        Notify.showFailure(
                                             context,
-                                            const Home(),
-                                          );
-                                        } else {
-                                          Notify.showFailure(
-                                              context,
-                                              controller.state.errorModel
-                                                      ?.error ??
-                                                  '');
-                                        }
-                                      });
-                                    },
-                                    text: 'INSCRIPTION',
-                                    wdiget: controller.state.isLoading
-                                        ? SizedBox(
-                                            height: 50,
-                                            width: 50,
-                                            child: Center(
-                                              child: CircularProgressIndicator(
-                                                color: white,
-                                              ),
+                                            controller
+                                                    .state.errorModel?.error ??
+                                                '');
+                                      }
+                                    });
+                                  },
+                                  text: 'INSCRIPTION',
+                                  wdiget: controller.state.isLoading
+                                      ? SizedBox(
+                                          height: 50,
+                                          width: 50,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              color: white,
                                             ),
-                                          )
-                                        : null,
-                                    fontSize: 20),
+                                          ),
+                                        )
+                                      : null,
+                                ),
                               ),
                               const SizedBox(height: 15),
                               InkWell(
