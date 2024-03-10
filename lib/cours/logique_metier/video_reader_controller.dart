@@ -34,7 +34,7 @@ class VideoController extends GetxController {
   }
 
   Future<Directory?> getDirectory() async => Platform.isIOS
-      ? await getApplicationSupportDirectory()
+      ? await getApplicationDocumentsDirectory()
       : await getExternalStorageDirectory();
 
   Future<bool> getPersmission() async => Platform.isIOS

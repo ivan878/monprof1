@@ -58,7 +58,7 @@ class _CompteUserState extends State<CompteUser> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: taille(context).width * 0.55,
+                            width: MediaQuery.of(context).size.width * 0.4,
                             child: SimpleText(
                               text:
                                   "${controller.users?.name} ${controller.users?.lastName ?? ''}",

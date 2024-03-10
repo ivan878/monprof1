@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:get/get.dart';
@@ -21,19 +19,6 @@ class CreateQuestionScreen extends StatefulWidget {
 
 class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
   final formkey = GlobalKey<FormState>();
-  File? _image;
-
-  Future<void> photoSelect(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,60 +36,6 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Center(
-                            child: Container(
-                              child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    const Text('Choisir la source de .'),
-                                    const SizedBox(height: 16),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        photoSelect(ImageSource.gallery);
-                                      },
-                                      child: Text('G A L E R I'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        photoSelect(ImageSource.camera);
-                                        // Fermer le modal
-                                      },
-                                      child: Text('P H O T O'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color.fromARGB(255, 233, 232, 232)),
-                      child: Center(
-                        child: _image == null
-                            ? const Icon(
-                                Icons.camera_alt,
-                                color: Colors.grey,
-                                size: 50,
-                              )
-                            : Image.file(_image!, fit: BoxFit.contain),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
                   const SimpleText(
                     text: 'Titre (facultatif)',
                   ),
@@ -127,6 +58,83 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                         .build(),
                     maxLines: 5,
                     minLine: 3,
+                  ),
+                  SpacerHeight(20),
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Container(
+                              padding: const EdgeInsets.all(32.0),
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const SimpleText(
+                                    text: "Choisir la source de l'image",
+                                    size: 20,
+                                    weight: FontWeight.bold,
+                                  ),
+                                  SpacerHeight(20),
+                                  DefaultButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      controller
+                                          .photoSelect(ImageSource.gallery);
+                                    },
+                                    wdiget: const SimpleText(
+                                      text: 'GALERI',
+                                      letterspacing: 3,
+                                      weight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SpacerHeight(10),
+                                  DefaultButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      controller
+                                          .photoSelect(ImageSource.camera);
+                                      // Fermer le modal
+                                    },
+                                    wdiget: const SimpleText(
+                                      text: 'CAMERA',
+                                      letterspacing: 3,
+                                      weight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: taille(context).height * 0.3,
+                        width: taille(context).height * 0.3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color.fromARGB(255, 233, 232, 232),
+                          image: controller.image == null
+                              ? null
+                              : DecorationImage(
+                                  image: FileImage(controller.image!),
+                                  fit: BoxFit.cover),
+                        ),
+                        child: Center(
+                          child: controller.image == null
+                              ? const Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.grey,
+                                  size: 50,
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ),
+                    ),
                   ),
                   const Spacer(),
                   DefaultButton(

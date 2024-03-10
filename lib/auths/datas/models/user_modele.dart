@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:developer';
 
 class Users {
@@ -6,12 +8,15 @@ class Users {
     this.lastName,
     required this.email,
     required this.phone,
+    this.profile_image,
     this.ruleId,
     this.id,
     this.uniqueToken,
     this.updatedAt,
     this.createdAt,
   });
+
+  bool get haveProfile => (profile_image?.trim() ?? '').isNotEmpty;
   // Méthode pour créer une instance Users à partir d'un Map JSON
   factory Users.fromJson(Map<String, dynamic> json) {
     log(json['name'].toString());
@@ -22,6 +27,7 @@ class Users {
       phone: json['phone'],
       ruleId: json['rule_id'] ?? 0,
       id: json['id'],
+      profile_image: json['profile_image'],
       uniqueToken: json['unique_token'],
       updatedAt: DateTime.parse(json['updated_at']),
       createdAt: DateTime.parse(json['created_at']),
@@ -36,6 +42,7 @@ class Users {
       'email': email,
       'phone': phone,
       'ruleId': ruleId,
+      'profile_image': profile_image,
       if (id != null) 'id': id,
       'unique_token': uniqueToken,
       if (createdAt != null) 'created_at': createdAt?.toIso8601String(),
@@ -61,6 +68,7 @@ class Users {
   String email;
   String phone;
   int? ruleId;
+  String? profile_image;
   int? id;
   String? uniqueToken;
   DateTime? updatedAt;

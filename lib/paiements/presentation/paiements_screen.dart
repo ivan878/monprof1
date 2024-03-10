@@ -77,16 +77,13 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                         Text(
                                           'Classe',
                                           style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17),
                                         ),
                                         Text(
-                                          'elece',
+                                          'nom eleve',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            color: Colors.green,
                                           ),
                                         ),
                                       ],
@@ -210,9 +207,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                             const SizedBox(
                               height: 15,
                             ),
-                            rowCompte(
-                                Colors.blue,
-                                "Information sur le mode de PaiementsScreen",
+                            rowCompte(Colors.blue, "Mode de Paiements",
                                 Icons.wallet_giftcard),
                             const SizedBox(
                               height: 10,

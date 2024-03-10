@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
@@ -16,7 +19,6 @@ class QuestionController extends GetxController {
       required this.categorie,
       required this.matiere});
 
-
 // les  controller pour la créationd 'une question
 
   TextEditingController controllerTitre = TextEditingController();
@@ -30,8 +32,7 @@ class QuestionController extends GetxController {
 
   QuestionController get question => Get.find();
 
-
-@override
+  @override
   void onInit() {
     getQuestion();
     super.onInit();
@@ -66,18 +67,34 @@ class QuestionController extends GetxController {
         description: controllerDesc.text,
         categorie_id: categorie,
         matieres_id: matiere,
-        titre: controllerTitre.text.trim().isNotEmpty? controllerTitre.text:Get.find<HomeController>().matiere?.libelle,
+        titre: controllerTitre.text.trim().isNotEmpty
+            ? controllerTitre.text
+            : Get.find<HomeController>().matiere?.libelle,
       );
-      final result = await repository.createQuestion(question: question);
-      controllerDesc.text= '';
-      controllerTitre.text= '';
-      createQuestionState = AppState(data: result, status: AppStatus.data, errorModel: null);
+      final result =
+          await repository.createQuestion(question: question, image: image);
+      controllerDesc.text = '';
+      controllerTitre.text = '';
+      createQuestionState =
+          AppState(data: result, status: AppStatus.data, errorModel: null);
     } catch (e) {
       createQuestionState = AppState(
           status: AppStatus.error, data: null, errorModel: returnError(e));
       update();
     }
-  } 
+  }
+
+  /// pic question image
+
+  File? image;
+
+  Future<void> photoSelect(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      image = File(pickedFile.path);
+      update();
+    }
+  }
 
   ///
 }

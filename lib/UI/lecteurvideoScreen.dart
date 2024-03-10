@@ -64,6 +64,7 @@ class _LectureCoursVideState extends State<LectureCoursVideo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Center(
         child: Lecteurvideo(file: widget.video),
         // looping: true,

@@ -65,14 +65,11 @@ InputDecoration appInputDecoration(
   return InputDecoration(
     contentPadding:
         padding ?? const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-    fillColor: Colors.blue.withOpacity(0.3),
-    filled: true,
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
     hintText: hintText,
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: side ?? BorderSide.none,
-    ),
+    border: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(color: Color(0xFFB3B3B3), width: 0.3)),
   );
 }
