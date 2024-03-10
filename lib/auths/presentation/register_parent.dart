@@ -13,7 +13,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
-import 'package:monprof/home/presentation/home_screen.dart';
 // import 'package:monprof/auths/datas/models/classe_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
