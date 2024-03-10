@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:monprof/components/row_compte.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
+import 'component/paiements_provider_information.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
 import 'package:monprof/paiements/logique_metier/paiement_controller.dart';
@@ -67,7 +67,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                   border: Border.all(color: Colors.blue),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: const Column(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
@@ -76,35 +76,33 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                       children: [
                                         Text(
                                           'Classe',
-                                          style: TextStyle(
+                                          style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 17),
                                         ),
                                         Text(
                                           'nom eleve',
-                                          style: TextStyle(
+                                          style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
+                                    const SizedBox(height: 15),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'Trimestre',
-                                          style: TextStyle(
+                                          style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18,
                                           ),
                                         ),
                                         Text(
                                           'eleve',
-                                          style: TextStyle(
+                                          style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 17,
                                             color: Colors.green,
@@ -112,22 +110,20 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
+                                    const SizedBox(height: 10),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'Montant',
-                                          style: TextStyle(
+                                          style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15),
                                         ),
                                         Text(
                                           'eleve mon',
-                                          style: TextStyle(
+                                          style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 17,
                                               color: Colors.green),
@@ -180,9 +176,9 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                       hinText: '--- --- ---',
                                     ),
                                     // const SizedBox(height: 15),
-                                    const Text(
+                                    Text(
                                       'Numéro du payeur',
-                                      style: TextStyle(
+                                      style: textStyle.copyWith(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     const SizedBox(height: 10),
@@ -207,86 +203,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                             const SizedBox(
                               height: 15,
                             ),
-                            rowCompte(Colors.blue, "Mode de Paiements",
-                                Icons.wallet_giftcard),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Material(
-                              borderRadius: BorderRadius.circular(10),
-                              elevation: 2,
-                              child: Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.blue),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                            height: 50,
-                                            child: Image.asset(
-                                                'assets/orange.png')),
-                                        const Text(
-                                          ' #150*11*MONPROF*Montant#',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                            height: 45,
-                                            child:
-                                                Image.asset('assets/momo.jpg')),
-                                        const Text(
-                                          ' 657 140 696',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const Text('Nom affiché : ETS MONPROF',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blue)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(),
-                            const Column(
-                              children: [
-                                SimpleText(
-                                  text:
-                                      'Veuiller initier le Paiements avec la chaine de PaiementsScreen correspondante à votre opérateur.',
-                                  align: TextAlign.center,
-                                  weight: FontWeight.bold,
-                                ),
-                                SizedBox(height: 15),
-                                SimpleText(
-                                  text:
-                                      'Vous allez recevoir un sms dans moins de 24h pour activer votre abonnement.',
-                                  weight: FontWeight.w300,
-                                  color: Colors.blue,
-                                  align: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                            SpacerHeight(15),
+                            const PaiementsProviderInformation(),
                             DefaultButton(
                               wdiget: SimpleText(
                                 text: "Valider ma commande",

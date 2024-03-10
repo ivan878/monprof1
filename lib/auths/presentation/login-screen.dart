@@ -86,14 +86,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       Column(
                         children: [
                           input(
-                            ValidationBuilder(
-                                    requiredMessage: 'Email obligatoire')
-                                .email("email incorrecte")
-                                .build(),
-                            controller.controllerEmail,
-                            'Email',
-                            const Icon(Icons.email_outlined),
-                          ),
+                              ValidationBuilder(
+                                      requiredMessage: 'Email obligatoire')
+                                  .email("email incorrecte")
+                                  .build(),
+                              controller.controllerEmail,
+                              'Email',
+                              const Icon(Icons.email_outlined),
+                              inputType: TextInputType.emailAddress),
                           // TextFielApp(
                           //   hinText: 'Email',
                           //   prefixIcon: const Icon(Icons.email_outlined),
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller.obscureText,
                               'Mot de passe',
                               const Icon(Icons.lock), () {
-                            () => controller.chanObscureText();                            
+                            () => controller.chanObscureText();
                             Icon(
                               controller.obscureText
                                   ? Icons.visibility_off
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Notify.showSuccess(
                                       context, 'Opérations réusite');
                                   if (controller.state.data!.isParent) {
-                                     changeScreen(
+                                    changeScreen(
                                       context,
                                       const HomeParentScreen(),
                                     );
@@ -163,7 +163,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const Home(),
                                     );
                                   }
-                                  
                                 } else {
                                   Notify.showFailure(
                                       context,

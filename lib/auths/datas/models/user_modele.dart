@@ -19,7 +19,7 @@ class Users {
   bool get isParent => ruleId == 3;
   // Méthode pour créer une instance Users à partir d'un Map JSON
   factory Users.fromJson(Map<String, dynamic> json) {
-    log(json['name'].toString());
+    log(json.toString());
     return Users(
       name: json['name'],
       lastName: json['last_name'],
@@ -41,7 +41,7 @@ class Users {
       'last_name': lastName,
       'email': email,
       'phone': phone,
-      'ruleId': ruleId,
+      'rule_id': ruleId,
       'profile_image': profile_image,
       if (id != null) 'id': id,
       'unique_token': uniqueToken,

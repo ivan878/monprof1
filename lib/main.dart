@@ -11,7 +11,7 @@ void main() {
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   setupDependencies();
   Get.put(SplaController());
-  UserLocalStorageService.logout();
+  // UserLocalStorageService.logout();
   runApp(const MyApp());
 }
 

@@ -132,7 +132,8 @@ class _HomeState extends State<Home> {
                                 const SizedBox(height: 20),
                                 (controller.categorieState.data ?? []).isEmpty
                                     ? const SimpleText(
-                                        text: 'Impossible charger les catégrie')
+                                        text:
+                                            'Impossible de charger les catégrie')
                                     : DropdownButtonFormField<CategorieStatus?>(
                                         focusColor: Colors.white,
                                         value: controller.categorie,
@@ -149,17 +150,21 @@ class _HomeState extends State<Home> {
                                         iconSize: 30,
                                         elevation: 16,
                                         decoration: appInputDecoration(),
-                                        items: (controller
-                                                    .categorieState.data ??
-                                                [])
-                                            .map((e) => e)
-                                            .toList()
-                                            .map<DropdownMenuItem<CategorieStatus?>>(
-                                                (CategorieStatus value) {
-                                          return DropdownMenuItem<CategorieStatus>(
+                                        items:
+                                            (controller.categorieState.data ??
+                                                    [])
+                                                .map((e) => e)
+                                                .toList()
+                                                .map<
+                                                        DropdownMenuItem<
+                                                            CategorieStatus?>>(
+                                                    (CategorieStatus value) {
+                                          return DropdownMenuItem<
+                                              CategorieStatus>(
                                             value: value,
                                             child: SimpleText(
-                                              text: value.categorie.libelle ?? '',
+                                              text:
+                                                  value.categorie.libelle ?? '',
                                               color: Colors.black,
                                             ),
                                           );
@@ -203,7 +208,10 @@ class _HomeState extends State<Home> {
                                     ),
                                     TextButton(
                                         onPressed: () {
-                                          changeScreen(context, Suggestion());
+                                          changeScreen(
+                                            context,
+                                            const Suggestion(),
+                                          );
                                         },
                                         child: const Text(
                                           "Je donne mon avis",

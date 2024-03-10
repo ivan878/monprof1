@@ -1,19 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:monprof/corps/widgets/app_text_field.dart';
 
-Widget input(String? Function(String?)? validator,
-    TextEditingController? controller, String? hinText, Widget? prefixIcon) {
+Widget input(
+  String? Function(String?)? validator,
+  TextEditingController? controller,
+  String? hinText,
+  Widget? prefixIcon, {
+  final Widget? suffixIcon,
+  final bool? obscureTexte,
+  final TextInputType? inputType,
+  final BorderSide? side,
+  final EdgeInsets? padding,
+  final int? lenght,
+  final int? maxLines,
+  final int? minLine,
+}) {
   return TextFormField(
-      validator: validator,
-      controller: controller,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: Color(0xFFB3B3B3), width: 0.3)),
-        prefixIcon: prefixIcon,
-        // const Icon(Icons.lock),
-        iconColor: Colors.white54,
-        hintText: hinText,
-      ));
+    validator: validator,
+    controller: controller,
+    keyboardType: inputType,
+    decoration: appInputDecoration(
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      hintText: hinText,
+      side: side,
+      padding: padding,
+    ),
+    // decoration: InputDecoration(
+    //   border: const OutlineInputBorder(
+    //     borderRadius: BorderRadius.all(Radius.circular(10)),
+    //     borderSide: BorderSide(color: Color(0xFFB3B3B3), width: 0.3),
+    //   ),
+    //   prefixIcon: prefixIcon,
+    //   // const Icon(Icons.lock),
+    //   iconColor: Colors.white54,
+    //   hintText: hinText,
+    // ),
+  );
 }
 
 //champs pour password
@@ -30,14 +53,10 @@ Widget inputPassword(
       obscureText: obscure,
       decoration: InputDecoration(
         border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: Color(0xFFB3B3B3), width: 0.3)),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(color: Color(0xFFB3B3B3), width: 0.3),
+        ),
         prefixIcon: prefixIcon,
-        // suffixIcon: IconButton(
-        //   onPressed: onPressed,
-        //   icon: const Icon(Icons.warning_outlined),
-        // ),
-        // const Icon(Icons.lock),
         iconColor: Colors.white54,
         hintText: hinText,
       ));

@@ -3,6 +3,7 @@ class Categorie {
   int? id;
   String? description;
   String? libelle;
+  int? prix;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -10,6 +11,7 @@ class Categorie {
     this.id,
     this.description,
     this.libelle,
+    this.prix,
     this.createdAt,
     this.updatedAt,
   });
@@ -19,6 +21,7 @@ class Categorie {
       id: json['id'],
       description: json['description'],
       libelle: json['libelle'],
+      prix: json['prix'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -29,6 +32,7 @@ class Categorie {
       'id': id,
       'description': description,
       'libelle': libelle,
+      'prix': prix,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -96,9 +100,9 @@ class CategorieParentStatus {
   factory CategorieParentStatus.fromMap(Map<String, dynamic> map) {
     return CategorieParentStatus(
       categorie: Categorie.fromJson(map['categorie'] as Map<String, dynamic>),
-      total: map['total'] as int,
-      active: map['actifs'] as int,
-      unactive: map['unactifs'] as int,
+      total: map['details']['total'] as int,
+      active: map['details']['actifs'] as int,
+      unactive: map['details']['unactifs'] as int,
     );
   }
 

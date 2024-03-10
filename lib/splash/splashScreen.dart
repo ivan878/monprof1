@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:monprof/splash/splash_controller.dart';
+import 'package:monprof/home/presentation/homparent.dart';
 import 'package:monprof/home/presentation/home_screen.dart';
 import 'package:monprof/auths/presentation/login-screen.dart';
 // ignore_for_file: file_names
@@ -32,7 +33,7 @@ class _SpashScreenState extends State<SpashScreen> {
             context,
             PageTransition(
               type: PageTransitionType.rightToLeft,
-              child: const Home(),
+              child: value.isParent ? const HomeParentScreen() : const Home(),
             ),
           );
         }
