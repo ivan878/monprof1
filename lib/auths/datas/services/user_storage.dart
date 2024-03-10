@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:monprof/auths/datas/models/parents_model.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/constantes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,8 +62,22 @@ class UserLocalStorageService {
     if ((elevestring ?? '').trim().isEmpty) {
       return null;
     }
-    final eleve = Eleve.fromJson(jsonDecode(studentStorage));
+    final eleve = Eleve.fromJson(jsonDecode(elevestring!));
     return eleve;
+  }
+
+  storeParent(ParentModel model) async {
+    final String eleveString = jsonEncode(model.toJson());
+    await preference.setString(parentStorage, eleveString);
+  }
+
+  ParentModel? getParent() {
+    final elevestring = preference.getString(parentStorage);
+    if ((elevestring ?? '').trim().isEmpty) {
+      return null;
+    }
+    final parent = ParentModel.fromJson(jsonDecode(elevestring!));
+    return parent;
   }
 
   static Future logout() async {

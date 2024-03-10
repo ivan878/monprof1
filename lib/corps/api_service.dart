@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:monprof/corps/uri.dart';
 import 'package:monprof/corps/utils/helper.dart';
@@ -13,11 +15,16 @@ InterceptorsWrapper wrapper = InterceptorsWrapper(
   onRequest: (request, handler) {
     return handler.next(request);
   },
-  onError: (error, handler) {
+  onError: (error, handler) async {
     printer(
       "Error ${error.message ?? error.response?.data ?? error.toString()},\n URI: ${error.requestOptions.uri}, Code: ${error.response?.statusCode}",
       type: 'e',
     );
+    if (error.response?.statusCode == 401) {
+      final newToken = await reFreshToken();
+      error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+      return handler.resolve(await Dio().fetch(error.requestOptions));
+    }
     return handler.next(error);
   },
 );
@@ -54,4 +61,33 @@ Future<Map<String, dynamic>> header() async {
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',
   };
+}
+
+Future<String> reFreshToken() async {
+  try {
+    final dio = Dio();
+    final preference = await SharedPreferences.getInstance();
+    final userstorage = UserLocalStorageService(preference: preference);
+    final token = userstorage.getToken();
+    debugger(message: token ?? "Token vide");
+    final response = await dio.post(
+      'auth/refresh-token',
+      data: {'token': token},
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+        },
+      ),
+    );
+    debugger(message: response.data.toString());
+    if (response.data?['status'] == true) {
+      final newToken = response.data?['data']['token'];
+      await userstorage.storeToken(newToken ?? '');
+      return newToken;
+    } else {
+      throw Exception("Impossible de récupérer le token");
+    }
+  } catch (e) {
+    throw Exception("Impossible de récupérer le token");
+  }
 }

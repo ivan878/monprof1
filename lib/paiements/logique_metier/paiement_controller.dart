@@ -26,7 +26,7 @@ class PaiementsController extends GetxController {
         numero_payeur: controllerNumeroPayeur.text,
         numero_client: controllerNumeroClient.text,
         nombre_de_code: int.tryParse(controllerQuantite.text) ?? 1,
-        categorie_id: categorie?.id ?? Get.find<HomeController>().categorie?.id,
+        categorie_id: categorie?.id ?? Get.find<HomeController>().categorie?.categorie.id,
       );
       final response = await repository.requestPaiements(paiements);
       paiementState = AppState(data: response, status: AppStatus.data);

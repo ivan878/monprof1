@@ -78,7 +78,9 @@ class Cours {
       categorie_id: map['categorie_id'],
       created_at: map['created_at'] as String,
       updated_at: map['updated_at'] as String,
-      open: map['open'],
+      open: map['open'].toString() == '0' || map['open'].toString() == 'false'
+          ? false
+          : true,
     );
   }
 

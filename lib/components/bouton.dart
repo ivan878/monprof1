@@ -16,7 +16,7 @@ Widget boutton(context, String name, void Function() press, double largeur,
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: taille),
       ),
       style: TextButton.styleFrom(
-        primary: Colors.white,
+        // primary: Colors.white,
         backgroundColor: Colors.blue,
         elevation: 3,
       ),

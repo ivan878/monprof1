@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 
 class Loading extends StatelessWidget {
@@ -7,21 +8,29 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.all(20),
-        color: Colors.white,
-        child: Column(
-          children: [
-            SizedBox(height: 300, child: Image.asset('assets/mp2.png')),
-            const CircularProgressIndicator(),
-            const SizedBox(
-              height: 10,
+      body: Center(
+        child: Container(
+          margin: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(20),
+          color: Colors.white,
+          child: Center(
+            child: Column(
+              children: [
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    // const MediaQuery.of(context).size.height * 0.5;
+                    child: const SpinKitPulsingGrid(
+                      color: Colors.blue,
+                      size: 70.0,
+                    )),
+                const Text("Chargement ...",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        color: Colors.blue)),
+              ],
             ),
-            const Text("Chargement veuillez patienté s'il vous plait ...",
-                style:
-                    TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
-          ],
+          ),
         ),
       ),
     );

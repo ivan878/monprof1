@@ -8,11 +8,11 @@ import 'package:monprof/home/logique_metier/home_controller.dart';
 import 'package:monprof/cours/logique_metier/cous_controller.dart';
 import 'package:monprof/cours/presentation/componens/cour_body.dart';
 import 'package:monprof/cours/data/repository/cours_repository.dart';
-import 'package:monprof/cours/presentation/componens/question_body.dart';
+import 'package:monprof/questions/presentation/question_body.dart';
 // import 'package:monprof/auths/datas/models/classe_model.dart';
 
 class CoursScreen extends StatefulWidget {
-  final Categorie categorie;
+  final CategorieStatus categorie;
   final Matiere matiere;
   const CoursScreen(
       {super.key, required this.categorie, required this.matiere});
@@ -22,7 +22,7 @@ class CoursScreen extends StatefulWidget {
 }
 
 class _CoursScreenState extends State<CoursScreen> {
-  late Categorie categorie;
+  late CategorieStatus categorie;
   late Matiere matiere;
   int indextab = 0;
 
@@ -39,7 +39,7 @@ class _CoursScreenState extends State<CoursScreen> {
         init: CoursController(
           repository: GetIt.instance<CoursRepository>(),
           matiere: matiere,
-          categorie: categorie,
+          categorie: categorie.categorie,
         ),
         builder: (CoursController controller) {
           return DefaultTabController(
@@ -71,7 +71,9 @@ class _CoursScreenState extends State<CoursScreen> {
                 ),
                 body: TabBarView(
                   children: [
-                    CoursBody(controller: controller),
+                    CoursBody(
+                      controller: controller,
+                    ),
                     QuestionBody(controller: controller),
                   ],
                 ),

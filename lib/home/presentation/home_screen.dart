@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
                       borderRadius: BorderRadius.circular(10)),
                   child: InkWell(
                       onTap: () async {
-                        changeScreen(context, CompteUser());
+                        changeScreen(context, const CompteUser());
                       },
                       child: Image.asset('assets/study2.png')),
                 ),
@@ -97,7 +97,7 @@ class _HomeState extends State<Home> {
                                         value: controller.matiere,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir un matière"
+                                              ? "choisir une matière"
                                               : null;
                                         },
                                         alignment:
@@ -133,12 +133,12 @@ class _HomeState extends State<Home> {
                                 (controller.categorieState.data ?? []).isEmpty
                                     ? const SimpleText(
                                         text: 'Impossible charger les catégrie')
-                                    : DropdownButtonFormField<Categorie?>(
+                                    : DropdownButtonFormField<CategorieStatus?>(
                                         focusColor: Colors.white,
                                         value: controller.categorie,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir un catégorie"
+                                              ? "choisir une catégorie"
                                               : null;
                                         },
                                         alignment:
@@ -152,14 +152,14 @@ class _HomeState extends State<Home> {
                                         items: (controller
                                                     .categorieState.data ??
                                                 [])
-                                            .map((e) => e.categorie)
+                                            .map((e) => e)
                                             .toList()
-                                            .map<DropdownMenuItem<Categorie?>>(
-                                                (Categorie value) {
-                                          return DropdownMenuItem<Categorie>(
+                                            .map<DropdownMenuItem<CategorieStatus?>>(
+                                                (CategorieStatus value) {
+                                          return DropdownMenuItem<CategorieStatus>(
                                             value: value,
                                             child: SimpleText(
-                                              text: value.libelle ?? '',
+                                              text: value.categorie.libelle ?? '',
                                               color: Colors.black,
                                             ),
                                           );
@@ -170,7 +170,7 @@ class _HomeState extends State<Home> {
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500),
                                         ),
-                                        onChanged: (Categorie? value) {
+                                        onChanged: (CategorieStatus? value) {
                                           controller.changeCategorie(value);
                                         }),
                                 const SizedBox(height: 15),

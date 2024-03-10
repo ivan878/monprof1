@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Categorie {
   int? id;
@@ -81,4 +79,31 @@ class CategorieStatus {
 
   @override
   int get hashCode => categorie.hashCode ^ status.hashCode;
+}
+
+class CategorieParentStatus {
+  Categorie categorie;
+  int total;
+  int active;
+  int unactive;
+  CategorieParentStatus({
+    required this.categorie,
+    required this.total,
+    required this.active,
+    required this.unactive,
+  });
+
+  factory CategorieParentStatus.fromMap(Map<String, dynamic> map) {
+    return CategorieParentStatus(
+      categorie: Categorie.fromJson(map['categorie'] as Map<String, dynamic>),
+      total: map['total'] as int,
+      active: map['actifs'] as int,
+      unactive: map['unactifs'] as int,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'CategorieParentStatus(categorie: $categorie, total: $total, actifs: $active, unactifs: $unactive)';
+  }
 }

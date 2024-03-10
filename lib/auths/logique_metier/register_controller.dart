@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:monprof/auths/datas/models/parents_model.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,12 +13,14 @@ import 'package:monprof/auths/datas/repositoty/user_repository.dart';
 
 class RegisterController extends GetxController {
   final UserRepository repository;
+  bool canGetclasse;
+  RegisterController({required this.repository, this.canGetclasse = true});
 
-  RegisterController({required this.repository});
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerEtablissement = TextEditingController();
+  TextEditingController controllerProfession = TextEditingController();
   TextEditingController controllerLastName = TextEditingController();
   String controllerSexe = 'HOMME';
   TextEditingController controllerPhone = TextEditingController();
@@ -39,7 +42,7 @@ class RegisterController extends GetxController {
 
   @override
   onInit() {
-    getClasse();
+    if (canGetclasse) getClasse();
     update();
     super.onInit();
   }
@@ -93,6 +96,42 @@ class RegisterController extends GetxController {
         await storageService.storeClasse(classeResulte);
         await storageService.storeUser(userResulte);
         await storageService.storeEleve(eleveResulte);
+        await storageService.storeToken(token);
+        state = AppState(status: AppStatus.data, data: data);
+        update();
+      } catch (e) {
+        state = AppState(status: AppStatus.error, errorModel: returnError(e));
+        update();
+      }
+    }
+  }
+
+  Future registerParent() async {
+    if (formkey.currentState!.validate()) {
+      state = AppState(status: AppStatus.loading);
+      update();
+      try {
+        Users users = Users(
+          name: controllerName.text,
+          email: controllerEmail.text,
+          phone: controllerPhone.text,
+          lastName: controllerLastName.text,
+        );
+        ParentModel parentModel = ParentModel(
+          profession: controllerProfession.text,
+          sexe: controllerSexe,
+        );
+        final data = await repository.registerParent(
+            users, parentModel, controllerPassword.text);
+        final preference = await SharedPreferences.getInstance();
+
+        final Users userResulte = data['user'];
+        final ParentModel parenResult = data['parent'];
+        final String token = data['token'];
+        final UserLocalStorageService storageService =
+            UserLocalStorageService(preference: preference);
+        await storageService.storeUser(userResulte);
+        await storageService.storeParent(parenResult);
         await storageService.storeToken(token);
         state = AppState(status: AppStatus.data, data: data);
         update();
