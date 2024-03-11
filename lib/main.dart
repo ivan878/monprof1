@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:monprof/corps/utils/injectors.dart';
 import 'package:monprof/splash/splash_controller.dart';
-import 'package:monprof/auths/datas/services/user_storage.dart';
+// import 'package:monprof/auths/datas/services/user_storage.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(

@@ -111,7 +111,7 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 2,
-                                          childAspectRatio: 0.85,
+                                          childAspectRatio: 0.5,
                                           mainAxisSpacing: 15,
                                           crossAxisSpacing: 15,
                                         ),
@@ -120,6 +120,7 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                             .map((data) => Column(
                                                   children: [
                                                     Container(
+                                                      height: 220,
                                                       decoration: BoxDecoration(
                                                         color: colorstat[0],
                                                         borderRadius:
@@ -129,7 +130,7 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                .all(8.0),
+                                                                .all(11),
                                                         child:
                                                             Column(children: [
                                                           Text(
@@ -150,7 +151,7 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                                             thickness: 3,
                                                           ),
                                                           const SizedBox(
-                                                            height: 15,
+                                                            height: 10,
                                                           ),
                                                           Row(
                                                             mainAxisAlignment:
@@ -220,7 +221,7 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                                             ],
                                                           ),
                                                           const SizedBox(
-                                                            height: 10,
+                                                            height: 5,
                                                           ),
                                                           Container(
                                                             padding:

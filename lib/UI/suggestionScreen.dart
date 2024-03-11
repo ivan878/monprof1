@@ -30,49 +30,49 @@ class _SuggestionState extends State<Suggestion> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 //liste
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: DropdownButton<String>(
-                          focusColor: Colors.white,
-                          value: valeur,
-                          //elevation: 5,
-                          isExpanded: true,
-                          style: const TextStyle(color: Colors.white),
-                          iconEnabledColor: Colors.black,
-                          items: <String>[
-                            'Ajout',
-                            'Fonctionnement',
-                            'Erreur survenue',
-                            'Problème d utilisation',
-                            'Autres (A préciser) ',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            );
-                          }).toList(),
-                          hint: const Text(
-                            "choisir le sujet",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          onChanged: (String? value) {
-                            setState(() {
-                              valeur = value;
-                            });
-                          },
-                        ),
-                      ),
+                      // Container(
+                      //   width: MediaQuery.of(context).size.width,
+                      //   padding: const EdgeInsets.all(5),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.blue.withOpacity(0.3),
+                      //     borderRadius: BorderRadius.circular(10),
+                      //   ),
+                      //   child: DropdownButton<String>(
+                      //     focusColor: Colors.white,
+                      //     value: valeur,
+                      //     //elevation: 5,
+                      //     isExpanded: true,
+                      //     style: const TextStyle(color: Colors.white),
+                      //     iconEnabledColor: Colors.black,
+                      //     items: <String>[
+                      //       'Ajout',
+                      //       'Fonctionnement',
+                      //       'Erreur survenue',
+                      //       'Problème d utilisation',
+                      //       'Autres (A préciser) ',
+                      //     ].map<DropdownMenuItem<String>>((String value) {
+                      //       return DropdownMenuItem<String>(
+                      //         value: value,
+                      //         child: Text(
+                      //           value,
+                      //           style: const TextStyle(color: Colors.black),
+                      //         ),
+                      //       );
+                      //     }).toList(),
+                      //     hint: const Text(
+                      //       "choisir le sujet",
+                      //       style: TextStyle(
+                      //           color: Colors.black,
+                      //           fontSize: 14,
+                      //           fontWeight: FontWeight.w500),
+                      //     ),
+                      //     onChanged: (String? value) {
+                      //       setState(() {
+                      //         valeur = value;
+                      //       });
+                      //     },
+                      //   ),
+                      // ),
 
                       const SizedBox(
                         height: 10,
@@ -96,7 +96,7 @@ class _SuggestionState extends State<Suggestion> {
                           hintText: "Votre texte",
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(3),
                           ),
                         ),
                         onTap: null,
@@ -107,7 +107,7 @@ class _SuggestionState extends State<Suggestion> {
                       Container(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: 50,
-                        margin: const EdgeInsets.all(15),
+                        margin: const EdgeInsets.all(9),
                         child: TextButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monprof/UI/loading.dart';
@@ -114,6 +115,26 @@ class _QuestionBodyState extends State<QuestionBody> {
                                                           TextOverflow.ellipsis,
                                                     ),
                                                   ),
+                                                  Visibility(
+                                                      visible:
+                                                          question.image_url !=
+                                                              null,
+                                                      child: SizedBox(
+                                                          height: 100,
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: question
+                                                                .image_url!,
+                                                            placeholder:
+                                                                (context,
+                                                                        url) =>
+                                                                    Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                color: white,
+                                                              ),
+                                                            ),
+                                                          ))),
                                                   buildQuestion(question,
                                                       homeController, context),
                                                 ],
