@@ -137,7 +137,7 @@ class _QuestionState extends State<Question> {
                             // }
                           },
                           style: TextButton.styleFrom(
-                            primary: Colors.white,
+                            foregroundColor: Colors.white,
                             backgroundColor: Colors.blue,
                             elevation: 3,
                           ),

@@ -588,7 +588,7 @@ class _PaiementPState extends State<PaiementP> {
                               }
                             },
                             style: TextButton.styleFrom(
-                              primary: Colors.white,
+                              foregroundColor: Colors.white,
                               backgroundColor: Colors.blue,
                               elevation: 3,
                             ),

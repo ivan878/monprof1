@@ -135,7 +135,7 @@ class _SuggestionState extends State<Suggestion> {
                             }
                           },
                           style: TextButton.styleFrom(
-                            primary: Colors.white,
+                            foregroundColor: Colors.white,
                             backgroundColor: Colors.blue,
                             elevation: 3,
                           ),
