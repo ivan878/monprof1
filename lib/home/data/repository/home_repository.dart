@@ -46,4 +46,18 @@ class HomeRepository {
       rethrow;
     }
   }
+
+  Future<List<CategorieParentStatus>> getCategoriePrentStatus() async {
+    try {
+      final data = await service.getCategoriePrentStatus();
+      final listeCategorie = List<CategorieParentStatus>.from(
+        (data['data'] as List)
+            .map((json) => CategorieParentStatus.fromMap(json))
+            .toList(),
+      );
+      return listeCategorie;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
                       borderRadius: BorderRadius.circular(10)),
                   child: InkWell(
                       onTap: () async {
-                        changeScreen(context, CompteUser());
+                        changeScreen(context, const CompteUser());
                       },
                       child: Image.asset('assets/study2.png')),
                 ),
@@ -97,7 +97,7 @@ class _HomeState extends State<Home> {
                                         value: controller.matiere,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir un matière"
+                                              ? "choisir une matière"
                                               : null;
                                         },
                                         alignment:
@@ -132,13 +132,14 @@ class _HomeState extends State<Home> {
                                 const SizedBox(height: 20),
                                 (controller.categorieState.data ?? []).isEmpty
                                     ? const SimpleText(
-                                        text: 'Impossible charger les catégrie')
-                                    : DropdownButtonFormField<Categorie?>(
+                                        text:
+                                            'Impossible de charger les catégrie')
+                                    : DropdownButtonFormField<CategorieStatus?>(
                                         focusColor: Colors.white,
                                         value: controller.categorie,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir un catégorie"
+                                              ? "choisir une catégorie"
                                               : null;
                                         },
                                         alignment:
@@ -149,17 +150,21 @@ class _HomeState extends State<Home> {
                                         iconSize: 30,
                                         elevation: 16,
                                         decoration: appInputDecoration(),
-                                        items: (controller
-                                                    .categorieState.data ??
-                                                [])
-                                            .map((e) => e.categorie)
-                                            .toList()
-                                            .map<DropdownMenuItem<Categorie?>>(
-                                                (Categorie value) {
-                                          return DropdownMenuItem<Categorie>(
+                                        items:
+                                            (controller.categorieState.data ??
+                                                    [])
+                                                .map((e) => e)
+                                                .toList()
+                                                .map<
+                                                        DropdownMenuItem<
+                                                            CategorieStatus?>>(
+                                                    (CategorieStatus value) {
+                                          return DropdownMenuItem<
+                                              CategorieStatus>(
                                             value: value,
                                             child: SimpleText(
-                                              text: value.libelle ?? '',
+                                              text:
+                                                  value.categorie.libelle ?? '',
                                               color: Colors.black,
                                             ),
                                           );
@@ -170,7 +175,7 @@ class _HomeState extends State<Home> {
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500),
                                         ),
-                                        onChanged: (Categorie? value) {
+                                        onChanged: (CategorieStatus? value) {
                                           controller.changeCategorie(value);
                                         }),
                                 const SizedBox(height: 15),
@@ -203,7 +208,10 @@ class _HomeState extends State<Home> {
                                     ),
                                     TextButton(
                                         onPressed: () {
-                                          changeScreen(context, Suggestion());
+                                          changeScreen(
+                                            context,
+                                            const Suggestion(),
+                                          );
                                         },
                                         child: const Text(
                                           "Je donne mon avis",

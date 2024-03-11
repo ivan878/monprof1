@@ -20,29 +20,37 @@ class HomeController extends GetxController {
       AppState<List<Matiere>?>(status: AppStatus.loading);
   AppState<List<CategorieStatus>?> categorieState =
       AppState<List<CategorieStatus>?>(status: AppStatus.loading);
+  AppState<List<CategorieParentStatus>?> categorieParentState =
+      AppState<List<CategorieParentStatus>?>(status: AppStatus.loading);
 
-  Categorie? categorie;
+  CategorieStatus? categorie;
+  CategorieParentStatus? categorieParent;
   Matiere? matiere;
   Users? users;
   Eleve? eleve;
   Classe? classe;
 
   @override
-  onInit() {
+  onInit() async {
     super.onInit();
-    getData();
+    await getData();
     initFunction();
   }
 
   Future initFunction() async {
-    await getCategorie();
-    await getMatiere();
+    print(users!.ruleId);
+    if (users!.isParent) {
+      getCategoriePrentStatus();
+    } else {
+      getMatiere();
+      getCategorie();
+    }
     update();
   }
 
   static HomeController get data => Get.find();
 
-  getData() async {
+  Future getData() async {
     final prefrence = await SharedPreferences.getInstance();
     final storage = UserLocalStorageService(preference: prefrence);
     users = storage.getUser();
@@ -56,8 +64,13 @@ class HomeController extends GetxController {
     update();
   }
 
-  changeCategorie(Categorie? newCategorie) {
+  changeCategorie(CategorieStatus? newCategorie) {
     categorie = newCategorie;
+    update();
+  }
+
+  changeCategorieParent(CategorieParentStatus? newCategorie) {
+    categorieParent = newCategorie;
     update();
   }
 
@@ -89,6 +102,13 @@ class HomeController extends GetxController {
         categorieState = AppState<List<CategorieStatus>?>(
             status: AppStatus.data, data: value);
         update();
+      }).onError((error, stackTrace) {
+        categorieState = AppState(
+          status: AppStatus.error,
+          data: null,
+          errorModel: returnError(error),
+        );
+        update();
       });
     } catch (e) {
       categorieState = AppState(
@@ -98,6 +118,38 @@ class HomeController extends GetxController {
       );
       update();
     }
+  }
+
+  //get categories Parent
+  Future getCategoriePrentStatus() async {
+    try {
+      categorieParentState = AppState(status: AppStatus.loading);
+      update();
+      await repository.getCategoriePrentStatus().then((value) {
+        final data = value;
+        categorieParentState = AppState<List<CategorieParentStatus>?>(
+            status: AppStatus.data, data: data);
+        if (value.isNotEmpty) {
+          categorieParent = value.first;
+        }
+        update();
+      }).onError((error, stackTrace) {
+        categorieParentState = AppState(
+          status: AppStatus.error,
+          data: null,
+          errorModel: returnError(error),
+        );
+        update();
+      });
+    } catch (e) {
+      categorieParentState = AppState(
+        status: AppStatus.error,
+        data: null,
+        errorModel: returnError(e),
+      );
+      update();
+    }
+    update();
   }
 
   //

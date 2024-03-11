@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monprof/corps/widgets/theme.dart';
 
 Widget rowCompte(Color color, String textvalue, IconData icon) {
   return Row(
@@ -13,7 +14,7 @@ Widget rowCompte(Color color, String textvalue, IconData icon) {
       ),
       Text(
         textvalue,
-        style: TextStyle(color: color),
+        style: textStyle.copyWith(color: color),
       )
     ],
   );

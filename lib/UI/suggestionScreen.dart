@@ -55,7 +55,7 @@ class _SuggestionState extends State<Suggestion> {
                               value: value,
                               child: Text(
                                 value,
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                               ),
                             );
                           }).toList(),
@@ -88,6 +88,7 @@ class _SuggestionState extends State<Suggestion> {
                           } else {
                             null;
                           }
+                          return null;
                         },
                         decoration: InputDecoration(
                           fillColor: Colors.blue.withOpacity(0.2),
@@ -135,7 +136,7 @@ class _SuggestionState extends State<Suggestion> {
                             }
                           },
                           style: TextButton.styleFrom(
-                            foregroundColor: Colors.white,
+                            // foregroundColor: Colors.white,
                             backgroundColor: Colors.blue,
                             elevation: 3,
                           ),

@@ -37,4 +37,15 @@ class HomeService {
       rethrow;
     }
   }
+
+  Future<Map<String, dynamic>> getCategoriePrentStatus() async {
+    try {
+      final heade = await header();
+      final response = await dio.get('categorie/parent/status',
+          options: Options(headers: heade));
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

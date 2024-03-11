@@ -368,9 +368,7 @@ class _PaiementPState extends State<PaiementP> {
                                 //   }
                                 // }, true, const Icon(Icons.ac_unit), 'Quantité',
                                 //     TextInputType.number, 'nombre invalide'),
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                                const SizedBox(height: 10),
                                 Container(
                                   height: 55,
                                   width: MediaQuery.of(context).size.width,

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:monprof/auths/datas/models/parents_model.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/models/eleve_modele.dart';
 
@@ -28,13 +29,35 @@ class UserService {
     }
   }
 
+  Future<Map<String, dynamic>> registerParent(
+      Users users, ParentModel parentModel, String password) async {
+    try {
+      final data = {
+        ...users.toJson(),
+        ...parentModel.toMap(),
+        'password': password,
+      };
+      final response = await dio.post('parent/register',
+          data: FormData.fromMap(data),
+          options: Options(
+            headers: {
+              // 'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          ));
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final data = {
         'email': email,
         'password': password,
       };
-      final response = await dio.post('eleve/login',
+      final response = await dio.post('user/login',
           data: FormData.fromMap(data),
           options: Options(
             headers: {
@@ -53,7 +76,6 @@ class UserService {
       final response = await dio.get('classe',
           options: Options(
             headers: {
-              // 'Content-Type': 'application/json',
               'Accept': 'application/json',
             },
           ));

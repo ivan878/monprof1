@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:monprof/corps/utils/helper.dart';
+// ignore_for_file: non_constant_identifier_names
 
 class Users {
   Users({
@@ -7,22 +7,27 @@ class Users {
     this.lastName,
     required this.email,
     required this.phone,
+    this.profile_image,
     this.ruleId,
     this.id,
     this.uniqueToken,
     this.updatedAt,
     this.createdAt,
   });
+
+  bool get haveProfile => (profile_image?.trim() ?? '').isNotEmpty;
+  bool get isParent => ruleId == 3;
   // Méthode pour créer une instance Users à partir d'un Map JSON
   factory Users.fromJson(Map<String, dynamic> json) {
-    log(json['name'].toString());
+    log(json.toString());
     return Users(
       name: json['name'],
       lastName: json['last_name'],
       email: json['email'],
       phone: json['phone'],
-      ruleId: json['rule_id'] ?? 0,
+      ruleId: json['rule_id'] ?? 2,
       id: json['id'],
+      profile_image: json['profile_image'],
       uniqueToken: json['unique_token'],
       updatedAt: DateTime.parse(json['updated_at']),
       createdAt: DateTime.parse(json['created_at']),
@@ -36,7 +41,8 @@ class Users {
       'last_name': lastName,
       'email': email,
       'phone': phone,
-      'ruleId': ruleId,
+      'rule_id': ruleId,
+      'profile_image': profile_image,
       if (id != null) 'id': id,
       'unique_token': uniqueToken,
       if (createdAt != null) 'created_at': createdAt?.toIso8601String(),
@@ -62,6 +68,7 @@ class Users {
   String email;
   String phone;
   int? ruleId;
+  String? profile_image;
   int? id;
   String? uniqueToken;
   DateTime? updatedAt;
