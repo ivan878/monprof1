@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import '../../components/input.dart';
 import 'package:flutter/material.dart';
-import 'package:monprof/auths/presentation/register_parent.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/theme.dart';
@@ -10,12 +10,13 @@ import 'package:monprof/corps/utils/navigation.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/home/presentation/homparent.dart';
 import 'package:monprof/home/presentation/home_screen.dart';
 import 'package:monprof/auths/presentation/register_scren.dart';
+import 'package:monprof/auths/presentation/register_parent.dart';
 import 'package:monprof/auths/logique_metier/login_controller.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
 
-import '../../components/input.dart';
 // import 'package:monprof/UI/avantPageScreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -85,14 +86,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       Column(
                         children: [
                           input(
-                            ValidationBuilder(
-                                    requiredMessage: 'Email obligatoire')
-                                .email("email incorrecte")
-                                .build(),
-                            controller.controllerEmail,
-                            'Email',
-                            const Icon(Icons.email_outlined),
-                          ),
+                              ValidationBuilder(
+                                      requiredMessage: 'Email obligatoire')
+                                  .email("email incorrecte")
+                                  .build(),
+                              controller.controllerEmail,
+                              'Email',
+                              const Icon(Icons.email_outlined),
+                              inputType: TextInputType.emailAddress),
                           // TextFielApp(
                           //   hinText: 'Email',
                           //   prefixIcon: const Icon(Icons.email_outlined),
@@ -115,8 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller.obscureText,
                               'Mot de passe',
                               const Icon(Icons.lock), () {
-                            () => controller
-                                .chanObscureText(controller.obscureText);
+                            () => controller.chanObscureText();
                             Icon(
                               controller.obscureText
                                   ? Icons.visibility_off
@@ -152,10 +152,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if (controller.state.hasData) {
                                   Notify.showSuccess(
                                       context, 'Opérations réusite');
-                                  changeScreen(
-                                    context,
-                                    const Home(),
-                                  );
+                                  if (controller.state.data!.isParent) {
+                                    changeScreen(
+                                      context,
+                                      const HomeParentScreen(),
+                                    );
+                                  } else {
+                                    changeScreen(
+                                      context,
+                                      const Home(),
+                                    );
+                                  }
                                 } else {
                                   Notify.showFailure(
                                       context,

@@ -1,22 +1,22 @@
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-// import 'package:monprof/UI/loading.dart';
 import 'package:monprof/components/input.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/UI/contatUserScreen.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:monprof/corps/utils/navigation.dart';
-import 'package:monprof/home/presentation/homparent.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/home/presentation/homparent.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
-// import 'package:monprof/auths/datas/models/classe_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
 import 'package:monprof/auths/logique_metier/register_controller.dart';
+// import 'package:monprof/UI/loading.dart';
+// import 'package:monprof/auths/datas/models/classe_model.dart';
 
 // ignore_for_file: sort_child_properties_last
 

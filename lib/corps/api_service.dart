@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:monprof/corps/uri.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monprof/auths/datas/services/user_storage.dart';
+// import 'dart:developer';
 
 InterceptorsWrapper wrapper = InterceptorsWrapper(
   onResponse: (response, handler) {
@@ -63,15 +62,15 @@ Future<Map<String, dynamic>> header() async {
   };
 }
 
-Future<String> reFreshToken() async {
+Future<String?> reFreshToken() async {
   try {
     final dio = Dio();
     final preference = await SharedPreferences.getInstance();
     final userstorage = UserLocalStorageService(preference: preference);
     final token = userstorage.getToken();
-    debugger(message: token ?? "Token vide");
+    loger(token ?? 'le token est vide');
     final response = await dio.post(
-      'auth/refresh-token',
+      '${BASE_URL}auth/refresh-token',
       data: {'token': token},
       options: Options(
         headers: {
@@ -79,15 +78,16 @@ Future<String> reFreshToken() async {
         },
       ),
     );
-    debugger(message: response.data.toString());
+    loger(response.data.toString());
     if (response.data?['status'] == true) {
       final newToken = response.data?['data']['token'];
-      await userstorage.storeToken(newToken ?? '');
+      userstorage.storeToken(newToken ?? '');
       return newToken;
     } else {
-      throw Exception("Impossible de récupérer le token");
+      return null;
     }
   } catch (e) {
-    throw Exception("Impossible de récupérer le token");
+    loger(e);
+    return null;
   }
 }

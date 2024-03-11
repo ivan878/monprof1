@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:monprof/corps/widgets/simple_text.dart';
 
 class Loading extends StatelessWidget {
   const Loading({Key? key}) : super(key: key);
