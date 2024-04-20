@@ -1,7 +1,9 @@
-import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:monprof/auths/presentation/login-screen.dart';
 import 'package:monprof/corps/utils/helper.dart';
+import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/components/row_compte.dart';
 import 'package:monprof/corps/utils/navigation.dart';
@@ -9,6 +11,8 @@ import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
 import 'package:monprof/paiements/presentation/active_compte.dart';
+import 'package:monprof/splash/splash_controller.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class CompteUser extends StatefulWidget {
   const CompteUser({super.key});
@@ -18,19 +22,58 @@ class CompteUser extends StatefulWidget {
 }
 
 class _CompteUserState extends State<CompteUser> {
+  String version = '';
+
+  @override
+  void initState() {
+    getInfo();
+    super.initState();
+  }
+
+  getInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Compte'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: IconButton(
+              onPressed: () async {
+                await controller.logout().then((value) {
+                  if (value) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (route) => false);
+                  } else {
+                    Notify.showFailure(context, 'Impossible de se déconnecter');
+                  }
+                });
+              },
+              icon: const Icon(
+                Icons.logout,
+                size: 30,
+              ),
+            ),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(10),
           child: Column(
             children: [
-              rowCompte(Colors.blue, "Informations sur le compte", Icons.info),
+              rowCompte(
+                  Colors.blue, "Informations sur le compte".tr, Icons.info),
               const SizedBox(
                 height: 5,
               ),
@@ -47,54 +90,179 @@ class _CompteUserState extends State<CompteUser> {
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                          height: 100,
-                          child: ClipOval(
-                              child: Image.asset('assets/study3.png'))),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: SimpleText(
-                              text:
-                                  "${controller.users?.name} ${controller.users?.lastName ?? ''}",
-                              weight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis,
-                              size: 17,
-                            ),
-                          ),
-                          SpacerHeight(10),
-                          SimpleText(
-                            text: controller.users?.phone ?? "Tel :",
-                            weight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                            letterspacing: 2.0,
-                          ),
-                          SpacerHeight(8),
-                          SimpleText(
-                            text: controller.eleve?.etablissement ??
-                                "Etablissement :",
-                            weight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SpacerHeight(8),
-                          SimpleText(
-                            text: "${controller.classe?.libelle}",
-                            weight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
+                          buildProfile(controller),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: SimpleText(
+                                  text:
+                                      "${controller.users?.name} ${controller.users?.lastName ?? ''}",
+                                  weight: FontWeight.bold,
+                                  overflow: TextOverflow.ellipsis,
+                                  size: 17,
+                                ),
+                              ),
+                              SpacerHeight(10),
+                              SimpleText(
+                                text:
+                                    controller.users?.phone ?? "${"Tel".tr} :",
+                                weight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis,
+                                letterspacing: 2.0,
+                              ),
+                              SpacerHeight(8),
+                              SimpleText(
+                                text: controller.eleve?.etablissement ??
+                                    "${"Etablissement".tr} :",
+                                weight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SpacerHeight(8),
+                              SimpleText(
+                                text: "${controller.classe?.libelle}",
+                                weight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SpacerHeight(10),
+                              GestureDetector(
+                                onTap: () async {
+                                  await controller.logout().then((value) {
+                                    if (value) {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const LoginScreen()),
+                                          (route) => false);
+                                    } else {
+                                      Notify.showFailure(context,
+                                          'Impossible de se déconnecter'.tr);
+                                    }
+                                  });
+                                },
+                                child: rowCompte(
+                                  Colors.red,
+                                  "Supprimer le compte",
+                                  Icons.delete,
+                                  iconColor: red,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      )
+                      ),
+                      SpacerHeight(30),
+                      SimpleText(
+                          text: "Langue de l'application".tr,
+                          size: 16,
+                          weight: FontWeight.bold),
+                      SpacerHeight(5),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ListTile(
+                              onTap: () async =>
+                                  await Get.find<SplaController>()
+                                      .updateLocal(const Locale('fr')),
+                              title: const SimpleText(text: 'Français'),
+                              leading: Icon(
+                                  Get.locale?.languageCode == 'fr'
+                                      ? Icons.circle
+                                      : Icons.circle_outlined,
+                                  color: Get.locale?.languageCode == 'fr'
+                                      ? primaryColor
+                                      : null),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListTile(
+                              onTap: () async => Get.find<SplaController>()
+                                  .updateLocal(const Locale('en')),
+                              title: SimpleText(text: 'English'.tr),
+                              leading: Icon(
+                                  Get.locale?.languageCode == 'en'
+                                      ? Icons.circle
+                                      : Icons.circle_outlined,
+                                  color: Get.locale?.languageCode == 'en'
+                                      ? primaryColor
+                                      : null),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SpacerHeight(15),
+                      SimpleText(
+                          text: "Thème de l'application".tr,
+                          size: 16,
+                          weight: FontWeight.bold),
+                      SpacerHeight(5),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 500),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                      color:
+                                          !Get.find<SplaController>().isDarkmode
+                                              ? primaryColor
+                                              : Colors.grey.shade200),
+                                ),
+                                child: ListTile(
+                                  onTap: () async =>
+                                      await Get.find<SplaController>()
+                                          .updateThemMode(ThemeMode.light),
+                                  title: const SimpleText(text: 'Claire'),
+                                  trailing:
+                                      const Icon(Icons.light_mode, size: 27),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 500),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                      color:
+                                          Get.find<SplaController>().isDarkmode
+                                              ? primaryColor
+                                              : Colors.grey.shade400),
+                                ),
+                                child: ListTile(
+                                  onTap: () async => Get.find<SplaController>()
+                                      .updateThemMode(ThemeMode.dark),
+                                  title: SimpleText(text: 'Sombre'.tr),
+                                  trailing:
+                                      const Icon(Icons.dark_mode, size: 27),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SpacerHeight(15),
                     ],
                   ),
                 ),
               ),
+
               const SizedBox(height: 15),
-              rowCompte(Colors.blue, "Informations sur le statut du compte",
+              rowCompte(Colors.blue, "Informations sur le statut du compte".tr,
                   Icons.real_estate_agent),
               const SizedBox(height: 5),
               Material(
@@ -112,16 +280,16 @@ class _CompteUserState extends State<CompteUser> {
                   ),
                   child: Column(
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Statut du Compte',
-                            style: TextStyle(fontSize: 15),
+                            'Statut du Compte'.tr,
+                            style: const TextStyle(fontSize: 15),
                           ),
                           Text(
-                            " Statut",
-                            style: TextStyle(
+                            " Statut".tr,
+                            style: const TextStyle(
                               fontSize: 17,
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
@@ -184,9 +352,10 @@ class _CompteUserState extends State<CompteUser> {
                       ),
                       SpacerHeight(10),
                       const Divider(),
-                      const SimpleText(
+                      SimpleText(
                         text:
-                            "Si vous disposez d'un code d'activation, veuillez activer cet abonnement ",
+                            "Si vous disposez d'un code d'activation, veuillez activer cet abonnement"
+                                .tr,
                         weight: FontWeight.w300,
                         size: 15,
                         align: TextAlign.center,
@@ -196,7 +365,7 @@ class _CompteUserState extends State<CompteUser> {
                         child: SizedBox(
                           width: taille(context).width * 0.5,
                           child: DefaultButton(
-                            text: 'Activer',
+                            text: 'Activer'.tr,
                             color: Colors.blue,
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -215,26 +384,39 @@ class _CompteUserState extends State<CompteUser> {
                 ),
               ),
               const SizedBox(height: 10),
-              rowCompte(Colors.blue, "Information sur l'application",
+              rowCompte(Colors.blue, "Information sur l'application".tr,
                   Icons.app_settings_alt_outlined),
               const SizedBox(
                 height: 15,
               ),
-              const Icon(
+              rowCompte(
+                Colors.grey,
+                "${"MonProf version".tr} $version",
                 Icons.school_outlined,
-                size: 250,
-                color: Colors.grey,
+                iconColor: greyColors,
               ),
-              const SizedBox(
-                height: 5,
-              ),
-              const Text(
-                'MonProf version 1.0',
-                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 17),
-              ),
+
+              // const Row(
+              //   children: [
+              //     Icon(
+              //       Icons.school_outlined,
+              //       size: 27,
+              //       color: Colors.grey,
+              //     ),
+              //     SizedBox(
+              //       width: 5,
+              //     ),
+              //     Text(
+              //       'MonProf version 1.0',
+              //       style: TextStyle(fontWeight: FontWeight.w200, fontSize: 17),
+              //     ),
+              //   ],
+              // ),
+
               const SizedBox(
                 height: 20,
               ),
+
               Container(
                   padding: const EdgeInsets.all(20),
                   child: Row(
@@ -277,6 +459,52 @@ class _CompteUserState extends State<CompteUser> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  SizedBox buildProfile(HomeController controller) {
+    return SizedBox(
+      height: 110,
+      width: 110,
+      child: Stack(
+        children: [
+          controller.users?.profile_image?.isNotEmpty == true
+              ? Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        controller.users!.profile_image!,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              : SizedBox(
+                  height: 100,
+                  child: ClipOval(
+                    child: Image.asset('assets/study3.png'),
+                  ),
+                ),
+          Positioned(
+            top: 5,
+            right: 0,
+            child: Material(
+              elevation: 10.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              child: CircleAvatar(
+                backgroundColor: white,
+                child: Center(
+                  child: Icon(Icons.edit, color: primaryColor),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

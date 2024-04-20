@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
+import 'package:monprof/corps/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/models/classe_model.dart';
@@ -9,6 +10,7 @@ import 'package:monprof/home/data/models/categorie_model.dart';
 import 'package:monprof/home/data/models/matieres_models.dart';
 import 'package:monprof/auths/datas/services/user_storage.dart';
 import 'package:monprof/home/data/repository/home_repository.dart';
+// import 'package:collection/collection.dart';
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 class HomeController extends GetxController {
@@ -38,7 +40,7 @@ class HomeController extends GetxController {
   }
 
   Future initFunction() async {
-    print(users!.ruleId);
+    printer(users!.ruleId);
     if (users!.isParent) {
       getCategoriePrentStatus();
     } else {
@@ -101,6 +103,13 @@ class HomeController extends GetxController {
       await repository.getCategorieStatus().then((value) {
         categorieState = AppState<List<CategorieStatus>?>(
             status: AppStatus.data, data: value);
+        if (categorie != null) {
+          changeCategorie(
+            value.firstWhereOrNull(
+              (element) => element.categorie.id == categorie?.categorie.id,
+            ),
+          );
+        }
         update();
       }).onError((error, stackTrace) {
         categorieState = AppState(
@@ -153,4 +162,11 @@ class HomeController extends GetxController {
   }
 
   //
+
+  Future<bool> logout() async {
+    return await UserLocalStorageService.logout()
+        .then((val) => true)
+        .catchError((error, stackTrace) => false)
+        .onError((error, stackTrace) => false);
+  }
 }

@@ -21,8 +21,12 @@ InterceptorsWrapper wrapper = InterceptorsWrapper(
     );
     if (error.response?.statusCode == 401) {
       final newToken = await reFreshToken();
-      error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
-      return handler.resolve(await Dio().fetch(error.requestOptions));
+      if (newToken != null) {
+        error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+        return handler.resolve(await Dio().fetch(error.requestOptions));
+      } else {
+        return handler.next(error);
+      }
     }
     return handler.next(error);
   },
@@ -31,6 +35,8 @@ InterceptorsWrapper wrapper = InterceptorsWrapper(
 class PublicAPI {
   final Dio dios = Dio(BaseOptions(
     baseUrl: BASE_URL, // URL de base
+    connectTimeout: const Duration(seconds: 15),
+    receiveTimeout: const Duration(seconds: 30),
     // connectTimeout: 5000, // Délai d'attente pour établir une connexion (en millisecondes)
     // receiveTimeout: 3000, // Délai d'attente pour recevoir des données (en millisecondes)
   ));

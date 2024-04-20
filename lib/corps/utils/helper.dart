@@ -11,7 +11,7 @@ loger(Object object) {
   }
 }
 
-printer(Object object, {String type = 'i'}) {
+printer(Object? object, {String type = 'i'}) {
   if (kDebugMode) {
     switch (type) {
       case 'e':

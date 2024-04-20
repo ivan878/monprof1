@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:monprof/UI/loading.dart';
+import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/components/input.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/UI/contatUserScreen.dart';

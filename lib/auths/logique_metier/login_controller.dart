@@ -41,7 +41,6 @@ class LoginController extends GetxController {
         final String token = data['token'];
         await storageService.storeUser(userResulte);
         await storageService.storeToken(token);
-
         if (userResulte.isParent) {
           final ParentModel parenResult = data['parent'];
           await storageService.storeParent(parenResult);

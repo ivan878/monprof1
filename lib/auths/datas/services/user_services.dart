@@ -57,14 +57,16 @@ class UserService {
         'email': email,
         'password': password,
       };
-      final response = await dio.post('user/login',
-          data: FormData.fromMap(data),
-          options: Options(
-            headers: {
-              // 'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-          ));
+      final response = await dio.post(
+        'user/login',
+        data: FormData.fromMap(data),
+        options: Options(
+          headers: {
+            // 'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
       return response.data;
     } catch (e) {
       rethrow;

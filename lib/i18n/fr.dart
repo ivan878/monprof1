@@ -1,0 +1,31 @@
+const Map<String, String> francais = {
+  "Something whent's wrong": "Une erreur inconnue est survenue",
+  'Aucune matière disponible por le moment':
+      'Aucune matière disponible por le moment',
+  "choisir une matière": "choisir une matière",
+  "Impossible de charger les catégrie": "Impossible de charger les catégrie",
+  "choisir une catégorie": "choisir une catégorie",
+  "Catégorie": "Categorie",
+  "Rechercher": "Rechercher",
+  "Votre avis compte 😃 ": "Votre avis compte 😃 ",
+  "Je donne mon avis": "Je donne mon avis",
+  "Langue de l'application": "Langue de l'application",
+  "Thème de l'application": "Thème de l'application",
+  "Claire": "Claire",
+  "Sombre": "Sombre",
+  "Matière": "Matière",
+  "Informations sur le statut du compte":
+      "Informations sur le statut du compte",
+  "Statut du Compte": 'Statut du Compte',
+  "Statut": "Statut",
+  "Si vous disposez d'un code d'activation, veuillez activer cet abonnement":
+      "Si vous disposez d'un code d'activation, veuillez activer cet abonnement ",
+  'Activer': 'Activer',
+  "Information sur l'application": "Information sur l'application",
+  "MonProf version": "MonProf version",
+  "Informations sur le compte": "Informations sur le compte",
+  "Tel": "Tel",
+  "Etablissement": "Etablissement",
+  "Impossible de se déconnecter": "Impossible de se déconnecter",
+  "Supprimer le compte": "Supprimer le compte",
+};

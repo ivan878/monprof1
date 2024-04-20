@@ -6,6 +6,7 @@ import 'package:monprof/corps/widgets/theme.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:monprof/components/row_compte.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
+import 'package:monprof/home/logique_metier/home_controller.dart';
 import 'component/paiements_provider_information.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
@@ -24,6 +25,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final home = Get.find<HomeController>();
     return GetBuilder(
       init:
           PaiementsController(repository: GetIt.instance<PaiementRepository>()),
@@ -81,7 +83,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                               fontSize: 17),
                                         ),
                                         Text(
-                                          'nom eleve',
+                                          home.classe?.libelle ?? " ",
                                           style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -101,11 +103,11 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                           ),
                                         ),
                                         Text(
-                                          'eleve',
+                                          home.users?.name ?? " ",
                                           style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 17,
-                                            color: Colors.green,
+                                            color: primaryColor,
                                           ),
                                         ),
                                       ],
@@ -122,11 +124,11 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                               fontSize: 15),
                                         ),
                                         Text(
-                                          'eleve mon',
+                                          "${home.categorie?.categorie.prix.toString() ?? " "} XAF",
                                           style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 17,
-                                              color: Colors.green),
+                                              color: primaryColor),
                                         ),
                                       ],
                                     ),

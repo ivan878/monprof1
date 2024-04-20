@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:monprof/UI/loading.dart';
+import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/navigation.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
@@ -17,6 +17,7 @@ import 'package:monprof/questions/logique_metier/questions_controller.dart';
 import 'package:monprof/questions/presentation/components/pieceJointeScreen.dart';
 import 'package:monprof/questions/presentation/create_question_screen.dart';
 import 'package:monprof/corps/utils/navigation.dart' as navigator;
+import 'package:widget_zoom/widget_zoom.dart';
 
 class QuestionBody extends StatefulWidget {
   final CoursController controller;
@@ -114,6 +115,30 @@ class _QuestionBodyState extends State<QuestionBody> {
                                                           TextOverflow.ellipsis,
                                                     ),
                                                   ),
+                                                  Visibility(
+                                                      visible:
+                                                          question.image_url !=
+                                                              null,
+                                                      child: SizedBox(
+                                                          height: 100,
+                                                          child: WidgetZoom(
+                                                            heroAnimationTag:
+                                                                question.id!,
+                                                            zoomWidget:
+                                                                CachedNetworkImage(
+                                                              imageUrl: question
+                                                                  .image_url!,
+                                                              placeholder:
+                                                                  (context,
+                                                                          url) =>
+                                                                      Center(
+                                                                child:
+                                                                    CircularProgressIndicator(
+                                                                  color: white,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ))),
                                                   buildQuestion(question,
                                                       homeController, context),
                                                 ],

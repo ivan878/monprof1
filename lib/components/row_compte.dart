@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 
-Widget rowCompte(Color color, String textvalue, IconData icon) {
+Widget rowCompte(Color color, String textvalue, IconData icon,
+    {Color? iconColor}) {
   return Row(
     children: [
       Icon(
         icon,
         //Icons.real_estate_agent,
-        color: Colors.blue,
+        color: iconColor ?? Colors.blue,
       ),
       const SizedBox(
         width: 10,

@@ -1,7 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:monprof/UI/loading.dart';
+import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/UI/suggestionScreen.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/corps/utils/navigation.dart';
@@ -57,10 +58,16 @@ class _HomeState extends State<Home> {
                       color: Colors.grey,
                       borderRadius: BorderRadius.circular(10)),
                   child: InkWell(
-                      onTap: () async {
-                        changeScreen(context, const CompteUser());
-                      },
-                      child: Image.asset('assets/study2.png')),
+                    onTap: () async {
+                      changeScreen(context, const CompteUser());
+                    },
+                    child: controller.users?.profile_image?.isNotEmpty == true
+                        ? CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(
+                                controller.users!.profile_image!),
+                          )
+                        : Image.asset('assets/study2.png'),
+                  ),
                 ),
               ),
             ],
@@ -73,7 +80,7 @@ class _HomeState extends State<Home> {
                   ? ErrorPage(
                       errorMessage: controller.matiereState.errorModel?.error ??
                           controller.categorieState.errorModel?.error ??
-                          "Something whent's wrong",
+                          "Something whent's wrong".tr,
                       reload: () async {
                         await controller.initFunction();
                       },
@@ -89,15 +96,16 @@ class _HomeState extends State<Home> {
                                 Image.asset('assets/mp2.png'),
                                 const SizedBox(height: 15),
                                 (controller.matiereState.data ?? []).isEmpty
-                                    ? const SimpleText(
+                                    ? SimpleText(
                                         text:
-                                            'Aucune matière disponible por le moment')
+                                            'Aucune matière disponible por le moment'
+                                                .tr)
                                     : DropdownButtonFormField<Matiere?>(
                                         focusColor: Colors.white,
                                         value: controller.matiere,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir une matière"
+                                              ? "choisir une matière".tr
                                               : null;
                                         },
                                         alignment:
@@ -120,26 +128,26 @@ class _HomeState extends State<Home> {
                                             ),
                                           );
                                         }).toList(),
-                                        hint: const Text(
-                                          "Matière",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500),
+                                        hint: SimpleText(
+                                          text: "Matière".tr,
+                                          size: 16,
+                                          weight: FontWeight.w500,
                                         ),
                                         onChanged: (Matiere? value) {
                                           controller.changeMatiere(value);
                                         }),
                                 const SizedBox(height: 20),
                                 (controller.categorieState.data ?? []).isEmpty
-                                    ? const SimpleText(
+                                    ? SimpleText(
                                         text:
-                                            'Impossible de charger les catégrie')
+                                            'Impossible de charger les catégrie'
+                                                .tr)
                                     : DropdownButtonFormField<CategorieStatus?>(
                                         focusColor: Colors.white,
                                         value: controller.categorie,
                                         validator: (value) {
                                           return value == null
-                                              ? "choisir une catégorie"
+                                              ? "choisir une catégorie".tr
                                               : null;
                                         },
                                         alignment:
@@ -169,18 +177,17 @@ class _HomeState extends State<Home> {
                                             ),
                                           );
                                         }).toList(),
-                                        hint: const Text(
-                                          "Categorie",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500),
+                                        hint: SimpleText(
+                                          text: "Catégorie".tr,
+                                          size: 16,
+                                          weight: FontWeight.w500,
                                         ),
                                         onChanged: (CategorieStatus? value) {
                                           controller.changeCategorie(value);
                                         }),
                                 const SizedBox(height: 15),
                                 DefaultButton(
-                                  text: 'Rechercher',
+                                  text: 'Rechercher'.tr,
                                   onPressed: () {
                                     if (formkey.currentState!.validate()) {
                                       changeScreen(
@@ -200,25 +207,23 @@ class _HomeState extends State<Home> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    const Text(
-                                      "Votre avis compte 😃 ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                      ),
+                                    SimpleText(
+                                      text: "Votre avis compte 😃 ".tr,
+                                      weight: FontWeight.w300,
                                     ),
                                     TextButton(
-                                        onPressed: () {
-                                          changeScreen(
-                                            context,
-                                            const Suggestion(),
-                                          );
-                                        },
-                                        child: const Text(
-                                          "Je donne mon avis",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blue),
-                                        )),
+                                      onPressed: () {
+                                        changeScreen(
+                                          context,
+                                          const Suggestion(),
+                                        );
+                                      },
+                                      child: SimpleText(
+                                        text: "Je donne mon avis".tr,
+                                        color: Colors.blue,
+                                        weight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ],
@@ -232,3 +237,6 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+
+// Traduite.

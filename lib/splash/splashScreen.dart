@@ -21,20 +21,22 @@ class _SpashScreenState extends State<SpashScreen> {
     Timer(const Duration(seconds: 2), () {
       Get.find<SplaController>().checkUser().then((value) {
         if (value == null) {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             PageTransition(
               type: PageTransitionType.rightToLeft,
               child: const LoginScreen(),
             ),
+            (route) => false,
           );
         } else {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             PageTransition(
               type: PageTransitionType.rightToLeft,
               child: value.isParent ? const HomeParentScreen() : const Home(),
             ),
+            (route) => false,
           );
         }
       });

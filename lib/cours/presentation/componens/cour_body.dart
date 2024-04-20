@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:monprof/UI/lecteurvideoScreen.dart';
-import 'package:monprof/UI/loading.dart';
+import 'package:monprof/corps/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/utils/navigation.dart';
 import 'package:monprof/corps/utils/notify.dart';

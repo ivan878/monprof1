@@ -70,6 +70,7 @@ class _ActiveCompteState extends State<ActiveCompte> {
                                   Notify.showSuccess(
                                       context, 'Code active avec succes');
                                   Navigator.pop(context);
+
                                   await Get.find<HomeController>()
                                       .getCategorie();
                                 }

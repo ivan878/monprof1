@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/error_model.dart';
+import 'package:monprof/corps/utils/notify.dart';
 
 // import 'package:firebase_core/firebase_core.dart';
 
@@ -43,12 +44,9 @@ ErrorModel manageDioError(DioException except) {
   // printer(except.error.runtimeType);
   switch (code) {
     case 401:
-      return ErrorModel.fromMap({
-        "error": except.response?.data['error'] ??
-            except.response?.statusMessage ??
-            'AUthorisation refusée'.tr,
-        'code': code
-      });
+      Notify.toastError("Vous devez vous reconnecter");
+      return ErrorModel.fromMap(
+          {"error": 'AUthorisation refusée'.tr, 'code': code});
     case 403:
       printer(except.response?.data['error'] ??
           except.response?.data ??
