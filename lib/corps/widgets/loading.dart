@@ -12,7 +12,7 @@ class Loading extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(10),
           padding: const EdgeInsets.all(20),
-          color: Colors.white,
+          // color: Colors.white,
           child: Center(
             child: Column(
               children: [
@@ -49,7 +49,7 @@ class ErrorPage extends StatelessWidget {
       body: Container(
         margin: const EdgeInsets.all(10),
         padding: const EdgeInsets.all(20),
-        color: Colors.white,
+        // color: Colors.white,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

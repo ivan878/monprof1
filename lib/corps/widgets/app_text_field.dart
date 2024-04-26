@@ -51,7 +51,7 @@ class _TextFielAppState extends State<TextFielApp> {
       controller: widget.controller,
       keyboardType: widget.inputType,
       onChanged: widget.onChanged,
-      obscureText: false,
+      obscureText: widget.obscureTexte ?? false,
       validator: widget.validator,
       inputFormatters: widget.inputFormatters,
       maxLength: widget.lenght,

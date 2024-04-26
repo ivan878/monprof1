@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import '../../components/input.dart';
+import 'package:monprof/corps/widgets/app_text_field.dart';
+// import '../../components/input.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
@@ -27,23 +28,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final numeroController = TextEditingController();
-  final nomController = TextEditingController();
-  final passwordController = TextEditingController();
+  // final numeroController = TextEditingController();
+  // final nomController = TextEditingController();
+  // final passwordController = TextEditingController();
+  bool obscurText = true;
 
-  bool isloading = false;
-
-  String? valeurClasse;
-
-  bool visible = false;
-  bool visibleconfir = false;
-  String requestError = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         title: const Center(
             child: Text(
           'M O N P R O F',
@@ -85,44 +80,46 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Column(
                         children: [
-                          input(
-                              ValidationBuilder(
-                                      requiredMessage: 'Email obligatoire')
-                                  .email("email incorrecte")
-                                  .build(),
-                              controller.controllerEmail,
-                              'Email',
-                              const Icon(Icons.email_outlined),
-                              inputType: TextInputType.emailAddress),
-                          // TextFielApp(
-                          //   hinText: 'Email',
-                          //   prefixIcon: const Icon(Icons.email_outlined),
-                          //   inputType: TextInputType.emailAddress,
-                          //   controller: controller.controllerEmail,
-                          //   validator: ValidationBuilder(
-                          //           requiredMessage: 'Email obligatoire')
-                          //       .email("email incorrecte")
-                          //       .build(),
-                          // ),
+                          // input(
+                          //     ValidationBuilder(
+                          //             requiredMessage: 'Email obligatoire')
+                          //         .email("email incorrecte")
+                          //         .build(),
+                          //     controller.controllerEmail,
+                          //     'Email',
+                          //     const Icon(Icons.email_outlined),
+                          //     inputType: TextInputType.emailAddress),
+                          TextFielApp(
+                            hinText: 'Email',
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            inputType: TextInputType.emailAddress,
+                            controller: controller.controllerEmail,
+                            validator: ValidationBuilder(
+                                    requiredMessage: 'Email obligatoire')
+                                .email("email incorrecte")
+                                .build(),
+                          ),
                           const SizedBox(height: 15),
-                          inputPassword(
-                              ValidationBuilder(
+                          TextFielApp(
+                              validator: ValidationBuilder(
                                       requiredMessage:
                                           'Mot de passe obligatoire')
                                   .minLength(6,
                                       'le mote de passe a au moins 6 caractère')
                                   .build(),
-                              controller.controllerPassword,
-                              controller.obscureText,
-                              'Mot de passe',
-                              const Icon(Icons.lock), () {
-                            () => controller.chanObscureText();
-                            Icon(
-                              controller.obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            );
-                          }),
+                              controller: controller.controllerPassword,
+                              obscureTexte: obscurText,
+                              maxLines: 1,
+                              hinText: 'Mot de passe',
+                              suffixIcon: GestureDetector(
+                                onTap: () =>
+                                    setState(() => obscurText = !obscurText),
+                                child: Icon(
+                                  obscurText
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                              )),
                           // TextFielApp(
                           //   hinText: 'Mot de passe',
                           //   inputType: TextInputType.visiblePassword,

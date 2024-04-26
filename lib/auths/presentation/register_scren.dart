@@ -28,8 +28,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  bool visible = false;
-  bool visibleconfir = true;
+  bool visiblepassword = false;
+  // bool visibleconfir = true;
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -311,13 +311,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 hinText: 'Mot de passe',
                                 inputType: TextInputType.visiblePassword,
                                 controller: controller.controllerPassword,
-                                obscureTexte: controller.obscureText,
+                                obscureTexte: visiblepassword,
                                 maxLines: 1,
                                 suffixIcon: GestureDetector(
-                                  onTap: () => controller
-                                      .chanObscureText(controller.obscureText),
+                                  onTap: () => setState(
+                                      () => visiblepassword = !visiblepassword),
                                   child: Icon(
-                                    controller.obscureText
+                                    !visiblepassword
                                         ? Icons.visibility_off
                                         : Icons.visibility,
                                   ),
@@ -334,7 +334,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               TextFielApp(
                                 hinText: 'Confirmez le mot de passse',
                                 inputType: TextInputType.visiblePassword,
-                                obscureTexte: controller.obscureText,
+                                obscureTexte: visiblepassword,
                                 prefixIcon: const Icon(Icons.lock),
                                 maxLines: 1,
                                 validator: (val) {
