@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:monprof/UI/lecteurvideoScreen.dart';
+import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/utils/navigation.dart';
@@ -40,36 +41,48 @@ class _CoursBodyState extends State<CoursBody> {
                     await controller.getCours();
                   },
                 )
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    await controller.getCours();
-                  },
-                  child: ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [
-                      ...controller.coursState.data!.map(
-                        (cours) => Container(
-                          margin: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                width: 1,
-                                style: BorderStyle.solid,
-                                color: Colors.blue),
-                          ),
-                          child: Column(
-                            children: [
-                              BuildCourComponen(
-                                cours: cours,
-                                videoController: VideoController(cours: cours),
+              : controller.coursState.hasData &&
+                      controller.coursState.data!.isEmpty
+                  ? ErrorPage(
+                      errorMessage:
+                          'Ce contenu sera disponible dans les meilleurs délais',
+                      textColor: Theme.of(context).textTheme.titleMedium?.color,
+                      texteSize: 17,
+                      reload: () async {
+                        await controller.getCours();
+                      },
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        await controller.getCours();
+                      },
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          ...controller.coursState.data!.map(
+                            (cours) => Container(
+                              margin: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    width: 1,
+                                    style: BorderStyle.solid,
+                                    color: Colors.blue),
                               ),
-                            ],
+                              child: Column(
+                                children: [
+                                  BuildCourComponen(
+                                    cours: cours,
+                                    videoController:
+                                        VideoController(cours: cours),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
     );
   }
 }
@@ -138,6 +151,7 @@ class BuildCourComponen extends StatelessWidget {
             if (!cours.open) {
               changeScreen(context, const PaiementsScreen());
             } else {
+              printer(cours.video_url);
               if (videoController.files.value.path.isNotEmpty) {
                 changeScreen(
                   context,

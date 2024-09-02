@@ -100,3 +100,12 @@ ErrorModel returnCatchError(error) {
           {'error': "Quelque chose n'a pas fonctionné".tr});
   }
 }
+
+class CustomException implements Exception {
+  final String message;
+  final int? code;
+  CustomException({
+    required this.message,
+    this.code,
+  });
+}

@@ -23,13 +23,14 @@ class ErrorModel {
 
   factory ErrorModel.fromMap(Map<String, dynamic> map) {
     return ErrorModel(
-      error: map['error'] as String,
+      error: map['error'].toString(),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ErrorModel.fromJson(String source) => ErrorModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ErrorModel.fromJson(String source) =>
+      ErrorModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'ErrorModel(error: $error)';
@@ -37,9 +38,8 @@ class ErrorModel {
   @override
   bool operator ==(covariant ErrorModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.error == error;
+
+    return other.error == error;
   }
 
   @override

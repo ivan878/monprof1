@@ -190,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             isExpanded: true,
                                             style: textStyle.copyWith(
                                                 color: white),
-                                            iconEnabledColor: Colors.black,
+                                            // iconEnabledColor: Colors.black,
                                             iconSize: 30,
                                             elevation: 16,
                                             decoration: appInputDecoration(),
@@ -203,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 value: value,
                                                 child: SimpleText(
                                                   text: value.libelle ?? '',
-                                                  color: Colors.black,
+                                                  // color: Colors.black,
                                                 ),
                                               );
                                             }).toList(),
@@ -266,7 +266,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       child: Text(
                                         value,
                                         style: const TextStyle(
-                                            color: Colors.black),
+                                            // color: Colors.black,
+                                            ),
                                       ),
                                     );
                                   }).toList(),

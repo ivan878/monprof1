@@ -32,7 +32,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
       builder: (PaiementsController controller) {
         return Scaffold(
             appBar: AppBar(
-              title: const Text("Paiements d'un abonnement"),
+              title: const Text("Paiement d'un abonnement"),
             ),
             body: controller.paiementState.isLoading
                 ? Center(
@@ -103,7 +103,8 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                           ),
                                         ),
                                         Text(
-                                          home.users?.name ?? " ",
+                                          home.categorie?.categorie.libelle ??
+                                              " ",
                                           style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 17,

@@ -42,8 +42,7 @@ class _ActiveCompteState extends State<ActiveCompte> {
                       children: [
                         const SimpleText(
                           text:
-                              "S'il vous plait, veuillez entrer le code d'activation"
-                              "reçu par SMS ou par mail.",
+                              "S'il vous plait, veuillez entrer le code d'activation reçu par SMS ou par mail.",
                         ),
                         const SizedBox(height: 10),
                         TextFielApp(

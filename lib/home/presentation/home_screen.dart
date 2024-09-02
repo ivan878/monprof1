@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/widgets/loading.dart';
-import 'package:monprof/UI/suggestionScreen.dart';
-import 'package:monprof/corps/widgets/theme.dart';
+import 'package:monprof/sugestion/suggestionScreen.dart';
+// import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/corps/utils/navigation.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
@@ -15,6 +15,9 @@ import 'package:monprof/home/data/models/categorie_model.dart';
 import 'package:monprof/home/data/models/matieres_models.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
 import 'package:monprof/home/data/repository/home_repository.dart';
+import 'package:monprof/notification/data/services/notification_api.dart';
+import 'package:monprof/notification/notification_controller.dart';
+import 'package:monprof/notification/screnn/notification_screnn.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -24,6 +27,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    Get.put(NotificationController(api: GetIt.instance<NotificationApi>()));
+    super.initState();
+  }
+
   final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -49,6 +58,36 @@ class _HomeState extends State<Home> {
                   child: SimpleText(
                       text: controller.classe?.shortName ?? '', size: 15),
                 ),
+              ),
+              GetBuilder<NotificationController>(
+                builder: (controller) {
+                  return GestureDetector(
+                    onTap: () {
+                      changeScreen(context, const NotificationScreen());
+                    },
+                    child: CircleAvatar(
+                      child: Stack(
+                        children: [
+                          const Icon(
+                            Icons.notifications,
+                            size: 27,
+                            color: Colors.blue,
+                          ),
+                          if ((controller.unreadNotification.data ?? 0) > 0)
+                            const Positioned(
+                              right: 0,
+                              top: 0,
+                              child: Icon(
+                                Icons.circle,
+                                size: 14,
+                                color: Colors.red,
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 15),
@@ -101,7 +140,7 @@ class _HomeState extends State<Home> {
                                             'Aucune matière disponible por le moment'
                                                 .tr)
                                     : DropdownButtonFormField<Matiere?>(
-                                        focusColor: Colors.white,
+                                        // focusColor: Colors.white,
                                         value: controller.matiere,
                                         validator: (value) {
                                           return value == null
@@ -111,8 +150,8 @@ class _HomeState extends State<Home> {
                                         alignment:
                                             AlignmentDirectional.centerStart,
                                         isExpanded: true,
-                                        style: textStyle.copyWith(color: white),
-                                        iconEnabledColor: Colors.black,
+                                        // style: textStyle.copyWith(color: white),
+                                        // iconEnabledColor: Colors.black,
                                         iconSize: 30,
                                         elevation: 16,
                                         decoration: appInputDecoration(),
@@ -124,7 +163,7 @@ class _HomeState extends State<Home> {
                                             value: value,
                                             child: SimpleText(
                                               text: value.libelle ?? '',
-                                              color: Colors.black,
+                                              // color: Colors.black,
                                             ),
                                           );
                                         }).toList(),
@@ -143,7 +182,7 @@ class _HomeState extends State<Home> {
                                             'Impossible de charger les catégrie'
                                                 .tr)
                                     : DropdownButtonFormField<CategorieStatus?>(
-                                        focusColor: Colors.white,
+                                        // focusColor: Colors.white,
                                         value: controller.categorie,
                                         validator: (value) {
                                           return value == null
@@ -153,8 +192,8 @@ class _HomeState extends State<Home> {
                                         alignment:
                                             AlignmentDirectional.centerStart,
                                         isExpanded: true,
-                                        style: textStyle.copyWith(color: white),
-                                        iconEnabledColor: Colors.black,
+                                        // style: textStyle.copyWith(color: white),
+                                        // iconEnabledColor: Colors.black,
                                         iconSize: 30,
                                         elevation: 16,
                                         decoration: appInputDecoration(),
@@ -173,7 +212,7 @@ class _HomeState extends State<Home> {
                                             child: SimpleText(
                                               text:
                                                   value.categorie.libelle ?? '',
-                                              color: Colors.black,
+                                              // color: Colors.black,
                                             ),
                                           );
                                         }).toList(),
@@ -208,6 +247,7 @@ class _HomeState extends State<Home> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     SimpleText(
+                                      size: 12,
                                       text: "Votre avis compte 😃 ".tr,
                                       weight: FontWeight.w300,
                                     ),
@@ -221,6 +261,7 @@ class _HomeState extends State<Home> {
                                       child: SimpleText(
                                         text: "Je donne mon avis".tr,
                                         color: Colors.blue,
+                                        size: 12,
                                         weight: FontWeight.bold,
                                       ),
                                     ),

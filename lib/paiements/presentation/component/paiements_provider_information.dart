@@ -67,7 +67,7 @@ class PaiementsProviderInformation extends StatelessWidget {
           children: [
             SimpleText(
               text:
-                  'Veuiller initier le Paiements avec la chaine de PaiementsScreen correspondante à votre opérateur.',
+                  "Veuiller initier le paiement avec la chaine de paiement correspondante à votre opérateur",
               align: TextAlign.center,
               weight: FontWeight.bold,
             ),

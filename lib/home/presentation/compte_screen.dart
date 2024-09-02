@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:monprof/auths/presentation/login-screen.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
@@ -47,17 +50,7 @@ class _CompteUserState extends State<CompteUser> {
             padding: const EdgeInsets.all(8),
             child: IconButton(
               onPressed: () async {
-                await controller.logout().then((value) {
-                  if (value) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
-                        (route) => false);
-                  } else {
-                    Notify.showFailure(context, 'Impossible de se déconnecter');
-                  }
-                });
+                logOut(controller: controller);
               },
               icon: const Icon(
                 Icons.logout,
@@ -96,7 +89,7 @@ class _CompteUserState extends State<CompteUser> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          buildProfile(controller),
+                          buildProfile(),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -133,20 +126,8 @@ class _CompteUserState extends State<CompteUser> {
                               ),
                               SpacerHeight(10),
                               GestureDetector(
-                                onTap: () async {
-                                  await controller.logout().then((value) {
-                                    if (value) {
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const LoginScreen()),
-                                          (route) => false);
-                                    } else {
-                                      Notify.showFailure(context,
-                                          'Impossible de se déconnecter'.tr);
-                                    }
-                                  });
+                                onTap: () {
+                                  logOut(delete: true, controller: controller);
                                 },
                                 child: rowCompte(
                                   Colors.red,
@@ -172,7 +153,8 @@ class _CompteUserState extends State<CompteUser> {
                               onTap: () async =>
                                   await Get.find<SplaController>()
                                       .updateLocal(const Locale('fr')),
-                              title: const SimpleText(text: 'Français'),
+                              title: FittedBox(
+                                  child: SimpleText(text: 'Français'.tr)),
                               leading: Icon(
                                   Get.locale?.languageCode == 'fr'
                                       ? Icons.circle
@@ -186,7 +168,8 @@ class _CompteUserState extends State<CompteUser> {
                             child: ListTile(
                               onTap: () async => Get.find<SplaController>()
                                   .updateLocal(const Locale('en')),
-                              title: SimpleText(text: 'English'.tr),
+                              title: FittedBox(
+                                  child: SimpleText(text: 'English'.tr)),
                               leading: Icon(
                                   Get.locale?.languageCode == 'en'
                                       ? Icons.circle
@@ -220,9 +203,11 @@ class _CompteUserState extends State<CompteUser> {
                                               : Colors.grey.shade200),
                                 ),
                                 child: ListTile(
-                                  onTap: () async =>
-                                      await Get.find<SplaController>()
-                                          .updateThemMode(ThemeMode.light),
+                                  onTap: () async {
+                                    await Get.find<SplaController>()
+                                        .updateThemMode(ThemeMode.light);
+                                    setState(() {});
+                                  },
                                   title: const SimpleText(text: 'Claire'),
                                   trailing:
                                       const Icon(Icons.light_mode, size: 27),
@@ -244,8 +229,11 @@ class _CompteUserState extends State<CompteUser> {
                                               : Colors.grey.shade400),
                                 ),
                                 child: ListTile(
-                                  onTap: () async => Get.find<SplaController>()
-                                      .updateThemMode(ThemeMode.dark),
+                                  onTap: () async {
+                                    await Get.find<SplaController>()
+                                        .updateThemMode(ThemeMode.dark);
+                                    setState(() {});
+                                  },
                                   title: SimpleText(text: 'Sombre'.tr),
                                   trailing:
                                       const Icon(Icons.dark_mode, size: 27),
@@ -260,7 +248,6 @@ class _CompteUserState extends State<CompteUser> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 15),
               rowCompte(Colors.blue, "Informations sur le statut du compte".tr,
                   Icons.real_estate_agent),
@@ -395,28 +382,9 @@ class _CompteUserState extends State<CompteUser> {
                 Icons.school_outlined,
                 iconColor: greyColors,
               ),
-
-              // const Row(
-              //   children: [
-              //     Icon(
-              //       Icons.school_outlined,
-              //       size: 27,
-              //       color: Colors.grey,
-              //     ),
-              //     SizedBox(
-              //       width: 5,
-              //     ),
-              //     Text(
-              //       'MonProf version 1.0',
-              //       style: TextStyle(fontWeight: FontWeight.w200, fontSize: 17),
-              //     ),
-              //   ],
-              // ),
-
               const SizedBox(
                 height: 20,
               ),
-
               Container(
                   padding: const EdgeInsets.all(20),
                   child: Row(
@@ -463,49 +431,179 @@ class _CompteUserState extends State<CompteUser> {
     );
   }
 
-  SizedBox buildProfile(HomeController controller) {
-    return SizedBox(
-      height: 110,
-      width: 110,
-      child: Stack(
-        children: [
-          controller.users?.profile_image?.isNotEmpty == true
-              ? Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        controller.users!.profile_image!,
+  logOut({required HomeController controller, bool delete = false}) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(15),
+            ),
+          ),
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: SimpleText(
+                  text: delete
+                      ? "Confirmer La supression".tr
+                      : 'Se déconnecter'.tr,
+                ),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 27,
+                ),
+                onTap: () async {
+                  await controller.logout().then((value) {
+                    if (value) {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
+                          (route) => false);
+                    } else {
+                      Notify.showFailure(
+                          context, 'Impossible de se déconnecter'.tr);
+                    }
+                  });
+                },
+              ),
+              ListTile(
+                title: SimpleText(
+                  text: "Continuer sur Monprof".tr,
+                ),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 27,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  updateProfile({required HomeController controller}) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(15),
+            ),
+          ),
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: SimpleText(text: "Caméra".tr),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 27,
+                ),
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final file =
+                      await picker.pickImage(source: ImageSource.camera);
+                  if (file != null) {
+                    final image = File(file.path);
+                    controller.updateProfileImage(imageProfile: image);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                title: SimpleText(
+                  text: "Galerie".tr,
+                ),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 27,
+                ),
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final file =
+                      await picker.pickImage(source: ImageSource.gallery);
+                  if (file != null) {
+                    final image = File(file.path);
+                    controller.updateProfileImage(imageProfile: image);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildProfile() {
+    return GetBuilder<HomeController>(builder: (HomeController controller) {
+      return SizedBox(
+        height: 110,
+        width: 110,
+        child: Stack(
+          children: [
+            controller.users?.profile_image?.isNotEmpty == true
+                ? Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(
+                          controller.users!.profile_image!,
+                        ),
+                        fit: BoxFit.cover,
                       ),
-                      fit: BoxFit.cover,
+                    ),
+                  )
+                : SizedBox(
+                    height: 100,
+                    child: ClipOval(
+                      child: Image.asset('assets/study3.png'),
                     ),
                   ),
-                )
-              : SizedBox(
-                  height: 100,
-                  child: ClipOval(
-                    child: Image.asset('assets/study3.png'),
+            Positioned(
+              top: 5,
+              right: 0,
+              child: Material(
+                elevation: 10.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: GestureDetector(
+                  onTap: () {
+                    if (controller.updateProfileState.isLoading) {
+                      return;
+                    } else {
+                      updateProfile(controller: controller);
+                    }
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: white,
+                    child: Center(
+                      child: controller.updateProfileState.isLoading
+                          ? const CircularProgressIndicator()
+                          : Icon(Icons.edit, color: primaryColor),
+                    ),
                   ),
-                ),
-          Positioned(
-            top: 5,
-            right: 0,
-            child: Material(
-              elevation: 10.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              child: CircleAvatar(
-                backgroundColor: white,
-                child: Center(
-                  child: Icon(Icons.edit, color: primaryColor),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 }

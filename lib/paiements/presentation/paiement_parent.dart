@@ -35,7 +35,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
       builder: (PaiementsController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Paiements d'un abonnement"),
+            title: const Text("Paiement d'un abonnement"),
           ),
           body: controller.paiementState.isLoading
               ? Center(
@@ -87,7 +87,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                           isExpanded: true,
                                           style:
                                               textStyle.copyWith(color: white),
-                                          iconEnabledColor: Colors.black,
+                                          // iconEnabledColor: Colors.black,
                                           iconSize: 30,
                                           elevation: 16,
                                           decoration: appInputDecoration(),
@@ -108,7 +108,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                               child: SimpleText(
                                                 text: value.categorie.libelle ??
                                                     '',
-                                                color: Colors.black,
+                                                // color: Colors.black,
                                               ),
                                             );
                                           }).toList(),

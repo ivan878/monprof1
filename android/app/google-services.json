@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "689877979601",
+    "project_id": "monprof-d8308",
+    "storage_bucket": "monprof-d8308.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689877979601:android:49c8108a83f16b778810f0",
+        "android_client_info": {
+          "package_name": "com.example.monprof"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0yIoSCBn6PErtCgDB3ErUAOM6Edzygxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

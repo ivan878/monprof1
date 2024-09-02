@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/models/classe_model.dart';
 import 'package:monprof/auths/datas/models/eleve_modele.dart';
 import 'package:monprof/auths/datas/models/parents_model.dart';
 import 'package:monprof/auths/datas/services/user_services.dart';
+import 'package:monprof/corps/utils/app_state.dart';
+import 'package:monprof/corps/utils/error_handler.dart';
+import 'package:monprof/corps/utils/helper.dart';
 
 class UserRepository {
   UserRepository({required this.service});
@@ -84,6 +89,16 @@ class UserRepository {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<AppState<Users>> updateProfileImage(File file) async {
+    try {
+      final user = await service.updateProfileImage(file);
+      return AppState(data: user, status: AppStatus.data);
+    } catch (e) {
+      printer(e);
+      return AppState(status: AppStatus.error, errorModel: returnError(e));
     }
   }
 

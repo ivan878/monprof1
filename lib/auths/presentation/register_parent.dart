@@ -2,11 +2,11 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/components/input.dart';
+import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/UI/contatUserScreen.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:form_validator/form_validator.dart';
-import 'package:monprof/corps/utils/navigation.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
@@ -28,8 +28,6 @@ class RegisterParentScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterParentScreen> {
-  bool visible = false;
-  bool visibleconfir = true;
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -144,7 +142,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                         alignment: AlignmentDirectional.centerStart,
                         isExpanded: true,
                         style: const TextStyle(color: Colors.white),
-                        iconEnabledColor: Colors.black,
+                        // iconEnabledColor: Colors.black,
                         iconSize: 30,
                         elevation: 16,
                         decoration: appInputDecoration(),
@@ -154,7 +152,9 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                             value: value,
                             child: Text(
                               value,
-                              style: const TextStyle(color: Colors.black),
+                              style: const TextStyle(
+                                  // color: Colors.black,
+                                  ),
                             ),
                           );
                         }).toList(),
@@ -175,7 +175,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                       maxLines: 1,
                       suffixIcon: GestureDetector(
                         onTap: () =>
-                            controller.chanObscureText(controller.obscureText),
+                            controller.chanObscureText(!controller.obscureText),
                         child: Icon(
                           controller.obscureText
                               ? Icons.visibility_off
@@ -239,12 +239,18 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                         onPressed: () async {
                           await controller.registerParent().then((value) {
                             if (controller.state.hasData) {
-                              Notify.showSuccess(context, 'Opérations réusite');
-                              changeScreen(
-                                context,
-                                const HomeParentScreen(),
-                              );
+                              Notify.toast('Opérations réusite');
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const HomeParentScreen(),
+                                  ),
+                                  (route) => false);
                             } else {
+                              loger(
+                                controller.state.errorModel?.error ?? '',
+                              );
                               Notify.showFailure(context,
                                   controller.state.errorModel?.error ?? '');
                             }

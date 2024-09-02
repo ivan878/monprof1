@@ -1,7 +1,14 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:monprof/auths/datas/repositoty/user_repository.dart';
+import 'package:monprof/auths/datas/services/user_services.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:monprof/corps/utils/helper.dart';
+import 'package:monprof/corps/utils/notify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/models/classe_model.dart';
@@ -25,6 +32,8 @@ class HomeController extends GetxController {
   AppState<List<CategorieParentStatus>?> categorieParentState =
       AppState<List<CategorieParentStatus>?>(status: AppStatus.loading);
 
+  AppState<Users> updateProfileState = AppState();
+
   CategorieStatus? categorie;
   CategorieParentStatus? categorieParent;
   Matiere? matiere;
@@ -37,6 +46,7 @@ class HomeController extends GetxController {
     super.onInit();
     await getData();
     initFunction();
+    updateToken();
   }
 
   Future initFunction() async {
@@ -51,6 +61,10 @@ class HomeController extends GetxController {
   }
 
   static HomeController get data => Get.find();
+
+  Future updateToken() async {
+    await GetIt.instance<UserService>().updateToken();
+  }
 
   Future getData() async {
     final prefrence = await SharedPreferences.getInstance();
@@ -168,5 +182,20 @@ class HomeController extends GetxController {
         .then((val) => true)
         .catchError((error, stackTrace) => false)
         .onError((error, stackTrace) => false);
+  }
+
+  Future updateProfileImage({File? imageProfile}) async {
+    updateProfileState = AppState(status: AppStatus.loading);
+    update();
+    updateProfileState = await GetIt.instance<UserRepository>()
+        .updateProfileImage(imageProfile!);
+    Notify.toastSuccess('Profil mis à jour avec succès');
+    update();
+    if (updateProfileState.hasData) {
+      users = updateProfileState.data;
+      update();
+    } else if (updateProfileState.hasError) {
+      Notify.toastDanger(updateProfileState.errorModel!.error);
+    }
   }
 }

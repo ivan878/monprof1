@@ -67,9 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text(
                         'CONNECTEZ VOUS',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          // color: Colors.black
+                        ),
                       ),
                       const Text(
                         'Remplire les champs pour vous connectez',
@@ -147,8 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () async {
                               await controller.login().then((value) {
                                 if (controller.state.hasData) {
-                                  Notify.showSuccess(
-                                      context, 'Opérations réusite');
+                                  Notify.toastSuccess('Opérations réusite');
                                   if (controller.state.data!.isParent) {
                                     changeScreen(
                                       context,

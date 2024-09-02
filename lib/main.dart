@@ -1,5 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
+import 'package:monprof/firebase_options.dart';
 import 'package:monprof/i18n/app_localization.dart';
+import 'package:monprof/notification/data/services/fcm_notification_services.dart';
 import 'package:oktoast/oktoast.dart';
 import 'splash/splashScreen.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +14,14 @@ import 'package:monprof/splash/splash_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+  await NotificationService().init();
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    sound: true,
+    badge: true,
+  );
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   setupDependencies();

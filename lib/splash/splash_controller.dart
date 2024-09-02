@@ -47,7 +47,9 @@ class SplaController extends GetxController {
 
   Future updateThemMode(ThemeMode themeMode) async {
     Get.changeThemeMode(themeMode);
-    Notify.toast(mode.toString());
+    mode = themeMode;
+    update();
+    // Notify.toast(mode.toString());
     final preference = await SharedPreferences.getInstance();
     await preference.setBool(
         CURRENTTHEMEMODE, themeMode == ThemeMode.dark ? true : false);

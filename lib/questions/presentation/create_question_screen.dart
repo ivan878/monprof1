@@ -45,14 +45,14 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                   ),
                   SpacerHeight(20),
                   const SimpleText(
-                    text: 'Contenue de la question *',
+                    text: 'Contenu de la question *',
                   ),
                   SpacerHeight(5),
                   TextFielApp(
                     controller: controller.controllerDesc,
                     validator: ValidationBuilder(
                             requiredMessage:
-                                'contenue de la question Obligatoire')
+                                'contenu de la question Obligatoire')
                         .minLength(20, 'Question invalide')
                         .required()
                         .build(),

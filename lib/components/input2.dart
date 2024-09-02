@@ -18,7 +18,7 @@ Widget input2(
           Text(
             '+237',
             style: TextStyle(
-              color: Colors.black,
+              // color: Colors.black,
               fontWeight: FontWeight.w400,
             ),
           ),

@@ -42,6 +42,12 @@ class BadMockUserService implements UserService {
     // TODO: implement registerParent
     throw UnimplementedError();
   }
+
+  @override
+  Future updateToken() {
+    // TODO: implement updateToken
+    throw UnimplementedError();
+  }
 }
 
 class MockUserService extends Mock implements UserService {}

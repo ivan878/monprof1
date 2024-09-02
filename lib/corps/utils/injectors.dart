@@ -8,6 +8,7 @@ import 'package:monprof/home/data/repository/home_repository.dart';
 import 'package:monprof/auths/logique_metier/login_controller.dart';
 import 'package:monprof/cours/data/repository/cours_repository.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
+import 'package:monprof/notification/data/services/notification_api.dart';
 import 'package:monprof/paiements/datas/services/paiements_services.dart';
 import 'package:monprof/paiements/datas/reposytory/paiement_ripository.dart';
 import 'package:monprof/questions/data/repository/question_repository.dart';
@@ -60,9 +61,13 @@ void setupDependencies() {
   // Question
 
   GetIt.instance.registerLazySingleton<QuestionService>(
-    () => QuestionService(dio:GetIt.instance<Dio>()),
+    () => QuestionService(dio: GetIt.instance<Dio>()),
   );
   GetIt.instance.registerLazySingleton<QuestionRepository>(
-    () => QuestionRepository( GetIt.instance<QuestionService>()),
+    () => QuestionRepository(GetIt.instance<QuestionService>()),
+  );
+
+  GetIt.instance.registerLazySingleton<NotificationApi>(
+    () => NotificationApi(dio: GetIt.instance<Dio>()),
   );
 }

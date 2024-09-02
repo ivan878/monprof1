@@ -200,7 +200,7 @@ class _QuestionBodyState extends State<QuestionBody> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DefaultButton(
-                    text: 'Activer la catégorie',
+                    text: "Activer l'abonnement",
                     onPressed: () async {
                       await navigator.changeScreen(
                         context,

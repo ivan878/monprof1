@@ -40,8 +40,15 @@ class Loading extends StatelessWidget {
 class ErrorPage extends StatelessWidget {
   final void Function()? reload;
   final String errorMessage;
-  const ErrorPage({Key? key, required this.errorMessage, this.reload})
-      : super(key: key);
+  final double? texteSize;
+  final Color? textColor;
+  const ErrorPage({
+    Key? key,
+    required this.errorMessage,
+    this.reload,
+    this.texteSize,
+    this.textColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +67,9 @@ class ErrorPage extends StatelessWidget {
               const SizedBox(height: 10),
               SimpleText(
                 text: errorMessage,
+                size: texteSize,
                 weight: FontWeight.w600,
-                color: Colors.red,
+                color: textColor ?? Colors.red,
                 align: TextAlign.center,
               ),
               const SizedBox(height: 15),

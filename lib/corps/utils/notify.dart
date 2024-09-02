@@ -99,7 +99,7 @@ class Notify {
         SnackBar(
           content: Row(
             children: [
-              Expanded(child: Text(msg)),
+              Expanded(child: SimpleText(text: msg)),
               Icon(
                 Icons.error,
                 color: white,
