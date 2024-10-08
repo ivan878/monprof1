@@ -201,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    registerChoice(context);
+                                    registerChoice();
                                   },
                                   child: SimpleText(
                                     text: "Inscrivez vous",
@@ -222,7 +222,69 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  registerChoice(BuildContext context) {
+  registerChoice() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(15),
+            ),
+          ),
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: SimpleText(text: "Elèves".tr),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 27,
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      alignment: Alignment.bottomCenter,
+                      type: PageTransitionType.rightToLeft,
+                      child: const RegisterScreen(),
+                      childCurrent: const LoginScreen(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: SimpleText(
+                  text: "Parent".tr,
+                ),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 27,
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      alignment: Alignment.bottomCenter,
+                      type: PageTransitionType.rightToLeft,
+                      child: const RegisterParentScreen(),
+                      childCurrent: const LoginScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  registerChoices(BuildContext context) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -256,34 +318,12 @@ class _LoginScreenState extends State<LoginScreen> {
               SpacerHeight(20),
               DefaultButton(
                 text: 'Je suis élève',
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      alignment: Alignment.bottomCenter,
-                      type: PageTransitionType.rightToLeft,
-                      child: const RegisterScreen(),
-                      childCurrent: const LoginScreen(),
-                    ),
-                  );
-                },
+                onPressed: () {},
               ),
               SpacerHeight(15),
               DefaultButton(
                 text: 'Je suis tuteur',
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      alignment: Alignment.bottomCenter,
-                      type: PageTransitionType.rightToLeft,
-                      child: const RegisterParentScreen(),
-                      childCurrent: const LoginScreen(),
-                    ),
-                  );
-                },
+                onPressed: () {},
               ),
               SpacerHeight(30)
             ],

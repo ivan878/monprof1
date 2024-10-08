@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
@@ -168,6 +169,9 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                       lenght: 9,
                                       controller:
                                           controller.controllerNumeroClient,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly
+                                      ],
                                       validator: ValidationBuilder(
                                               requiredMessage:
                                                   'Numéro du bénéficiaire')
@@ -188,6 +192,9 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                     TextFielApp(
                                       controller:
                                           controller.controllerNumeroPayeur,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly
+                                      ],
                                       lenght: 9,
                                       validator: ValidationBuilder(
                                               requiredMessage:
