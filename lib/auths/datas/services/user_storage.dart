@@ -15,8 +15,20 @@ class UserLocalStorageService {
     await preference.setString(localToken, token);
   }
 
+  storeRefreshToken(String token) async {
+    await preference.setString(refreshToken, token);
+  }
+
   String? getToken() {
     final tokenString = preference.getString(localToken);
+    if ((tokenString ?? '').trim().isEmpty) {
+      return null;
+    }
+    return tokenString;
+  }
+
+  String? getRefreshToken() {
+    final tokenString = preference.getString(refreshToken);
     if ((tokenString ?? '').trim().isEmpty) {
       return null;
     }
@@ -86,5 +98,6 @@ class UserLocalStorageService {
     await preference.remove(classeStorage);
     await preference.remove(studentStorage);
     await preference.remove(localToken);
+    await preference.remove(refreshToken);
   }
 }

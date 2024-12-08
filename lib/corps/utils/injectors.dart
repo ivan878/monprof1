@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:monprof/auths/datas/services/user_storage.dart';
 import 'package:monprof/corps/api_service.dart';
 import 'package:monprof/home/data/services/home_services.dart';
 import 'package:monprof/cours/data/services/cours_service.dart';
@@ -13,8 +14,10 @@ import 'package:monprof/paiements/datas/services/paiements_services.dart';
 import 'package:monprof/paiements/datas/reposytory/paiement_ripository.dart';
 import 'package:monprof/questions/data/repository/question_repository.dart';
 import 'package:monprof/questions/data/services/question_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void setupDependencies() {
+Future setupDependencies() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
   GetIt.instance.registerLazySingleton<Dio>(
     () => PublicAPI().dio,
     // instanceName: 'public',
@@ -28,9 +31,14 @@ void setupDependencies() {
   );
 
   GetIt.instance.registerLazySingleton<UserRepository>(
-      () => UserRepository(service: GetIt.instance<UserService>()));
+    () => UserRepository(
+      service: GetIt.instance<UserService>(),
+      storage: UserLocalStorageService(preference: preferences),
+    ),
+  );
   GetIt.instance.registerLazySingleton<LoginController>(
-      () => LoginController(repository: GetIt.instance<UserRepository>()));
+    () => LoginController(repository: GetIt.instance<UserRepository>()),
+  );
 
   // Home Injector
 

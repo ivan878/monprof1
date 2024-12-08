@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:monprof/auths/presentation/otp_phone_screen.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
 // import '../../components/input.dart';
 import 'package:flutter/material.dart';
@@ -81,15 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Column(
                         children: [
-                          // input(
-                          //     ValidationBuilder(
-                          //             requiredMessage: 'Email obligatoire')
-                          //         .email("email incorrecte")
-                          //         .build(),
-                          //     controller.controllerEmail,
-                          //     'Email',
-                          //     const Icon(Icons.email_outlined),
-                          //     inputType: TextInputType.emailAddress),
                           TextFielApp(
                             hinText: 'Email',
                             prefixIcon: const Icon(Icons.email_outlined),
@@ -121,28 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       : Icons.visibility,
                                 ),
                               )),
-                          // TextFielApp(
-                          //   hinText: 'Mot de passe',
-                          //   inputType: TextInputType.visiblePassword,
-                          //   controller: controller.controllerPassword,
-                          //   obscureTexte: controller.obscureText,
-                          //   maxLines: 1,
-                          //   suffixIcon: GestureDetector(
-                          //     onTap: () => controller
-                          //         .chanObscureText(controller.obscureText),
-                          //     child: Icon(
-                          //       controller.obscureText
-                          //           ? Icons.visibility_off
-                          //           : Icons.visibility,
-                          //     ),
-                          //   ),
-                          //   prefixIcon: const Icon(Icons.security),
-                          //   validator: ValidationBuilder(
-                          //           requiredMessage: 'Mot de passe obligatoire')
-                          //       .minLength(6,
-                          //           'le mote de passe a au moins 6 caractère')
-                          //       .build(),
-                          // ),
                           const SizedBox(height: 15),
                           DefaultButton(
                             onPressed: () async {
@@ -182,7 +152,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 15),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  alignment: Alignment.bottomCenter,
+                                  type: PageTransitionType.rightToLeft,
+                                  child: const OtpPhoneScreen(),
+                                  childCurrent: const LoginScreen(),
+                                ),
+                              );
+                            },
                             child: SimpleText(
                               text: "Mots de passe oublier? 😥",
                               weight: FontWeight.bold,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monprof/corps/widgets/theme.dart';
+import 'package:pinput/pinput.dart';
 
 class TextFielApp extends StatefulWidget {
   final TextEditingController? controller;
@@ -93,3 +95,53 @@ InputDecoration appInputDecoration(
     ),
   );
 }
+
+class OtpFieldApp extends StatelessWidget {
+  final TextEditingController? controller;
+  final TextInputType? keyboardType;
+  final void Function(String)? onChanged;
+  final double? radius;
+  final String? Function(String?)? validator;
+  final bool obscureText;
+  final void Function(String)? onSubmitted;
+
+  const OtpFieldApp({
+    super.key,
+    this.controller,
+    this.onChanged,
+    this.validator,
+    this.radius,
+    this.keyboardType,
+    this.obscureText = false,
+    this.onSubmitted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Pinput(
+      length: 4,
+      controller: controller,
+      obscureText: obscureText,
+      validator: validator,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      errorPinTheme: pinThem(radius, context)
+          .copyBorderWith(border: Border.all(color: Colors.red)),
+      defaultPinTheme: pinThem(radius, context),
+      pinAnimationType: PinAnimationType.rotation,
+    );
+  }
+}
+
+PinTheme pinThem(double? radius, BuildContext context) => PinTheme(
+      width: 50,
+      height: 50,
+      textStyle: TextStyle(
+          color: primaryColor, fontWeight: FontWeight.bold, fontSize: 24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius ?? 12),
+        border: Border.all(
+          color: primaryColor,
+        ),
+      ),
+    );

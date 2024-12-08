@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/widgets/loading.dart';
-import 'package:monprof/components/input.dart';
+// import 'package:monprof/components/input.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/UI/contatUserScreen.dart';
 import 'package:monprof/corps/widgets/theme.dart';
@@ -98,16 +98,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 children: [
                                   Expanded(
                                     flex: 1,
-                                    child: input(
-                                      ValidationBuilder(
+                                    child: TextFielApp(
+                                      validator: ValidationBuilder(
                                               requiredMessage:
                                                   "Renseignez le nom")
                                           .minLength(3, 'Nom incorrect')
                                           .required()
                                           .build(),
-                                      controller.controllerName,
-                                      'Nom',
-                                      const Icon(Icons.person_outline),
+                                      controller: controller.controllerName,
+                                      hinText: 'Nom',
+                                      suffixIcon:
+                                          const Icon(Icons.person_outline),
                                     ),
                                   ),
                                   const SizedBox(
@@ -115,15 +116,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   Expanded(
                                     flex: 1,
-                                    child: input(
-                                      ValidationBuilder(
+                                    child: TextFielApp(
+                                      validator: ValidationBuilder(
                                               requiredMessage:
                                                   "Renseignez le nom")
                                           .minLength(3, 'Nom incorrect')
                                           .build(),
-                                      controller.controllerLastName,
-                                      'Prenom',
-                                      const Icon(Icons.person_outline),
+                                      controller: controller.controllerLastName,
+                                      hinText: 'Prenom',
+                                      suffixIcon:
+                                          const Icon(Icons.person_outline),
                                     ),
                                   ),
                                 ],
@@ -148,16 +150,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               //       .minLength(3, 'Nom incorrect')
                               //       .build(),
                               // ),
-                              input(
-                                ValidationBuilder(
+                              TextFielApp(
+                                validator: ValidationBuilder(
                                         requiredMessage:
                                             "Renseignez l'adresse E-mail")
                                     .email("Email incorrecte")
                                     .required()
                                     .build(),
-                                controller.controllerEmail,
-                                'Email',
-                                const Icon(Icons.email_outlined),
+                                controller: controller.controllerEmail,
+                                hinText: 'Email',
+                                suffixIcon: const Icon(Icons.email_outlined),
                               ),
                               const SizedBox(height: 10),
                               Row(
@@ -166,14 +168,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 children: [
                                   Expanded(
                                     flex: 1,
-                                    child: input(
-                                      ValidationBuilder(
+                                    child: TextFielApp(
+                                      validator: ValidationBuilder(
                                               requiredMessage: "Votre école")
                                           .required()
                                           .build(),
-                                      controller.controllerEtablissement,
-                                      'Etablissement',
-                                      const Icon(Icons.school_outlined),
+                                      controller:
+                                          controller.controllerEtablissement,
+                                      hinText: 'Etablissement',
+                                      suffixIcon:
+                                          const Icon(Icons.school_outlined),
                                     ),
                                   ),
                                   const SizedBox(width: 5),
@@ -221,18 +225,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
 
                               const SizedBox(height: 10),
-                              inputPhone(
-                                ValidationBuilder(
+                              TextFielApp(
+                                validator: ValidationBuilder(
                                         requiredMessage:
                                             "Renseignez un numéro de téléphone")
                                     .maxLength(9, 'le numéro a 9 chiffre')
                                     .minLength(9, 'le numéro a 9 chiffre')
                                     .required()
                                     .build(),
-                                controller.controllerPhone,
-                                9,
-                                'Téléphone',
-                                const Icon(Icons.phone_outlined),
+                                controller: controller.controllerPhone,
+                                lenght: 9,
+                                hinText: 'Téléphone',
+                                suffixIcon: const Icon(Icons.phone_outlined),
                               ),
 
                               // TextFielApp(

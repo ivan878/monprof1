@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:monprof/auths/datas/models/otp_model.dart';
 import 'package:monprof/auths/datas/models/parents_model.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/models/eleve_modele.dart';
@@ -15,19 +16,14 @@ class UserService {
   Future<Map<String, dynamic>> register(
       Users users, Eleve eleve, String password) async {
     try {
+      final headers = await header();
       final data = {
         ...users.toJson(),
         ...eleve.toJson(),
         'password': password,
       };
       final response = await dio.post('eleve/register',
-          data: FormData.fromMap(data),
-          options: Options(
-            headers: {
-              // 'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-          ));
+          data: FormData.fromMap(data), options: Options(headers: headers));
       return response.data;
     } catch (e) {
       rethrow;
@@ -67,19 +63,14 @@ class UserService {
   Future<Map<String, dynamic>> registerParent(
       Users users, ParentModel parentModel, String password) async {
     try {
+      final headers = await header();
       final data = {
         ...users.toJson(),
         ...parentModel.toMap(),
         'password': password,
       };
       final response = await dio.post('parent/register',
-          data: FormData.fromMap(data),
-          options: Options(
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-          ));
+          data: FormData.fromMap(data), options: Options(headers: headers));
       return response.data;
     } catch (e) {
       rethrow;
@@ -88,6 +79,7 @@ class UserService {
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
+      final headers = await header();
       final data = {
         'email': email,
         'password': password,
@@ -95,12 +87,7 @@ class UserService {
       final response = await dio.post(
         'user/login',
         data: FormData.fromMap(data),
-        options: Options(
-          headers: {
-            // 'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        ),
+        options: Options(headers: headers),
       );
       return response.data;
     } catch (e) {
@@ -110,13 +97,41 @@ class UserService {
 
   Future<Map<String, dynamic>> getClasse() async {
     try {
-      final response = await dio.get('classe',
-          options: Options(
-            headers: {
-              'Accept': 'application/json',
-            },
-          ));
+      final headers = await header();
+      final response =
+          await dio.get('classe', options: Options(headers: headers));
       return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<OtpModel> requestOTP(String phone) async {
+    try {
+      final headers = await header();
+      final response = await dio.post(
+        'user/request_otp',
+        data: {'phone': phone},
+        options: Options(headers: headers),
+      );
+      return OtpModel.fromJson(response.data['data']);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> verifyOtp(String verificationId, String code) async {
+    try {
+      final headers = await header();
+      final response = await dio.post(
+        'user/verify_otp',
+        data: {
+          'verification_id': verificationId,
+          'otp': code,
+        },
+        options: Options(headers: headers),
+      );
+      return response.data['status'];
     } catch (e) {
       rethrow;
     }

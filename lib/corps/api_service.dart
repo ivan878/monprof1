@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mobile_device_identifier/mobile_device_identifier.dart';
 import 'package:monprof/corps/uri.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,8 +38,6 @@ class PublicAPI {
     baseUrl: BASE_URL, // URL de base
     connectTimeout: const Duration(seconds: 90),
     receiveTimeout: const Duration(seconds: 90),
-    // connectTimeout: 5000, // Délai d'attente pour établir une connexion (en millisecondes)
-    // receiveTimeout: 3000, // Délai d'attente pour recevoir des données (en millisecondes)
   ));
   Dio get dio => dios;
   PublicAPI() {
@@ -60,11 +59,13 @@ class API {
 
 Future<Map<String, dynamic>> header() async {
   final preference = await SharedPreferences.getInstance();
+  final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
   String? token = UserLocalStorageService(preference: preference).getToken();
   return {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',
+    "phone-emei": mobileDeviceIdentifier,
   };
 }
 
@@ -73,21 +74,18 @@ Future<String?> reFreshToken() async {
     final dio = Dio();
     final preference = await SharedPreferences.getInstance();
     final userstorage = UserLocalStorageService(preference: preference);
-    final token = userstorage.getToken();
-    loger(token ?? 'le token est vide');
+    final token = userstorage.getRefreshToken();
     final response = await dio.post(
       '${BASE_URL}auth/refresh-token',
-      data: {'token': token},
+      data: {'refresh_token': token},
       options: Options(
-        headers: {
-          'Accept': 'application/json',
-        },
+        headers: await header(),
       ),
     );
-    loger(response.data.toString());
     if (response.data?['status'] == true) {
       final newToken = response.data?['data']['token'];
       userstorage.storeToken(newToken ?? '');
+      userstorage.storeRefreshToken(response.data?['data']['refresh_token']);
       return newToken;
     } else {
       return null;

@@ -24,7 +24,7 @@ void main() async {
   );
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  setupDependencies();
+  await setupDependencies();
   final controller = Get.put(SplaController());
   await controller.checklocal();
   await controller.checkTheme();
