@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:get/get.dart';
+import 'package:monprof/auths/datas/models/otp_model.dart';
+import 'package:monprof/auths/logique_metier/otp_controller.dart';
+import 'package:monprof/auths/presentation/reset_password.dart';
+import 'package:monprof/corps/utils/helper.dart';
+import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phone;
-  const OtpScreen({Key? key, required this.phone}) : super(key: key);
+  final String? otpType;
+  const OtpScreen({
+    Key? key,
+    required this.phone,
+    this.otpType = OtpType.password,
+  }) : super(key: key);
 
   @override
   State<OtpScreen> createState() => OtpScreenState();
@@ -15,6 +26,7 @@ class OtpScreen extends StatefulWidget {
 class OtpScreenState extends State<OtpScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController controllerOTP = TextEditingController();
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,23 +54,64 @@ class OtpScreenState extends State<OtpScreen> {
                     .minLength(4)
                     .required()
                     .build(),
+                onChanged: (p0) {
+                  controllerOTP.text = p0;
+                },
                 controller: controllerOTP,
               ),
               const Spacer(),
-              DefaultButton(
-                text: "Valider",
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => OtpScreen(
-                    //       phone: controllerPhone.text,
-                    //     ),
-                    //   ),
-                    // );
-                  }
-                },
-              ),
+              GetBuilder<OtpController>(builder: (controller) {
+                return DefaultButton(
+                  text: "Valider",
+                  wdiget: controller.submitOTPState.isLoading || loading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : null,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await controller.submitOTP(
+                        widget.phone,
+                        controllerOTP.text,
+                      );
+                      if (controller.submitOTPState.data == true) {
+                        if (widget.otpType == OtpType.password) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ResetPasswordScreen(
+                                code: controllerOTP.text,
+                                phone: widget.phone,
+                              ),
+                            ),
+                          );
+                        } else {
+                          setState(() => loading = true);
+                          await controller.resetPassword(
+                            widget.phone,
+                            controllerOTP.text,
+                            OtpType.phoneEmei,
+                          );
+                          setState(() => loading = false);
+                          if (controller.resetPasswordState.data == true) {
+                            Notify.toastSuccess(
+                                "Votre telephone a été validé avec succès");
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            controller.resetPhoneFromFirestore(widget.phone);
+                          } else if (controller.resetPasswordState.hasError) {
+                            Notify.toastDanger(
+                              controller.resetPasswordState.errorModel!.error,
+                            );
+                          }
+                        }
+                      } else if (controller.submitOTPState.hasError) {
+                        Notify.toastDanger(
+                          controller.submitOTPState.errorModel!.error,
+                        );
+                      }
+                    }
+                  },
+                );
+              }),
+              SpacerHeight(MediaQuery.sizeOf(context).height * 0.1),
             ],
           ),
         ),

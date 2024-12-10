@@ -30,6 +30,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     Get.put(NotificationController(api: GetIt.instance<NotificationApi>()));
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Get.find<HomeController>().listenserDeviceUpdated(context);
+    });
     super.initState();
   }
 
@@ -93,9 +96,10 @@ class _HomeState extends State<Home> {
                 margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 15),
                 child: Container(
                   margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10)),
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                    shape: BoxShape.circle,
+                  ),
                   child: InkWell(
                     onTap: () async {
                       changeScreen(context, const CompteUser());

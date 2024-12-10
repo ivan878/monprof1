@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile_device_identifier/mobile_device_identifier.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
 import 'package:monprof/auths/datas/services/user_services.dart';
+import 'package:monprof/auths/presentation/login-screen.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:monprof/corps/utils/helper.dart';
@@ -58,6 +62,27 @@ class HomeController extends GetxController {
       getCategorie();
     }
     update();
+  }
+
+  listenserDeviceUpdated(BuildContext context) async {
+    final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
+    FirebaseFirestore.instance
+        .collection('UserDevices')
+        .doc(users!.phone)
+        .snapshots()
+        .listen((event) {
+      if (event.data()?['user_device'] != mobileDeviceIdentifier) {
+        Notify.toastError("Vous vous êtes connecté sur un autre appareil");
+        logout();
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) {
+          return const LoginScreen();
+        }), (route) => false);
+      }
+    });
+    // .set({
+    //   'user_device': mobileDeviceIdentifier,
+    // });
   }
 
   static HomeController get data => Get.find();

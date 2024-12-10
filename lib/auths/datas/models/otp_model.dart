@@ -29,3 +29,8 @@ class OtpModel {
     };
   }
 }
+
+class OtpType {
+  static const String phoneEmei = 'phone_emei';
+  static const String password = 'password';
+}

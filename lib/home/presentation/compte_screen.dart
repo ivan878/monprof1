@@ -26,6 +26,7 @@ class CompteUser extends StatefulWidget {
 
 class _CompteUserState extends State<CompteUser> {
   String version = '';
+  String buildnumber = '';
 
   @override
   void initState() {
@@ -35,6 +36,7 @@ class _CompteUserState extends State<CompteUser> {
 
   getInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    buildnumber = packageInfo.buildNumber;
     version = packageInfo.version;
     setState(() {});
   }
@@ -378,7 +380,7 @@ class _CompteUserState extends State<CompteUser> {
               ),
               rowCompte(
                 Colors.grey,
-                "${"MonProf version".tr} $version",
+                "${"MonProf version".tr} $version $buildnumber",
                 Icons.school_outlined,
                 iconColor: greyColors,
               ),
@@ -391,7 +393,9 @@ class _CompteUserState extends State<CompteUser> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          await Utils.openUrl('https://www.monprof.org/wp');
+                        },
                         child: const CircleAvatar(
                           maxRadius: 20,
                           backgroundImage: AssetImage('assets/web.png'),
@@ -406,13 +410,19 @@ class _CompteUserState extends State<CompteUser> {
                         ),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          await Utils.openUrl(
+                              'https://www.instagram.com/monprofcm?igsh=cWw3ano3MG42amIO');
+                        },
                         child: const CircleAvatar(
                             maxRadius: 20,
                             backgroundImage: AssetImage('assets/insta.png')),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          await Utils.openUrl(
+                              'https://web.facebook.com/monprofcm');
+                        },
                         child: const CircleAvatar(
                           maxRadius: 20,
                           backgroundColor: Colors.blue,

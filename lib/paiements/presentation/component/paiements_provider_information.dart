@@ -30,7 +30,7 @@ class PaiementsProviderInformation extends StatelessWidget {
                     SizedBox(
                         height: 50, child: Image.asset('assets/orange.png')),
                     Text(
-                      ' #150*11*MONPROF*Montant#',
+                      ' #150*47*769460*Montant#',
                       style: textStyle.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -52,7 +52,7 @@ class PaiementsProviderInformation extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  'Nom affiché : ETS MONPROF',
+                  'Nom affiché : MUTRIX TECHNOLOGY',
                   style: textStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue,

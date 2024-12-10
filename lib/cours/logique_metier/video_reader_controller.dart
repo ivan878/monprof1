@@ -55,9 +55,11 @@ class VideoController extends GetxController {
     File targetFile = File("${dir!.path}/$fileName");
     if (targetFile.existsSync()) {
       targetFile.deleteSync(recursive: true);
+      update();
       printer('fichier supprimer avec succes:');
       return true;
     } else {
+      update();
       return false;
     }
   }
@@ -91,14 +93,13 @@ class VideoController extends GetxController {
         saveFile.path,
         options: Options(headers: head),
         onReceiveProgress: (received, total) {
-          progrees.value = double.parse((received / total).toStringAsFixed(0));
+          final progressvalue = received / total;
+          printer(progressvalue);
+          progrees.value = progressvalue;
           update();
         },
       );
       files.value = saveFile;
-      // debugger(message: response.data.toString());
-      // loger(response.data);
-      // await saveFile.writeAsString(response.data);
       await existCour();
       loading.value = false;
       progrees.value = 0.0;

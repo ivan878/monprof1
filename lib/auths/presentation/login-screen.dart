@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:monprof/auths/datas/models/otp_model.dart';
 import 'package:monprof/auths/presentation/otp_phone_screen.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
 // import '../../components/input.dart';
@@ -131,6 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     );
                                   }
                                 } else {
+                                  if (controller.canUsePhoneError) {
+                                    changePhone();
+                                  }
                                   Notify.showFailure(
                                       context,
                                       controller.state.errorModel?.error ??
@@ -252,6 +258,50 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.bottomCenter,
                       type: PageTransitionType.rightToLeft,
                       child: const RegisterParentScreen(),
+                      childCurrent: const LoginScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  changePhone() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(15),
+            ),
+          ),
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: SimpleText(
+                  text: "Utiliser ce téléphone".tr,
+                ),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 27,
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.bottomToTop,
+                      child: const OtpPhoneScreen(
+                        type: OtpType.phoneEmei,
+                      ),
                       childCurrent: const LoginScreen(),
                     ),
                   );

@@ -120,7 +120,8 @@ class UserService {
     }
   }
 
-  Future<bool> verifyOtp(String verificationId, String code) async {
+  Future<bool> verifyOtp(
+      String verificationId, String code, String phone) async {
     try {
       final headers = await header();
       final response = await dio.post(
@@ -128,6 +129,29 @@ class UserService {
         data: {
           'verification_id': verificationId,
           'otp': code,
+          'phone': phone,
+        },
+        options: Options(headers: headers),
+      );
+      return response.data['status'];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> resetPassword(
+      String phone, String otp, String type, String verificationId,
+      {String? password}) async {
+    try {
+      final headers = await header();
+      final response = await dio.post(
+        'user/reset_password',
+        data: {
+          'phone': phone,
+          'otp': otp,
+          'type': type,
+          'verification_id': verificationId,
+          if (password != null) 'password': password,
         },
         options: Options(headers: headers),
       );

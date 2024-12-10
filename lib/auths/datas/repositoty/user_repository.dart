@@ -28,9 +28,9 @@ class UserRepository {
         final token = response['auth']['token'];
         storage.storeToken(token);
         storage.storeRefreshToken(response['auth']['refresh_token']);
-        storage.storeUser(response['data']['user']);
-        storage.storeEleve(response['data']['student']);
-        storage.storeClasse(response['data']['classe']);
+        storage.storeUser(Users.fromJson(response['data']['user']));
+        storage.storeEleve(Eleve.fromJson(response['data']['student']));
+        storage.storeClasse(Classe.fromJson(response['data']['classe']));
         return {
           'user': Users.fromJson(response['data']['user']),
           'eleve': Eleve.fromJson(response['data']['student']),
@@ -55,7 +55,8 @@ class UserRepository {
         final token = response['auth']['token'];
         storage.storeToken(token);
         storage.storeRefreshToken(response['auth']['refresh_token']);
-        storage.storeUser(response['data']['user']);
+        storage.storeUser(Users.fromJson(response['data']['user']));
+        storage.storeParent(ParentModel.fromMap(response['data']['parent']));
         return {
           'user': Users.fromJson(response['data']['user']),
           'parent': ParentModel.fromMap(response['data']['parent']),
@@ -78,9 +79,16 @@ class UserRepository {
         final token = response['auth']['token'];
         storage.storeToken(token);
         storage.storeRefreshToken(response['auth']['refresh_token']);
-        storage.storeUser(response['data']['user']);
-        storage.storeEleve(response['data']['student']);
-        storage.storeClasse(response['data']['classe']);
+        if (usersAPI.isParent) {
+          storage.storeParent(ParentModel.fromMap(response['data']['parent']));
+        } else {
+          storage.storeEleve(Eleve.fromJson(response['data']['student']));
+          storage.storeClasse(Classe.fromJson(response['data']['classe']));
+        }
+        storage.storeUser(usersAPI);
+        // storage.storeEleve(Eleve.fromJson(response['data']['student']));
+        // storage.storeClasse(Classe.fromJson(response['data']['classe']));
+        // storage.storeParent(ParentModel.fromMap(response['data']['parent']));
         return usersAPI.isParent
             ? {
                 'user': usersAPI,
@@ -138,12 +146,25 @@ class UserRepository {
     }
   }
 
-  Future<AppState<bool>> verifyOTP(String verificationId, String otp) async {
+  Future<AppState<bool>> verifyOTP(
+      String verificationId, String otp, String phone) async {
     try {
-      final response = await service.verifyOtp(verificationId, otp);
+      final response = await service.verifyOtp(verificationId, otp, phone);
       return AppState(data: response, status: AppStatus.data);
     } catch (e) {
       printer(e);
+      return AppState(status: AppStatus.error, errorModel: returnError(e));
+    }
+  }
+
+  Future<AppState<bool>> resetPassword(
+      String phone, String otp, String type, String verificationId,
+      {String? password}) async {
+    try {
+      final response = await service
+          .resetPassword(phone, otp, type, verificationId, password: password);
+      return AppState(data: response, status: AppStatus.data);
+    } catch (e) {
       return AppState(status: AppStatus.error, errorModel: returnError(e));
     }
   }

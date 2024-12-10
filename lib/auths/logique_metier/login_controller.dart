@@ -58,4 +58,8 @@ class LoginController extends GetxController {
       }
     }
   }
+
+  bool get canUsePhoneError =>
+      state.errorModel?.error.trim() ==
+      "Vous n'etes pas autorisé a vous connecter sur ce telephone";
 }

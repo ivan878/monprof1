@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 loger(Object object) {
   if (kDebugMode) {
@@ -65,3 +66,13 @@ class SpacerWidth extends StatelessWidget {
 }
 
 Size taille(BuildContext context) => MediaQuery.sizeOf(context);
+
+class Utils {
+  static Future openUrl(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+}
