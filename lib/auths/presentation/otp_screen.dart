@@ -31,8 +31,8 @@ class OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const SimpleText(
-          text: "Verification du Compte",
+        title: SimpleText(
+          text: "Verification du Compte".tr,
           size: 16,
         ),
       ),
@@ -44,12 +44,12 @@ class OtpScreenState extends State<OtpScreen> {
             children: [
               SimpleText(
                 text:
-                    "Renseignez le code que vous avez reçu par SMS sur le numéro ${widget.phone}",
+                    "${"Renseignez le code que vous avez reçu par SMS sur le numéro ".tr}${widget.phone}",
               ),
               const SizedBox(height: 40),
               OtpFieldApp(
                 validator: ValidationBuilder(
-                        requiredMessage: "Renseignez un numéro de téléphone")
+                        requiredMessage: "Renseignez un numéro de téléphone".tr)
                     .maxLength(4)
                     .minLength(4)
                     .required()
@@ -62,7 +62,7 @@ class OtpScreenState extends State<OtpScreen> {
               const Spacer(),
               GetBuilder<OtpController>(builder: (controller) {
                 return DefaultButton(
-                  text: "Valider",
+                  text: "Valider".tr,
                   wdiget: controller.submitOTPState.isLoading || loading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : null,
@@ -92,7 +92,7 @@ class OtpScreenState extends State<OtpScreen> {
                           setState(() => loading = false);
                           if (controller.resetPasswordState.data == true) {
                             Notify.toastSuccess(
-                                "Votre telephone a été validé avec succès");
+                                "Votre telephone a été validé avec succès".tr);
                             Navigator.pop(context);
                             Navigator.pop(context);
                             controller.resetPhoneFromFirestore(widget.phone);

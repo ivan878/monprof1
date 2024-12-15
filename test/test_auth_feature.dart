@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:dio/src/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:monprof/auths/datas/models/classe_model.dart';
 import 'package:monprof/auths/datas/models/eleve_modele.dart';
+import 'package:monprof/auths/datas/models/otp_model.dart';
 import 'package:monprof/auths/datas/models/parents_model.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
 import 'package:monprof/auths/datas/services/user_services.dart';
+import 'package:monprof/auths/datas/services/user_storage.dart';
 import 'package:monprof/auths/logique_metier/login_controller.dart';
 import 'package:monprof/auths/logique_metier/register_controller.dart';
 import 'package:monprof/corps/api_service.dart';
@@ -48,19 +52,50 @@ class BadMockUserService implements UserService {
     // TODO: implement updateToken
     throw UnimplementedError();
   }
+
+  @override
+  Future<OtpModel> requestOTP(String phone) {
+    // TODO: implement requestOTP
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> resetPassword(
+      String phone, String otp, String type, String verificationId,
+      {String? password}) {
+    // TODO: implement resetPassword
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Users> updateProfileImage(File file) {
+    // TODO: implement updateProfileImage
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> verifyOtp(String verificationId, String code, String phone) {
+    // TODO: implement verifyOtp
+    throw UnimplementedError();
+  }
 }
 
 class MockUserService extends Mock implements UserService {}
+
+class MockLocalStorageService extends Mock implements UserLocalStorageService {}
 
 void main() {
   late LoginController loginController;
   late RegisterController registerController;
   late UserRepository userRepository;
   late MockUserService mockUserService;
+  late MockLocalStorageService mockLocalStorageService;
 
   setUp(() {
     mockUserService = MockUserService();
-    userRepository = UserRepository(service: mockUserService);
+    mockLocalStorageService = MockLocalStorageService();
+    userRepository = UserRepository(
+        service: mockUserService, storage: mockLocalStorageService);
     registerController = RegisterController(repository: userRepository);
     loginController = LoginController(repository: userRepository);
   });

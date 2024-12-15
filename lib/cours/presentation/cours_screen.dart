@@ -49,7 +49,7 @@ class _CoursScreenState extends State<CoursScreen> {
               child: Scaffold(
                 appBar: AppBar(
                   title: SimpleText(
-                      text: HomeController.data.classe?.libelle ?? 'Classe'),
+                      text: HomeController.data.classe?.libelle ?? 'Classe'.tr),
                   bottom: TabBar(
                     onTap: (value) {
                       setState(() {
@@ -57,14 +57,14 @@ class _CoursScreenState extends State<CoursScreen> {
                       });
                     },
                     indicatorSize: TabBarIndicatorSize.tab,
-                    tabs: const [
+                    tabs: [
                       Tab(
-                        icon: Icon(Icons.book),
-                        text: 'Exercices/Sujets',
+                        icon: const Icon(Icons.book),
+                        text: 'Exercices/Sujets'.tr,
                       ),
                       Tab(
-                        icon: Icon(Icons.message),
-                        text: 'Forum',
+                        icon: const Icon(Icons.message),
+                        text: 'Forum'.tr,
                       ),
                     ],
                   ),

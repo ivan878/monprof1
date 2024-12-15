@@ -2,14 +2,14 @@
   "project_info": {
     "project_number": "689877979601",
     "project_id": "monprof-d8308",
-    "storage_bucket": "monprof-d8308.appspot.com"
+    "storage_bucket": "monprof-d8308.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:689877979601:android:49c8108a83f16b778810f0",
+        "mobilesdk_app_id": "1:689877979601:android:9975913c61af1f4e8810f0",
         "android_client_info": {
-          "package_name": "com.example.monprof"
+          "package_name": "mutrix_tech.monprof.app"
         }
       },
       "oauth_client": [],

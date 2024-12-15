@@ -68,17 +68,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.all(20),
                             child: Image.asset('assets/book.png')),
                       ),
-                      const Text(
-                        'CONNECTEZ VOUS',
-                        style: TextStyle(
+                      Text(
+                        'CONNECTEZ VOUS'.tr,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                           // color: Colors.black
                         ),
                       ),
-                      const Text(
-                        'Remplire les champs pour vous connectez',
-                        style: TextStyle(fontWeight: FontWeight.w400),
+                      Text(
+                        'Remplire les champs pour vous connectez'.tr,
+                        style: const TextStyle(fontWeight: FontWeight.w400),
                       ),
                       const SizedBox(
                         height: 15,
@@ -86,27 +86,29 @@ class _LoginScreenState extends State<LoginScreen> {
                       Column(
                         children: [
                           TextFielApp(
-                            hinText: 'Email',
+                            hinText: 'Email'.tr,
                             prefixIcon: const Icon(Icons.email_outlined),
                             inputType: TextInputType.emailAddress,
                             controller: controller.controllerEmail,
                             validator: ValidationBuilder(
-                                    requiredMessage: 'Email obligatoire')
-                                .email("email incorrecte")
+                                    requiredMessage: 'Email obligatoire'.tr)
+                                .email("email incorrecte".tr)
                                 .build(),
                           ),
                           const SizedBox(height: 15),
                           TextFielApp(
                               validator: ValidationBuilder(
                                       requiredMessage:
-                                          'Mot de passe obligatoire')
-                                  .minLength(6,
-                                      'le mote de passe a au moins 6 caractère')
+                                          'Mot de passe obligatoire'.tr)
+                                  .minLength(
+                                      6,
+                                      'le mote de passe a au moins 6 caractère'
+                                          .tr)
                                   .build(),
                               controller: controller.controllerPassword,
                               obscureTexte: obscurText,
                               maxLines: 1,
-                              hinText: 'Mot de passe',
+                              hinText: 'Mot de passe'.tr,
                               suffixIcon: GestureDetector(
                                 onTap: () =>
                                     setState(() => obscurText = !obscurText),
@@ -121,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () async {
                               await controller.login().then((value) {
                                 if (controller.state.hasData) {
-                                  Notify.toastSuccess('Opérations réusite');
+                                  Notify.toastSuccess('Opérations réusite'.tr);
                                   if (controller.state.data!.isParent) {
                                     changeScreen(
                                       context,
@@ -140,11 +142,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Notify.showFailure(
                                       context,
                                       controller.state.errorModel?.error ??
-                                          'svp remplire les champs...😮😌');
+                                          'svp remplire les champs...😮😌'.tr);
                                 }
                               });
                             },
-                            text: 'CONNEXION',
+                            text: 'CONNEXION'.tr,
                             wdiget: controller.state.isLoading
                                 ? SizedBox(
                                     height: 50,
@@ -170,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             },
                             child: SimpleText(
-                              text: "Mots de passe oublier? 😥",
+                              text: "Mots de passe oublier? 😥".tr,
                               weight: FontWeight.bold,
                               color: primaryColor,
                             ),
@@ -180,8 +182,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                const SimpleText(
-                                  text: "Pas de compte ?",
+                                SimpleText(
+                                  text: "Pas de compte ?".tr,
                                   weight: FontWeight.w300,
                                   size: 17,
                                 ),
@@ -190,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     registerChoice();
                                   },
                                   child: SimpleText(
-                                    text: "Inscrivez vous",
+                                    text: "Inscrivez vous".tr,
                                     weight: FontWeight.bold,
                                     color: primaryColor,
                                     size: 17,
@@ -338,8 +340,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SpacerHeight(15),
-              const SimpleText(
-                text: 'Comment souhaitez-vous vous inscire ?',
+              SimpleText(
+                text: 'Comment souhaitez-vous vous inscire ?'.tr,
                 weight: FontWeight.w700,
                 size: 18,
                 letterspacing: 3,
@@ -347,12 +349,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SpacerHeight(20),
               DefaultButton(
-                text: 'Je suis élève',
+                text: 'Je suis élève'.tr,
                 onPressed: () {},
               ),
               SpacerHeight(15),
               DefaultButton(
-                text: 'Je suis tuteur',
+                text: 'Je suis tuteur'.tr,
                 onPressed: () {},
               ),
               SpacerHeight(30)

@@ -29,7 +29,7 @@ class _ActiveCompteState extends State<ActiveCompte> {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const Text("Activer un abonnement"),
+            title: Text("Activer un abonnement".tr),
           ),
           body: controller.paiementState.isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -40,19 +40,20 @@ class _ActiveCompteState extends State<ActiveCompte> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SimpleText(
+                        SimpleText(
                           text:
-                              "S'il vous plait, veuillez entrer le code d'activation reçu par SMS ou par mail.",
+                              "S'il vous plait, veuillez entrer le code d'activation reçu par SMS ou par mail."
+                                  .tr,
                         ),
                         const SizedBox(height: 10),
                         TextFielApp(
                           controller: controller.controllerCode,
                           validator: ValidationBuilder(
                                   requiredMessage:
-                                      "Veuillez entrer un code d'activation")
-                              .minLength(6, 'code invalide')
+                                      "Veuillez entrer un code d'activation".tr)
+                              .minLength(6, 'code invalide'.tr)
                               .build(),
-                          hinText: "Code d'activation",
+                          hinText: "Code d'activation".tr,
                         ),
                         const Spacer(),
                         DefaultButton(
@@ -67,7 +68,7 @@ class _ActiveCompteState extends State<ActiveCompte> {
                                           "");
                                 } else if (controller.paiementState.hasData) {
                                   Notify.showSuccess(
-                                      context, 'Code active avec succes');
+                                      context, 'Code active avec succes'.tr);
                                   Navigator.pop(context);
 
                                   await Get.find<HomeController>()
@@ -76,7 +77,7 @@ class _ActiveCompteState extends State<ActiveCompte> {
                               });
                             }
                           },
-                          text: 'Valider',
+                          text: 'Valider'.tr,
                         ),
                         const SizedBox(height: 30),
                       ],

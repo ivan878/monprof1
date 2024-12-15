@@ -28,8 +28,8 @@ class OtpPhoneScreenState extends State<OtpPhoneScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const SimpleText(
-          text: "Verification du Compte",
+        title: SimpleText(
+          text: "Verification du Compte".tr,
           size: 16,
         ),
       ),
@@ -39,16 +39,17 @@ class OtpPhoneScreenState extends State<OtpPhoneScreen> {
           key: _formKey,
           child: Column(
             children: [
-              const SimpleText(
+              SimpleText(
                 text:
-                    "Renseignez le numero de telephone avec lequel vous avez effectuer l'inscription",
+                    "Renseignez le numero de telephone avec lequel vous avez effectuer l'inscription"
+                        .tr,
               ),
               const SizedBox(height: 40),
               TextFielApp(
                 validator: ValidationBuilder(
-                        requiredMessage: "Renseignez un numéro de téléphone")
-                    .maxLength(9, 'le numéro a 9 chiffre')
-                    .minLength(9, 'le numéro a 9 chiffre')
+                        requiredMessage: "Renseignez un numéro de téléphone".tr)
+                    .maxLength(9, 'le numéro a 9 chiffre'.tr)
+                    .minLength(9, 'le numéro a 9 chiffre'.tr)
                     .required()
                     .build(),
                 controller: controllerPhone,
@@ -58,7 +59,7 @@ class OtpPhoneScreenState extends State<OtpPhoneScreen> {
                   }
                 },
                 lenght: 9,
-                hinText: 'Téléphone',
+                hinText: 'Téléphone'.tr,
                 suffixIcon: const Icon(Icons.phone_outlined),
               ),
               const Spacer(),
@@ -66,7 +67,7 @@ class OtpPhoneScreenState extends State<OtpPhoneScreen> {
                   init: OtpController(),
                   builder: (controller) {
                     return DefaultButton(
-                      text: "Valider",
+                      text: "Valider".tr,
                       wdiget: controller.requestOTPState.isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : null,

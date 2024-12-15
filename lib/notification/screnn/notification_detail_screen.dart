@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
@@ -12,7 +13,7 @@ class NotificationDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const SimpleText(text: 'Détails'),
+        title: SimpleText(text: 'Détails'.tr),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

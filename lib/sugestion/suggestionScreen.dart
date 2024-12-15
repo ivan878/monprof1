@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/sugestion/sugestion_services.dart';
@@ -20,7 +21,7 @@ class _SuggestionState extends State<Suggestion> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Remarques - Suggestions"),
+        title: Text("Remarques - Suggestions".tr),
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
@@ -42,7 +43,7 @@ class _SuggestionState extends State<Suggestion> {
                         keyboardType: TextInputType.multiline,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Veuillez indiquer votre suggestion';
+                            return 'Veuillez indiquer votre suggestion'.tr;
                           } else {
                             null;
                           }
@@ -51,7 +52,7 @@ class _SuggestionState extends State<Suggestion> {
                         decoration: InputDecoration(
                           fillColor: Colors.blue.withOpacity(0.2),
                           filled: true,
-                          hintText: "Votre texte",
+                          hintText: "Votre texte".tr,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(3),
@@ -74,11 +75,11 @@ class _SuggestionState extends State<Suggestion> {
                                 await SugestionServices()
                                     .sendSugeestion(descController.text);
                                 Notify.toastSuccess(
-                                    "Suggestion envoyé avec succès");
+                                    "Suggestion envoyé avec succès".tr);
                                 Navigator.pop(context);
                               } catch (e) {
                                 Notify.toastError(
-                                    "Erreur lors de l'envoi ${returnError(e)}");
+                                    "${"Erreur lors de l'envoi".tr} ${returnError(e)}");
                               } finally {
                                 setState(() => loading = false);
                               }
@@ -91,9 +92,9 @@ class _SuggestionState extends State<Suggestion> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text(
-                            "Envoyer",
-                            style: TextStyle(
+                          child: Text(
+                            "Envoyer".tr,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 17,

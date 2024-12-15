@@ -33,7 +33,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
       builder: (PaiementsController controller) {
         return Scaffold(
             appBar: AppBar(
-              title: const Text("Paiement d'un abonnement"),
+              title: Text("Paiement d'un abonnement".tr),
             ),
             body: controller.paiementState.isLoading
                 ? Center(
@@ -56,8 +56,8 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                           // mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            rowCompte(Colors.blue, "Informations sur la classe",
-                                Icons.school),
+                            rowCompte(Colors.blue,
+                                "Informations sur la classe".tr, Icons.school),
                             const SizedBox(
                               height: 10,
                             ),
@@ -97,7 +97,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Trimestre',
+                                          'Trimestre'.tr,
                                           style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18,
@@ -120,7 +120,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Montant',
+                                          'Montant'.tr,
                                           style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15),
@@ -143,7 +143,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                             ),
                             rowCompte(
                                 Colors.blue,
-                                "Informations sur le contact",
+                                "Informations sur le contact".tr,
                                 Icons.phone_android_outlined),
                             const SizedBox(
                               height: 10,
@@ -160,8 +160,8 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const SimpleText(
-                                      text: 'Numéro qui recevra le SMS',
+                                    SimpleText(
+                                      text: 'Numéro qui recevra le SMS'.tr,
                                       weight: FontWeight.bold,
                                     ),
                                     const SizedBox(height: 10),
@@ -174,17 +174,17 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                       ],
                                       validator: ValidationBuilder(
                                               requiredMessage:
-                                                  'Numéro du bénéficiaire')
+                                                  'Numéro du bénéficiaire'.tr)
                                           .maxLength(
-                                              9, 'entrer un numéro valide')
-                                          .minLength(9, 'numéro invalide')
+                                              9, 'entrer un numéro valide'.tr)
+                                          .minLength(9, 'numéro invalide'.tr)
                                           .build(),
                                       inputType: TextInputType.phone,
                                       hinText: '--- --- ---',
                                     ),
                                     // const SizedBox(height: 15),
                                     Text(
-                                      'Numéro du payeur',
+                                      'Numéro du payeur'.tr,
                                       style: textStyle.copyWith(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -198,10 +198,10 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                       lenght: 9,
                                       validator: ValidationBuilder(
                                               requiredMessage:
-                                                  'Numéro du payeur')
+                                                  'Numéro du payeur'.tr)
                                           .maxLength(
-                                              9, 'entrer un numéro valide')
-                                          .minLength(9, 'numéro invalide')
+                                              9, 'entrer un numéro valide'.tr)
+                                          .minLength(9, 'numéro invalide'.tr)
                                           .build(),
                                       inputType: TextInputType.phone,
                                       hinText: '--- --- ---',
@@ -216,7 +216,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                             const PaiementsProviderInformation(),
                             DefaultButton(
                               wdiget: SimpleText(
-                                text: "Valider ma commande",
+                                text: "Valider ma commande".tr,
                                 color: white,
                                 size: 17,
                                 weight: FontWeight.bold,
@@ -234,8 +234,10 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                               "");
                                     } else if (controller
                                         .paiementState.hasData) {
-                                      Notify.showSuccess(context,
-                                          'Demande de paiment prise en compte');
+                                      Notify.showSuccess(
+                                          context,
+                                          'Demande de paiment prise en compte'
+                                              .tr);
                                       Navigator.pop(context);
                                     }
                                   });

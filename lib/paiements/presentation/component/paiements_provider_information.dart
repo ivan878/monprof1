@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/components/row_compte.dart';
@@ -11,7 +12,7 @@ class PaiementsProviderInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        rowCompte(Colors.blue, "Mode de Paiements", Icons.wallet_giftcard),
+        rowCompte(Colors.blue, "Mode de Paiements".tr, Icons.wallet_giftcard),
         const SizedBox(height: 10),
         Material(
           borderRadius: BorderRadius.circular(10),
@@ -52,7 +53,7 @@ class PaiementsProviderInformation extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  'Nom affiché : MUTRIX TECHNOLOGY',
+                  '${"Nom affiché".tr} : MUTRIX TECHNOLOGY',
                   style: textStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue,
@@ -63,18 +64,20 @@ class PaiementsProviderInformation extends StatelessWidget {
           ),
         ),
         const Divider(),
-        const Column(
+        Column(
           children: [
             SimpleText(
               text:
-                  "Veuiller initier le paiement avec la chaine de paiement correspondante à votre opérateur",
+                  "Veuiller initier le paiement avec la chaine de paiement correspondante à votre opérateur"
+                      .tr,
               align: TextAlign.center,
               weight: FontWeight.bold,
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             SimpleText(
               text:
-                  'Vous allez recevoir un sms dans moins de 24h pour activer votre abonnement.',
+                  'Vous allez recevoir un sms dans moins de 24h pour activer votre abonnement.'
+                      .tr,
               weight: FontWeight.w300,
               color: Colors.blue,
               align: TextAlign.center,

@@ -70,7 +70,7 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                       ? ErrorPage(
                           errorMessage: controller
                                   .categorieParentState.errorModel?.error ??
-                              "Something whent's wrong",
+                              "Something whent's wrong".tr,
                           reload: () async {
                             await controller.initFunction();
                           },
@@ -108,8 +108,8 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                             border: Border.all(
                                                 width: 1, color: Colors.blue),
                                           ),
-                                          child: const SimpleText(
-                                            text: 'Faire un achat',
+                                          child: SimpleText(
+                                            text: 'Faire un achat'.tr,
                                             color: Colors.blue,
                                             weight: FontWeight.w600,
                                           ),
@@ -117,8 +117,8 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                       ),
                                     ),
                                   ),
-                                  const SimpleText(
-                                    text: 'statuts',
+                                  SimpleText(
+                                    text: 'statuts'.tr,
                                     color: Colors.blue,
                                     weight: FontWeight.w400,
                                     size: 20,
@@ -183,10 +183,10 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
                                                             children: [
-                                                              const Text(
-                                                                'Total',
+                                                              Text(
+                                                                'Total'.tr,
                                                                 style:
-                                                                    TextStyle(
+                                                                    const TextStyle(
                                                                   fontSize: 17,
                                                                   color: Colors
                                                                       .white,
@@ -218,10 +218,10 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
                                                             children: [
-                                                              const Text(
-                                                                'Activer',
+                                                              Text(
+                                                                'Activer'.tr,
                                                                 style:
-                                                                    TextStyle(
+                                                                    const TextStyle(
                                                                   fontSize: 17,
                                                                   color: Colors
                                                                       .white,

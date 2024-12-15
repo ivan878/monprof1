@@ -53,7 +53,7 @@ class _QuestionBodyState extends State<QuestionBody> {
                     );
             },
             label: SimpleText(
-              text: 'Question',
+              text: 'Question'.tr,
               color: white,
               size: 17,
               letterspacing: 2,
@@ -68,7 +68,8 @@ class _QuestionBodyState extends State<QuestionBody> {
                     ? ErrorPage(
                         errorMessage: controller
                                 .getQuestionState.errorModel?.error ??
-                            'Impossible de récupérer les liste des questions',
+                            'Impossible de récupérer les liste des questions'
+                                .tr,
                         reload: () async {
                           await controller.getQuestion();
                         },
@@ -165,13 +166,13 @@ class _QuestionBodyState extends State<QuestionBody> {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       child: ExpansionTile(
         title: Text(
-          question.reponse?.titre.toString() ?? 'reponse',
+          question.reponse?.titre.toString() ?? 'reponse'.tr,
           style: const TextStyle(color: Color.fromARGB(255, 50, 122, 181)),
         ),
         children: homeController.categorie?.status == true
             ? [
                 Text(question.reponse?.description.toString() ??
-                    'Pas de reponse pour le moment'),
+                    'Pas de reponse pour le moment'.tr),
                 Visibility(
                   visible: question.reponse?.image_url != null,
                   child: GestureDetector(
@@ -200,7 +201,7 @@ class _QuestionBodyState extends State<QuestionBody> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DefaultButton(
-                    text: "Activer l'abonnement",
+                    text: "Activer l'abonnement".tr,
                     onPressed: () async {
                       await navigator.changeScreen(
                         context,

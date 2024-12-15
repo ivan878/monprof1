@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 
 class Loading extends StatelessWidget {
@@ -23,8 +24,8 @@ class Loading extends StatelessWidget {
                       color: Colors.blue,
                       size: 70.0,
                     )),
-                const Text("Chargement ...",
-                    style: TextStyle(
+                Text("Chargement ...".tr,
+                    style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
                         color: Colors.blue)),

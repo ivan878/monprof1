@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:monprof/auths/datas/models/otp_model.dart';
 import 'package:monprof/auths/logique_metier/otp_controller.dart';
@@ -30,8 +31,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const SimpleText(
-          text: "Modification du mot de passe",
+        title: SimpleText(
+          text: "Modification du mot de passe".tr,
           size: 16,
         ),
       ),
@@ -41,8 +42,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           key: _formKey,
           child: Column(
             children: [
-              const SimpleText(
-                text: "Renseignez le nouveau mot de passe",
+              SimpleText(
+                text: "Renseignez le nouveau mot de passe".tr,
                 size: 16,
                 weight: FontWeight.bold,
               ),
@@ -53,13 +54,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               // ),
               TextFielApp(
                 validator: ValidationBuilder(
-                        requiredMessage: "Le mot de passe est obligatoire")
-                    .minLength(
-                        6, 'le mot de passe doit avoir au moins 6 caractères')
+                        requiredMessage: "Le mot de passe est obligatoire".tr)
+                    .minLength(6,
+                        'le mot de passe doit avoir au moins 6 caractères'.tr)
                     .required()
                     .build(),
                 controller: passWordController,
-                hinText: 'Mot de passe',
+                hinText: 'Mot de passe'.tr,
                 suffixIcon: const Icon(Icons.security),
               ),
               const SizedBox(height: 15),
@@ -70,23 +71,23 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               TextFielApp(
                 validator: ValidationBuilder(
                         requiredMessage:
-                            "Confirmer le mot de passe est obligatoire")
+                            "Confirmer le mot de passe est obligatoire".tr)
                     .required()
                     .add((val) {
                   if (val == passWordController.text) {
                     return null;
                   } else {
-                    return 'Les mots de passe ne correspondent pas';
+                    return 'Les mots de passe ne correspondent pas'.tr;
                   }
                 }).build(),
                 controller: confirmPassWordController,
-                hinText: 'Confirmer le mot de passe',
+                hinText: 'Confirmer le mot de passe'.tr,
                 suffixIcon: const Icon(Icons.security),
               ),
               const Spacer(),
               GetBuilder<OtpController>(builder: (controller) {
                 return DefaultButton(
-                  text: "Valider",
+                  text: "Valider".tr,
                   wdiget: controller.resetPasswordState.isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : null,
@@ -102,7 +103,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
-                        Notify.toastSuccess("Mot de passe modifié avec succès");
+                        Notify.toastSuccess(
+                            "Mot de passe modifié avec succès".tr);
                       } else if (controller.resetPasswordState.hasError) {
                         Notify.toastDanger(
                           controller.resetPasswordState.errorModel!.error,

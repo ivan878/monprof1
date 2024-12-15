@@ -36,8 +36,8 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            title: const SimpleText(
-              text: "INSCRIPTION",
+            title: SimpleText(
+              text: "INSCRIPTION".tr,
               letterspacing: 3,
             ),
             elevation: 0,
@@ -74,12 +74,12 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                           flex: 1,
                           child: TextFielApp(
                             validator: ValidationBuilder(
-                                    requiredMessage: "Renseignez le nom")
-                                .minLength(3, 'Nom incorrect')
+                                    requiredMessage: "Renseignez le nom".tr)
+                                .minLength(3, 'Nom incorrect'.tr)
                                 .required()
                                 .build(),
                             controller: controller.controllerName,
-                            hinText: 'Nom',
+                            hinText: 'Nom'.tr,
                             suffixIcon: const Icon(Icons.person_outline),
                           ),
                         ),
@@ -90,11 +90,11 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                           flex: 1,
                           child: TextFielApp(
                             validator: ValidationBuilder(
-                                    requiredMessage: "Renseignez le nom")
-                                .minLength(3, 'Nom incorrect')
+                                    requiredMessage: "Renseignez le nom".tr)
+                                .minLength(3, 'Nom incorrect'.tr)
                                 .build(),
                             controller: controller.controllerLastName,
-                            hinText: 'Prenom',
+                            hinText: 'Prenom'.tr,
                             suffixIcon: const Icon(Icons.person_outline),
                           ),
                         ),
@@ -103,36 +103,36 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                     const SizedBox(height: 10),
                     TextFielApp(
                       validator: ValidationBuilder(
-                              requiredMessage: "Renseignez l'adresse E-mail")
-                          .email("Email incorrecte")
+                              requiredMessage: "Renseignez l'adresse E-mail".tr)
+                          .email("Email incorrecte".tr)
                           .required()
                           .build(),
                       controller: controller.controllerEmail,
-                      hinText: 'Email',
+                      hinText: 'Email'.tr,
                       suffixIcon: const Icon(Icons.email_outlined),
                     ),
                     const SizedBox(height: 10),
                     TextFielApp(
                       validator:
-                          ValidationBuilder(requiredMessage: "Votre école")
+                          ValidationBuilder(requiredMessage: "Votre école".tr)
                               .required()
                               .build(),
                       controller: controller.controllerProfession,
-                      hinText: 'Profession',
+                      hinText: 'Profession'.tr,
                       suffixIcon: const Icon(Icons.work),
                     ),
                     const SizedBox(height: 10),
                     TextFielApp(
                       validator: ValidationBuilder(
                               requiredMessage:
-                                  "Renseignez un numéro de téléphone")
-                          .maxLength(9, 'le numéro a 9 chiffre')
-                          .minLength(9, 'le numéro a 9 chiffre')
+                                  "Renseignez un numéro de téléphone".tr)
+                          .maxLength(9, 'le numéro a 9 chiffre'.tr)
+                          .minLength(9, 'le numéro a 9 chiffre'.tr)
                           .required()
                           .build(),
                       controller: controller.controllerPhone,
                       lenght: 9,
-                      hinText: 'Téléphone',
+                      hinText: 'Téléphone'.tr,
                       suffixIcon: const Icon(Icons.phone_outlined),
                     ),
                     const SizedBox(height: 10),
@@ -158,9 +158,9 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                             ),
                           );
                         }).toList(),
-                        hint: const Text(
-                          "Genre",
-                          style: TextStyle(
+                        hint: Text(
+                          "Genre".tr,
+                          style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                         onChanged: (String? value) {
@@ -168,7 +168,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                         }),
                     const SizedBox(height: 10),
                     TextFielApp(
-                      hinText: 'Mot de passe',
+                      hinText: 'Mot de passe'.tr,
                       inputType: TextInputType.visiblePassword,
                       controller: controller.controllerPassword,
                       obscureTexte: controller.obscureText,
@@ -184,14 +184,14 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                       ),
                       prefixIcon: const Icon(Icons.security),
                       validator: ValidationBuilder(
-                              requiredMessage: 'Mot de passe obligatoire')
+                              requiredMessage: 'Mot de passe obligatoire'.tr)
                           .minLength(
-                              6, 'le mote de passe a au moins 6 caractère')
+                              6, 'le mote de passe a au moins 6 caractère'.tr)
                           .build(),
                     ),
                     const SizedBox(height: 10),
                     TextFielApp(
-                      hinText: 'Confirmez le mot de passse',
+                      hinText: 'Confirmez le mot de passse'.tr,
                       inputType: TextInputType.visiblePassword,
                       obscureTexte: controller.obscureText,
                       prefixIcon: const Icon(Icons.lock),
@@ -200,13 +200,14 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                         if (val == controller.controllerPassword.text) {
                           return null;
                         }
-                        return "Mot de passe obligatoire";
+                        return "Mot de passe obligatoire".tr;
                       },
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                        "En vous inscrivant, vous acceptez la politique générale d'utilisation  et de vente de Monprof ",
-                        style: TextStyle(fontWeight: FontWeight.w300)),
+                    Text(
+                        "En vous inscrivant, vous acceptez la politique générale d'utilisation  et de vente de Monprof "
+                            .tr,
+                        style: const TextStyle(fontWeight: FontWeight.w300)),
                     Row(
                       children: [
                         Checkbox(
@@ -226,8 +227,8 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                                 ),
                               );
                             },
-                            child: const Text('Lire la politique...',
-                                style: TextStyle(
+                            child: Text('Lire la politique...'.tr,
+                                style: const TextStyle(
                                     color: Colors.blue,
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold))),
@@ -239,7 +240,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                         onPressed: () async {
                           await controller.registerParent().then((value) {
                             if (controller.state.hasData) {
-                              Notify.toast('Opérations réusite');
+                              Notify.toast('Opérations réusite'.tr);
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -256,7 +257,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                             }
                           });
                         },
-                        text: 'INSCRIPTION',
+                        text: 'INSCRIPTION'.tr,
                         wdiget: controller.state.isLoading
                             ? SizedBox(
                                 height: 50,
@@ -275,15 +276,15 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: const Row(
+                      child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text("j'ai déja un compte",
-                                style: TextStyle(
+                            Text("j'ai déja un compte".tr,
+                                style: const TextStyle(
                                     fontSize: 17, fontWeight: FontWeight.w300)),
                             Text(
-                              "connectez vous",
-                              style: TextStyle(
+                              "connectez vous".tr,
+                              style: const TextStyle(
                                   color: Colors.blue,
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold),

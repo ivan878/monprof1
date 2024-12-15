@@ -27,7 +27,7 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const SimpleText(text: 'Posez votre Question'),
+            title: SimpleText(text: 'Posez votre Question'.tr),
           ),
           body: Padding(
             padding: const EdgeInsets.all(15.0),
@@ -36,24 +36,24 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SimpleText(
-                    text: 'Titre (facultatif)',
+                  SimpleText(
+                    text: 'Titre (facultatif)'.tr,
                   ),
                   SpacerHeight(5),
                   TextFielApp(
                     controller: controller.controllerTitre,
                   ),
                   SpacerHeight(20),
-                  const SimpleText(
-                    text: 'Contenu de la question *',
+                  SimpleText(
+                    text: 'Contenu de la question *'.tr,
                   ),
                   SpacerHeight(5),
                   TextFielApp(
                     controller: controller.controllerDesc,
                     validator: ValidationBuilder(
                             requiredMessage:
-                                'contenu de la question Obligatoire')
-                        .minLength(20, 'Question invalide')
+                                'contenu de la question Obligatoire'.tr)
+                        .minLength(20, 'Question invalide'.tr)
                         .required()
                         .build(),
                     maxLines: 5,
@@ -72,8 +72,8 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  const SimpleText(
-                                    text: "Choisir la source de l'image",
+                                  SimpleText(
+                                    text: "Choisir la source de l'image".tr,
                                     size: 20,
                                     weight: FontWeight.bold,
                                   ),
@@ -84,8 +84,8 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                                       controller
                                           .photoSelect(ImageSource.gallery);
                                     },
-                                    wdiget: const SimpleText(
-                                      text: 'GALERI',
+                                    wdiget: SimpleText(
+                                      text: 'GALERI'.tr,
                                       letterspacing: 3,
                                       weight: FontWeight.bold,
                                       color: Colors.white,
@@ -99,8 +99,8 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                                           .photoSelect(ImageSource.camera);
                                       // Fermer le modal
                                     },
-                                    wdiget: const SimpleText(
-                                      text: 'CAMERA',
+                                    wdiget: SimpleText(
+                                      text: 'CAMERA'.tr,
                                       letterspacing: 3,
                                       weight: FontWeight.bold,
                                       color: Colors.white,
@@ -146,7 +146,7 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                                 context,
                                 controller.createQuestionState.errorModel
                                         ?.error ??
-                                    'Impossible de valider la question');
+                                    'Impossible de valider la question'.tr);
                           } else {
                             controller.getQuestion();
                             Navigator.pop(context);
@@ -164,7 +164,7 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                             ),
                           )
                         : null,
-                    text: 'Valider',
+                    text: 'Valider'.tr,
                   ),
                   SpacerHeight(20)
                 ],

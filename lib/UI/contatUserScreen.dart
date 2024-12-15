@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../components/row_compte.dart';
 
@@ -13,21 +14,21 @@ class _ContratUserState extends State<ContratUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Politiques générales ")),
+      appBar: AppBar(title: Text("Politiques générales".tr)),
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Column(children: [
             rowCompte(
-                Colors.blue, "Poltique générale d'utilisation", Icons.info),
+                Colors.blue, "Poltique générale d'utilisation".tr, Icons.info),
             const SizedBox(
               height: 15,
             ),
-            rowCompte(Colors.blue, 'Poltique générale de vente', Icons.info),
+            rowCompte(Colors.blue, 'Poltique générale de vente'.tr, Icons.info),
             const SizedBox(
               height: 15,
             ),
-            rowCompte(Colors.blue, 'Mentions légales', Icons.info),
+            rowCompte(Colors.blue, 'Mentions légales'.tr, Icons.info),
           ]),
         ),
       ),

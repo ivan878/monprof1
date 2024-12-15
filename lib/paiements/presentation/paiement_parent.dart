@@ -35,7 +35,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
       builder: (PaiementsController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Paiement d'un abonnement"),
+            title: Text("Paiement d'un abonnement".tr),
           ),
           body: controller.paiementState.isLoading
               ? Center(
@@ -70,16 +70,17 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                   (homeController.categorieParentState.data ??
                                               [])
                                           .isEmpty
-                                      ? const SimpleText(
+                                      ? SimpleText(
                                           text:
-                                              'Impossible de charger les catégrie')
+                                              'Impossible de charger les catégrie'
+                                                  .tr)
                                       : DropdownButtonFormField<
                                               CategorieParentStatus?>(
                                           focusColor: Colors.white,
                                           value: controller.categorie,
                                           validator: (value) {
                                             return value == null
-                                                ? "choisir une catégorie"
+                                                ? "choisir une catégorie".tr
                                                 : null;
                                           },
                                           alignment:
@@ -134,7 +135,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        'Prix Unitaire ${controller.categorie!.categorie.prix} Fcfa',
+                                        '${"Prix Unitaire".tr}${controller.categorie!.categorie.prix} Fcfa',
                                         style: textStyle.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 17,
@@ -144,7 +145,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                   ),
                                   SpacerHeight(15),
                                   TextFielApp(
-                                    hinText: 'Quantité',
+                                    hinText: 'Quantité'.tr,
                                     inputType: TextInputType.number,
                                     fillColor: Colors.blue.withOpacity(0.3),
                                     filled: true,
@@ -153,7 +154,8 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                     onChanged: controller.changeQuantite,
                                     validator: ValidationBuilder(
                                             requiredMessage:
-                                                'veillez choisir une quantité')
+                                                'veillez choisir une quantité'
+                                                    .tr)
                                         .required()
                                         .build(),
                                     inputFormatters: [
@@ -174,13 +176,13 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                           MainAxisAlignment.spaceAround,
                                       children: [
                                         Text(
-                                          'Total',
+                                          'Total'.tr,
                                           style: textStyle.copyWith(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          'Montant ${controller.totalPrice}  Fcfa',
+                                          '${"Montant".tr} ${controller.totalPrice}  Fcfa',
                                           style: textStyle.copyWith(
                                               fontSize: 17,
                                               color: Colors.green,
@@ -196,7 +198,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                           SpacerHeight(15),
                           rowCompte(
                             Colors.blue,
-                            "Informations sur le contact",
+                            "Informations sur le contact".tr,
                             Icons.phone_android_outlined,
                           ),
                           SpacerHeight(10),
@@ -212,8 +214,8 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SimpleText(
-                                    text: 'Numéro qui recevra le SMS',
+                                  SimpleText(
+                                    text: 'Numéro qui recevra le SMS'.tr,
                                     weight: FontWeight.bold,
                                   ),
                                   SpacerHeight(10),
@@ -223,16 +225,17 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                         controller.controllerNumeroClient,
                                     validator: ValidationBuilder(
                                             requiredMessage:
-                                                'Numéro du bénéficiaire')
-                                        .maxLength(9, 'entrer un numéro valide')
-                                        .minLength(9, 'numéro invalide')
+                                                'Numéro du bénéficiaire'.tr)
+                                        .maxLength(
+                                            9, 'entrer un numéro valide'.tr)
+                                        .minLength(9, 'numéro invalide'.tr)
                                         .build(),
                                     inputType: TextInputType.phone,
                                     hinText: '--- --- ---',
                                   ),
                                   // SpacerHeight(15),
                                   Text(
-                                    'Numéro du payeur',
+                                    'Numéro du payeur'.tr,
                                     style: textStyle.copyWith(
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -242,9 +245,11 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                         controller.controllerNumeroPayeur,
                                     lenght: 9,
                                     validator: ValidationBuilder(
-                                            requiredMessage: 'Numéro du payeur')
-                                        .maxLength(9, 'entrer un numéro valide')
-                                        .minLength(9, 'numéro invalide')
+                                            requiredMessage:
+                                                'Numéro du payeur'.tr)
+                                        .maxLength(
+                                            9, 'entrer un numéro valide'.tr)
+                                        .minLength(9, 'numéro invalide'.tr)
                                         .build(),
                                     inputType: TextInputType.phone,
                                     hinText: '--- --- ---',
@@ -257,7 +262,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                           const PaiementsProviderInformation(),
                           DefaultButton(
                             wdiget: SimpleText(
-                              text: "Valider ma commande",
+                              text: "Valider ma commande".tr,
                               color: white,
                               size: 17,
                               weight: FontWeight.bold,
@@ -274,8 +279,10 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                                 ?.error ??
                                             "");
                                   } else if (controller.paiementState.hasData) {
-                                    Notify.showSuccess(context,
-                                        'Demande de paiment prise en compte');
+                                    Notify.showSuccess(
+                                        context,
+                                        'Demande de paiment prise en compte'
+                                            .tr);
                                     Navigator.pop(context);
                                   }
                                 });

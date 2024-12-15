@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 
 class PieceJointe extends StatefulWidget {
@@ -18,7 +19,7 @@ class _PieceJointeState extends State<PieceJointe> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Details'),
+        title: Text('Details'.tr),
         elevation: 0,
       ),
       body: SizedBox(
