@@ -3,8 +3,10 @@ import 'dart:convert';
 
 class ErrorModel {
   String error;
+  int? code;
   ErrorModel({
     required this.error,
+    this.code,
   });
 
   ErrorModel copyWith({
@@ -24,6 +26,7 @@ class ErrorModel {
   factory ErrorModel.fromMap(Map<String, dynamic> map) {
     return ErrorModel(
       error: map['error'].toString(),
+      code: map['code'],
     );
   }
 
