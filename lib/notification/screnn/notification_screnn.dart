@@ -28,7 +28,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         builder: (NotificationController controller) {
       return Scaffold(
         appBar: AppBar(
-          title: const SimpleText(text: 'List des Notifications'),
+          title: SimpleText(text: 'List des Notifications'.tr),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
@@ -59,13 +59,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
             if (controller.notificationList.hasData &&
                 controller.notificationList.data!.isEmpty) {
-              return const Center(
-                  child: SimpleText(text: 'Aucune notification'));
+              return Center(child: SimpleText(text: 'Aucune notification'.tr));
             }
 
             if (controller.notificationList.data == null) {
-              return const Center(
-                child: SimpleText(text: 'Aucune notification'),
+              return Center(
+                child: SimpleText(text: 'Aucune notification'.tr),
               );
             }
             return ListView.builder(

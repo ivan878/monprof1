@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_device_identifier/mobile_device_identifier.dart';
 import 'package:monprof/auths/datas/models/parents_model.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
@@ -93,10 +95,12 @@ class RegisterController extends GetxController {
         final String token = data['token'];
         final UserLocalStorageService storageService =
             UserLocalStorageService(preference: preference);
+        await resetPhoneFromFirestore(users.phone);
         await storageService.storeClasse(classeResulte);
         await storageService.storeUser(userResulte);
         await storageService.storeEleve(eleveResulte);
         await storageService.storeToken(token);
+
         state = AppState(status: AppStatus.data, data: data);
         update();
       } catch (e) {
@@ -130,6 +134,7 @@ class RegisterController extends GetxController {
         final String token = data['token'];
         final UserLocalStorageService storageService =
             UserLocalStorageService(preference: preference);
+        await resetPhoneFromFirestore(users.phone);
         await storageService.storeUser(userResulte);
         await storageService.storeParent(parenResult);
         await storageService.storeToken(token);
@@ -157,5 +162,12 @@ class RegisterController extends GetxController {
       );
       update();
     }
+  }
+
+  resetPhoneFromFirestore(String phone) async {
+    final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
+    FirebaseFirestore.instance.collection('UserDevices').doc(phone).set({
+      'user_device': mobileDeviceIdentifier,
+    });
   }
 }

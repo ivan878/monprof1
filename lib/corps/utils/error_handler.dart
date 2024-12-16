@@ -44,7 +44,7 @@ ErrorModel manageDioError(DioException except) {
   // printer(except.error.runtimeType);
   switch (code) {
     case 401:
-      Notify.toastError("Vous devez vous reconnecter");
+      Notify.toastError("Vous devez vous reconnecter".tr);
       return ErrorModel.fromMap(
           {"error": 'AUthorisation refusée'.tr, 'code': code});
     case 403:

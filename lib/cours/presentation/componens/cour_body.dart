@@ -129,19 +129,20 @@ class BuildCourComponen extends StatelessWidget {
                 : PopupMenuButton(
                     itemBuilder: ((context) => [
                           PopupMenuItem(
-                              child: const Text('retélécharger'),
+                              child: Text('retélécharger'.tr),
                               onTap: () async {
                                 await videoController
                                     .downloadvideo()
                                     .then((value) {
                                   if (!value) {
                                     Notify.toastError(
-                                        "Erreur de téléchargement de la vidéo");
+                                        "Erreur de téléchargement de la vidéo"
+                                            .tr);
                                   }
                                 });
                               }),
                           PopupMenuItem(
-                              child: const Text('Supprimer'),
+                              child: Text('Supprimer'.tr),
                               onTap: () async {
                                 await videoController.supprimer();
                               }),
@@ -163,7 +164,7 @@ class BuildCourComponen extends StatelessWidget {
               await videoController.downloadvideo().then((value) {
                 if (!value) {
                   // loger('echec');
-                  Notify.toastError("Erreur de téléchargement de la vidéo");
+                  Notify.toastError("Erreur de téléchargement de la vidéo".tr);
                 }
               });
             }
