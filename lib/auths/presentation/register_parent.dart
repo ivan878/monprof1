@@ -141,7 +141,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                         value: controller.controllerSexe,
                         alignment: AlignmentDirectional.centerStart,
                         isExpanded: true,
-                        style: const TextStyle(color: Colors.white),
+
                         // iconEnabledColor: Colors.black,
                         iconSize: 30,
                         elevation: 16,
@@ -205,7 +205,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                     ),
                     const SizedBox(height: 15),
                     Text(
-                        "En vous inscrivant, vous acceptez la politique générale d'utilisation  et de vente de Monprof "
+                        "En vous inscrivant, vous acceptez les politiques générale d'utilisation et de vente de Monprof"
                             .tr,
                         style: const TextStyle(fontWeight: FontWeight.w300)),
                     Row(
@@ -279,7 +279,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text("j'ai déja un compte".tr,
+                            Text("j'ai déja un compte".tr.capitalizeFirst ?? '',
                                 style: const TextStyle(
                                     fontSize: 17, fontWeight: FontWeight.w300)),
                             Text(

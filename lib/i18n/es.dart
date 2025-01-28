@@ -27,7 +27,7 @@ Map<String, String> espagnol = {
   "Etablissement": "Establecimiento escolar",
   "Impossible de se déconnecter": "Imposible desconectarse",
   "Supprimer le compte": "Eliminar cuenta",
-  'CONNECTEZ VOUS': 'INICIAR SESIÓN',
+  "connectez vous": 'INICIAR SESIÓN',
   'Remplire les champs pour vous connectez':
       'Rellene los campos para iniciar sesión',
   "email incorrecte": "correo electrónico incorrecto",
@@ -160,8 +160,8 @@ Map<String, String> espagnol = {
   "le mot de passe a au moins 6 caractères":
       "la contraseña tiene al menos 6 caracteres",
   "Confirmez le mot de passe": "Confirme la contraseña",
-  "En vous inscrivant, vous acceptez la politique générale d'utilisation et de vente de Monprof":
-      "Al registrarse, acepta los términos generales de uso y venta de Monprof",
+  "En vous inscrivant, vous acceptez les politiques générale d'utilisation et de vente de Monprof":
+      "Al registrarte, aceptas las políticas generales de uso y venta de Monprof",
   "Lire la politique...": "Leer la política...",
   "Opération réussie": "Operación exitosa",
   "INSCRIPTION": "REGISTRO",
@@ -231,4 +231,5 @@ Map<String, String> espagnol = {
   "GALERIE": "GALERÍA",
   "CAMERA": "CÁMARA",
   "Impossible de valider la question": "Imposible validar la pregunta",
+  "Parent/Bienfaiteur": "Padre/Benefactor",
 };

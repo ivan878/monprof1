@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:monprof/auths/datas/models/otp_model.dart';
 import 'package:monprof/auths/logique_metier/otp_controller.dart';
 import 'package:monprof/corps/utils/helper.dart';

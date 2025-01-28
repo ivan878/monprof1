@@ -187,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .isEmpty
                                         ? const SizedBox.shrink()
                                         : DropdownButtonFormField<Classe?>(
-                                            focusColor: Colors.white,
+                                            // focusColor: Colors.white,
                                             value: controller.classe,
                                             alignment: AlignmentDirectional
                                                 .centerStart,
@@ -207,15 +207,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 value: value,
                                                 child: SimpleText(
                                                   text: value.libelle ?? '',
-                                                  // color: Colors.black,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .color,
                                                 ),
                                               );
                                             }).toList(),
                                             hint: Text(
                                               "Classe".tr,
                                               style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                             onChanged: (Classe? value) {
                                               controller.changeClasse(value);
@@ -258,7 +262,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   value: controller.controllerSexe,
                                   alignment: AlignmentDirectional.centerStart,
                                   isExpanded: true,
-                                  style: const TextStyle(color: Colors.white),
                                   iconEnabledColor: Colors.black,
                                   iconSize: 30,
                                   elevation: 16,
@@ -355,7 +358,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               const SizedBox(height: 15),
                               Text(
-                                  "En vous inscrivant, vous acceptez la politique générale d'utilisation  et de vente de Monprof "
+                                  "En vous inscrivant, vous acceptez les politiques générale d'utilisation et de vente de Monprof"
                                       .tr,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w300)),
@@ -432,7 +435,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Text("j'ai déja un compte".tr,
+                                      Text(
+                                          "j'ai déja un compte"
+                                                  .tr
+                                                  .capitalizeFirst ??
+                                              '',
                                           style: const TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.w300)),

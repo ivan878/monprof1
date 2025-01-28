@@ -1,12 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monprof/corps/utils/helper.dart';
+import 'package:monprof/home/data/models/langage_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/services/user_storage.dart';
 
 class SplaController extends GetxController {
-  Locale locale = const Locale('fr');
+  LangageModel langageModel = languageList[0];
   ThemeMode mode = ThemeMode.system;
 
   Future<Users?> checkUser() async {
@@ -18,11 +20,25 @@ class SplaController extends GetxController {
 
   Future checklocal() async {
     final preference = await SharedPreferences.getInstance();
-    // await preference.setString(CURRENTLOCAL, 'en');
-    final loc = preference.getString(CURRENTLOCAL) ?? 'fr';
+    final deviceLocale = PlatformDispatcher.instance.locale;
+    final loc = preference.getString(CURRENTLOCAL) ??
+        (
+          ["en", "fr", "es", "de", "zh"].contains(deviceLocale.languageCode)
+              ? deviceLocale
+              : 'fr',
+        );
     loger(loc);
-    locale = Locale(loc.toString());
+    langageModel = languageList.firstWhere(
+      (element) => element.locale.languageCode == loc,
+      orElse: () => languageList[0],
+    );
     // update();
+  }
+
+  changeLangaue(LangageModel langageModel) async {
+    this.langageModel = langageModel;
+    update();
+    await updateLocal(langageModel.locale);
   }
 
   Future updateLocal(Locale locale) async {

@@ -10,16 +10,17 @@ class SimpleText extends StatelessWidget {
   final FontWeight? weight;
   final double? letterspacing;
   final int? maxlines;
-  const SimpleText(
-      {super.key,
-      this.weight,
-      required this.text,
-      this.align,
-      this.maxlines,
-      this.letterspacing,
-      this.size,
-      this.overflow,
-      this.color});
+  const SimpleText({
+    super.key,
+    this.weight,
+    required this.text,
+    this.align,
+    this.maxlines,
+    this.letterspacing,
+    this.size,
+    this.overflow,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {

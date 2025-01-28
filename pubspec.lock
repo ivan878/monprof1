@@ -376,6 +376,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_in_store_app_version_checker:
+    dependency: "direct main"
+    description:
+      name: flutter_in_store_app_version_checker
+      sha256: b3d9c94efc181cc4ab959cff31bdaae738d51a0f674638155962c9b8012baceb
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.7.0"
   flutter_keyboard_visibility:
     dependency: transitive
     description:

@@ -10,7 +10,7 @@ import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
 import 'package:monprof/cours/presentation/cours_screen.dart';
-import 'package:monprof/home/presentation/compte_screen.dart';
+import 'package:monprof/home/presentation/profile_compte_screen.dart';
 import 'package:monprof/home/data/models/categorie_model.dart';
 import 'package:monprof/home/data/models/matieres_models.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
@@ -32,6 +32,11 @@ class _HomeState extends State<Home> {
     Get.put(NotificationController(api: GetIt.instance<NotificationApi>()));
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Get.find<HomeController>().listenserDeviceUpdated(context);
+      Get.find<HomeController>().checkUpdate().then((value) {
+        if (value == "true") {
+          if (mounted) showUpdateDialog(context);
+        }
+      });
     });
     super.initState();
   }
@@ -102,7 +107,7 @@ class _HomeState extends State<Home> {
                   ),
                   child: InkWell(
                     onTap: () async {
-                      changeScreen(context, const CompteUser());
+                      changeScreen(context, const ProfileCompteScreen());
                     },
                     child: controller.users?.profile_image?.isNotEmpty == true
                         ? CircleAvatar(
@@ -277,6 +282,61 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     ),
+        );
+      },
+    );
+  }
+
+  void showUpdateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/logo.png'),
+              const Text(
+                'Nouvelle version MONPROF disponible',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          content: const SimpleText(
+            text:
+                'Une nouvelle version de l\'application est disponible, voulez-vous la télécharger ?',
+            align: TextAlign.center,
+            size: 15,
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Me rappeler plus tard',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Ne plus affiche',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Get.find<HomeController>().launchURL();
+              },
+              child: const Text(
+                'Mettre a jour',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         );
       },
     );

@@ -13,6 +13,7 @@ import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/auths/datas/models/classe_model.dart';
@@ -21,6 +22,8 @@ import 'package:monprof/home/data/models/categorie_model.dart';
 import 'package:monprof/home/data/models/matieres_models.dart';
 import 'package:monprof/auths/datas/services/user_storage.dart';
 import 'package:monprof/home/data/repository/home_repository.dart';
+import 'package:flutter_in_store_app_version_checker/flutter_in_store_app_version_checker.dart';
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:collection/collection.dart';
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
@@ -222,5 +225,48 @@ class HomeController extends GetxController {
     } else if (updateProfileState.hasError) {
       Notify.toastDanger(updateProfileState.errorModel!.error);
     }
+  }
+
+  Future<String> checkUpdate() async {
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+      final checker = InStoreAppVersionChecker(
+        androidStore: AndroidStore.googlePlayStore,
+        appId: "mutrix_tech.monprof.app",
+        currentVersion: packageInfo.version,
+      );
+
+      var status = await checker.checkUpdate();
+
+      printer(
+          "updated status  Version from package info ${packageInfo.version}");
+      printer(
+          "updated status canUpdate ${status.canUpdate}"); //return true if update is available
+      printer(
+          "updated status currentVersion ${status.currentVersion}"); //return current app version
+      printer(
+          "updated status newVersionn ${status.newVersion}"); //return the new app version
+      printer("updated status appURL ${status.appURL}"); //return the app url
+      printer(
+          "updated status errorMessage ${status.errorMessage}"); //return error message if found else it will return null
+
+      if (status.canUpdate) {
+        return "true";
+      } else {
+        return 'false';
+      }
+    } on SocketException {
+      return "unable to reach internet! \nplease check your internet connexion";
+    } catch (e) {
+      debugPrint("errorCatchUpdate $e");
+      return "error";
+    }
+  }
+
+  Future<void> launchURL() async {
+    final Uri appURL = Uri.parse(
+        'https://play.google.com/store/apps/details?id=mutrix_tech.monprof.app');
+    await launchUrl(appURL);
   }
 }

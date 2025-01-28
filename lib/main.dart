@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         title: 'MonProf',
         debugShowCheckedModeBanner: false,
-        locale: Get.find<SplaController>().locale,
+        locale: Get.find<SplaController>().langageModel.locale,
         fallbackLocale: const Locale('fr'),
         translationsKeys: AppLocalization.translationsKeys,
         themeMode: Get.find<SplaController>().mode,

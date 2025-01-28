@@ -28,6 +28,9 @@ ErrorModel returnError(error) {
     case PlatformException:
       printer(error);
       return ErrorModel.fromMap({"error": 'Erreur systeme inconnue'.tr});
+    case CustomException:
+      return ErrorModel(error: error.error.toString());
+
     case DioException:
       // printer('error dio');
       return manageDioError(error as DioException);
@@ -41,7 +44,10 @@ ErrorModel returnError(error) {
 
 ErrorModel manageDioError(DioException except) {
   final code = except.response?.statusCode;
-  // printer(except.error.runtimeType);
+
+  if (except.error is CustomException) {
+    return ErrorModel(error: (except.error as CustomException).message);
+  }
   switch (code) {
     case 401:
       Notify.toastError("Vous devez vous reconnecter".tr);

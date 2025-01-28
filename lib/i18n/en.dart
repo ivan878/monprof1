@@ -26,13 +26,14 @@ const Map<String, String> anglais = {
   "Etablissement": "School establishment ",
   "Impossible de se déconnecter": "Impossible to logout",
   "Supprimer le compte": "Delete account",
-  'CONNECTEZ VOUS': 'LOG IN',
+  "connectez vous": 'LOG IN',
   'Remplire les champs pour vous connectez': 'Fill in the fields to log in',
   "email incorrecte": "incorrect email",
   'Mot de passe obligatoire': 'Password required',
   'le mote de passe a au moins 6 caractère':
       'the password has at least 6 characters',
   'Mot de passe': 'Password',
+  "Mots de passe oublier? 😥": "Forgot your password? 😥",
   'Opérations réusite': 'Successful operations',
   "Vous n'etes pas autorisé a vous connecter sur ce telephone":
       "You are not allowed to log in on this phone",
@@ -156,8 +157,8 @@ const Map<String, String> anglais = {
   "le mot de passe a au moins 6 caractères":
       "the password has at least 6 characters",
   "Confirmez le mot de passe": "Confirm the password",
-  "En vous inscrivant, vous acceptez la politique générale d'utilisation et de vente de Monprof":
-      "By signing up, you agree to Monprof's general terms of use and sale",
+  "En vous inscrivant, vous acceptez les politiques générale d'utilisation et de vente de Monprof":
+      "By signing up, you agree to the general terms of use and sale of Monprof",
   "Lire la politique...": "Read the policy...",
   "Opération réussie": "Successful operation",
   "INSCRIPTION": "SIGN UP",
@@ -225,4 +226,5 @@ const Map<String, String> anglais = {
   "GALERIE": "GALLERY",
   "CAMERA": "CAMERA",
   "Impossible de valider la question": "Unable to validate the question",
+  "Parent/Bienfaiteur": "Parent/Benefactor",
 };

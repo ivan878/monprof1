@@ -25,7 +25,7 @@ Map<String, String> chinois = {
   "Etablissement": "学校",
   "Impossible de se déconnecter": "无法注销",
   "Supprimer le compte": "删除账户",
-  "CONNECTEZ VOUS": "登录",
+  "connectez vous": "登录",
   "Remplire les champs pour vous connectez": "填写字段以登录",
   "email incorrecte": "电子邮件错误",
   "Mot de passe obligatoire": "密码必填",
@@ -150,8 +150,8 @@ Map<String, String> chinois = {
   "Genre": "性别",
   "le mot de passe a au moins 6 caractères": "密码至少有6个字符",
   "Confirmez le mot de passe": "确认密码",
-  "En vous inscrivant, vous acceptez la politique générale d'utilisation et de vente de Monprof":
-      "通过注册，您同意 Monprof 的一般使用和销售条款",
+  "En vous inscrivant, vous acceptez les politiques générale d'utilisation et de vente de Monprof":
+      "注册即表示您接受 Monprof 的一般使用和销售政策",
   "Lire la politique...": "阅读政策...",
   "Opération réussie": "操作成功",
   "INSCRIPTION": "注册",
@@ -213,5 +213,6 @@ Map<String, String> chinois = {
   "Choisir la source de l'image": "选择图片来源",
   "GALERIE": "图库",
   "CAMERA": "相机",
-  "Impossible de valider la question": "无法验证问题"
+  "Impossible de valider la question": "无法验证问题",
+  "Parent/Bienfaiteur": "家长/受益人",
 };

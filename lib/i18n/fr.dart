@@ -28,7 +28,7 @@ const Map<String, String> francais = {
   "Etablissement": "Etablissement",
   "Impossible de se déconnecter": "Impossible de se déconnecter",
   "Supprimer le compte": "Supprimer le compte",
-  'CONNECTEZ VOUS': "CONNECTEZ-VOUS",
+  "connectez vous": "Connectez-vous",
   'Remplire les champs pour vous connectez':
       "Remplir les champs pour vous connectez",
   "email incorrecte": "Email incorrect",
@@ -260,4 +260,5 @@ const Map<String, String> francais = {
   "GALERIE": "GALERIE",
   "CAMERA": "CAMERA",
   "Impossible de valider la question": "Impossible de valider la question",
+  "Parent/Bienfaiteur": "Parent/Bienfaiteur",
 };

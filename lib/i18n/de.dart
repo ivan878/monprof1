@@ -26,7 +26,7 @@ Map<String, String> allemand = {
   "Etablissement": "Einrichtung",
   "Impossible de se déconnecter": "Abmeldung nicht möglich",
   "Supprimer le compte": "Konto löschen",
-  'CONNECTEZ VOUS': 'EINLOGGEN',
+  "connectez vous": 'EINLOGGEN',
   'Remplire les champs pour vous connectez':
       'Füllen Sie die Felder aus, um sich anzumelden',
   "email incorrecte": "falsche E-Mail",
@@ -35,6 +35,7 @@ Map<String, String> allemand = {
       'das Passwort hat mindestens 6 Zeichen',
   'Mot de passe': 'Passwort',
   'Opérations réusite': 'Erfolgreiche Operation',
+  "Mots de passe oublier? 😥": "Passwörter vergessen? 😥",
   "Vous n'etes pas autorisé a vous connecter sur ce telephone":
       "Sie sind nicht berechtigt, sich auf diesem Telefon anzumelden",
   'svp remplire les champs...😮😌': 'Bitte füllen Sie die Felder aus...😮😌',
@@ -159,8 +160,8 @@ Map<String, String> allemand = {
   "le mot de passe a au moins 6 caractères":
       "das Passwort hat mindestens 6 Zeichen",
   "Confirmez le mot de passe": "Bestätigen Sie das Passwort",
-  "En vous inscrivant, vous acceptez la politique générale d'utilisation et de vente de Monprof":
-      "Durch die Registrierung akzeptieren Sie die allgemeinen Nutzungs- und Verkaufsbedingungen von Monprof",
+  "En vous inscrivant, vous acceptez les politiques générale d'utilisation et de vente de Monprof":
+      "Durch die Registrierung akzeptieren Sie die allgemeinen Nutzungs- und Verkaufsrichtlinien von Monprof",
   "Lire la politique...": "Lesen Sie die Richtlinien...",
   "Opération réussie": "Erfolgreiche Operation",
   "INSCRIPTION": "EINSCHREIBUNG",
@@ -232,4 +233,5 @@ Map<String, String> allemand = {
   "GALERIE": "GALERIE",
   "CAMERA": "KAMERA",
   "Impossible de valider la question": "Frage kann nicht bestätigt werden",
+  "Parent/Bienfaiteur": "Elternteil / Wohltäter",
 };

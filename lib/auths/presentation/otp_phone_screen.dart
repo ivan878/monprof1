@@ -74,7 +74,8 @@ class OtpPhoneScreenState extends State<OtpPhoneScreen> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           await controller.requestOTP(controllerPhone.text);
-                          if (controller.requestOTPState.hasData) {
+                          if (controller.requestOTPState.hasData &&
+                              context.mounted) {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => OtpScreen(

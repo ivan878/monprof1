@@ -76,7 +76,6 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                                   .tr)
                                       : DropdownButtonFormField<
                                               CategorieParentStatus?>(
-                                          focusColor: Colors.white,
                                           value: controller.categorie,
                                           validator: (value) {
                                             return value == null
@@ -86,8 +85,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                           alignment:
                                               AlignmentDirectional.centerStart,
                                           isExpanded: true,
-                                          style:
-                                              textStyle.copyWith(color: white),
+                                          style: textStyle.copyWith(),
                                           // iconEnabledColor: Colors.black,
                                           iconSize: 30,
                                           elevation: 16,
@@ -109,15 +107,20 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                               child: SimpleText(
                                                 text: value.categorie.libelle ??
                                                     '',
-                                                // color: Colors.black,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .color,
+                                                size: 16,
                                               ),
                                             );
                                           }).toList(),
                                           hint: Text(
                                             "Categorie",
                                             style: textStyle.copyWith(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                           onChanged:
                                               (CategorieParentStatus? value) {

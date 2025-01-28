@@ -7,24 +7,26 @@ import 'package:image_picker/image_picker.dart';
 import 'package:monprof/auths/presentation/login-screen.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
+import 'package:monprof/corps/widgets/app_text_field.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/components/row_compte.dart';
 import 'package:monprof/corps/utils/navigation.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/home/data/models/langage_model.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
 import 'package:monprof/paiements/presentation/active_compte.dart';
 import 'package:monprof/splash/splash_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-class CompteUser extends StatefulWidget {
-  const CompteUser({super.key});
+class ProfileCompteScreen extends StatefulWidget {
+  const ProfileCompteScreen({super.key});
 
   @override
-  State<CompteUser> createState() => _CompteUserState();
+  State<ProfileCompteScreen> createState() => _ProfileCompteScreenState();
 }
 
-class _CompteUserState extends State<CompteUser> {
+class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
   String version = '';
   String buildnumber = '';
 
@@ -148,41 +150,57 @@ class _CompteUserState extends State<CompteUser> {
                           size: 16,
                           weight: FontWeight.bold),
                       SpacerHeight(5),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ListTile(
-                              onTap: () async =>
-                                  await Get.find<SplaController>()
-                                      .updateLocal(const Locale('fr')),
-                              title: FittedBox(
-                                  child: SimpleText(text: 'Français'.tr)),
-                              leading: Icon(
-                                  Get.locale?.languageCode == 'fr'
-                                      ? Icons.circle
-                                      : Icons.circle_outlined,
-                                  color: Get.locale?.languageCode == 'fr'
-                                      ? primaryColor
-                                      : null),
-                            ),
-                          ),
-                          Expanded(
-                            child: ListTile(
-                              onTap: () async => Get.find<SplaController>()
-                                  .updateLocal(const Locale('en')),
-                              title: FittedBox(
-                                  child: SimpleText(text: 'English'.tr)),
-                              leading: Icon(
-                                  Get.locale?.languageCode == 'en'
-                                      ? Icons.circle
-                                      : Icons.circle_outlined,
-                                  color: Get.locale?.languageCode == 'en'
-                                      ? primaryColor
-                                      : null),
-                            ),
-                          ),
-                        ],
-                      ),
+                      GetBuilder<SplaController>(
+                          builder: (SplaController splashController) {
+                        return DropdownButtonFormField<LangageModel>(
+                          value: splashController.langageModel,
+                          decoration: appInputDecoration(),
+                          items: languageList.map((model) {
+                            return DropdownMenuItem<LangageModel>(
+                              value: model,
+                              child: SimpleText(text: model.name),
+                            );
+                          }).toList(),
+                          onChanged: (model) {
+                            splashController.changeLangaue(model!);
+                          },
+                        );
+                      }),
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: ListTile(
+                      //         onTap: () async =>
+                      //             await Get.find<SplaController>()
+                      //                 .updateLocal(const Locale('fr')),
+                      //         title: FittedBox(
+                      //             child: SimpleText(text: 'Français'.tr)),
+                      //         leading: Icon(
+                      //             Get.locale?.languageCode == 'fr'
+                      //                 ? Icons.circle
+                      //                 : Icons.circle_outlined,
+                      //             color: Get.locale?.languageCode == 'fr'
+                      //                 ? primaryColor
+                      //                 : null),
+                      //       ),
+                      //     ),
+                      //     Expanded(
+                      //       child: ListTile(
+                      //         onTap: () async => Get.find<SplaController>()
+                      //             .updateLocal(const Locale('en')),
+                      //         title: FittedBox(
+                      //             child: SimpleText(text: 'English'.tr)),
+                      //         leading: Icon(
+                      //             Get.locale?.languageCode == 'en'
+                      //                 ? Icons.circle
+                      //                 : Icons.circle_outlined,
+                      //             color: Get.locale?.languageCode == 'en'
+                      //                 ? primaryColor
+                      //                 : null),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       SpacerHeight(15),
                       SimpleText(
                           text: "Thème de l'application".tr,

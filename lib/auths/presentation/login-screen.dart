@@ -246,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ListTile(
                 title: SimpleText(
-                  text: "Parent".tr,
+                  text: "Parent/Bienfaiteur".tr,
                 ),
                 trailing: const Icon(
                   Icons.arrow_forward_ios,
