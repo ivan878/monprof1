@@ -334,13 +334,15 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  SimpleText(
-                                                    text: (categorie.categorie
-                                                                .libelle ??
-                                                            '')
-                                                        .toUpperCase(),
-                                                    size: 15,
-                                                    weight: FontWeight.normal,
+                                                  Expanded(
+                                                    child: SimpleText(
+                                                      text: (categorie.categorie
+                                                                  .libelle ??
+                                                              '')
+                                                          .toUpperCase(),
+                                                      size: 15,
+                                                      weight: FontWeight.normal,
+                                                    ),
                                                   ),
                                                   Icon(
                                                     Icons.check_circle,

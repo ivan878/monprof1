@@ -70,14 +70,14 @@ class Cours {
   factory Cours.fromMap(Map<String, dynamic> map) {
     return Cours(
       id: map['id'] as int,
-      video_url: map['video_url'] as String,
-      libelle: map['libelle'] as String,
-      description: map['description'] as String,
+      video_url: map['video_url'] as String? ?? '',
+      libelle: map['libelle'] as String? ?? '',
+      description: map['description'] as String? ?? '',
       classe_id: map['classe_id'] as int,
       matieres_id: map['matieres_id'] as int,
       categorie_id: map['categorie_id'],
-      created_at: map['created_at'] as String,
-      updated_at: map['updated_at'] as String,
+      created_at: map['created_at'] as String? ?? '',
+      updated_at: map['updated_at'] as String? ?? '',
       open: map['open'].toString() == '0' || map['open'].toString() == 'false'
           ? false
           : true,

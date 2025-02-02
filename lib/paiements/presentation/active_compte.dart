@@ -31,59 +31,62 @@ class _ActiveCompteState extends State<ActiveCompte> {
           appBar: AppBar(
             title: Text("Activer un abonnement".tr),
           ),
-          body: controller.paiementState.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Form(
-                  key: formKey,
-                  child: Container(
-                    margin: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SimpleText(
-                          text:
-                              "S'il vous plait, veuillez entrer le code d'activation reçu par SMS ou par mail."
-                                  .tr,
-                        ),
-                        const SizedBox(height: 10),
-                        TextFielApp(
-                          controller: controller.controllerCode,
-                          validator: ValidationBuilder(
-                                  requiredMessage:
-                                      "Veuillez entrer un code d'activation".tr)
-                              .minLength(6, 'code invalide'.tr)
-                              .build(),
-                          hinText: "Code d'activation".tr,
-                        ),
-                        const Spacer(),
-                        DefaultButton(
-                          onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              await controller.activeCode().then((value) async {
-                                if (controller.paiementState.hasError) {
-                                  Notify.showFailure(
-                                      context,
-                                      controller.paiementState.errorModel
-                                              ?.error ??
-                                          "");
-                                } else if (controller.paiementState.hasData) {
-                                  Notify.showSuccess(
-                                      context, 'Code active avec succes'.tr);
-                                  Navigator.pop(context);
-
-                                  await Get.find<HomeController>()
-                                      .getCategorie();
-                                }
-                              });
-                            }
-                          },
-                          text: 'Valider'.tr,
-                        ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
+          body: Form(
+            key: formKey,
+            child: Container(
+              margin: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SimpleText(
+                    text:
+                        "S'il vous plait, veuillez entrer le code d'activation reçu par SMS ou par mail."
+                            .tr,
                   ),
-                ),
+                  const SizedBox(height: 10),
+                  TextFielApp(
+                    controller: controller.controllerCode,
+                    validator: ValidationBuilder(
+                            requiredMessage:
+                                "Veuillez entrer un code d'activation".tr)
+                        .minLength(6, 'code invalide'.tr)
+                        .build(),
+                    hinText: "Code d'activation".tr,
+                  ),
+                  const Spacer(),
+                  DefaultButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        await controller.activeCode().then((value) async {
+                          if (controller.paiementState.hasError) {
+                            Notify.showFailure(
+                                context,
+                                controller.paiementState.errorModel?.error ??
+                                    "");
+                          } else if (controller.paiementState.hasData) {
+                            Notify.showSuccess(
+                                context, 'Code active avec succes'.tr);
+                            Navigator.pop(context);
+
+                            await Get.find<HomeController>().getCategorie();
+                          }
+                        });
+                      }
+                    },
+                    text: 'Valider'.tr,
+                    wdiget: controller.paiementState.isLoading
+                        ? const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child:
+                                CircularProgressIndicator(color: Colors.white),
+                          )
+                        : null,
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
         );
       },
     );

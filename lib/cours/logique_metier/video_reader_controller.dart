@@ -87,11 +87,11 @@ class VideoController extends GetxController {
       File saveFile = File("${directory!.path}/$fileName");
       loading.value = true;
       update();
-      final head = await header();
+      // final head = await header();
       await Dio().download(
         cours.video_url,
         saveFile.path,
-        options: Options(headers: head),
+        // options: Options(headers: head),
         onReceiveProgress: (received, total) {
           final progressvalue = received / total;
           printer(progressvalue);

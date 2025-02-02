@@ -26,7 +26,18 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
+  @override
+  didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((t) {
+        Get.find<HomeController>().listenserDeviceUpdated(context);
+        Get.find<HomeController>().updateToken();
+      });
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
   @override
   void initState() {
     Get.put(NotificationController(api: GetIt.instance<NotificationApi>()));

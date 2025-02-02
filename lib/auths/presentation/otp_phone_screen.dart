@@ -27,6 +27,7 @@ class OtpPhoneScreenState extends State<OtpPhoneScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: SimpleText(
           text: "Verification du Compte".tr,

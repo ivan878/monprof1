@@ -81,7 +81,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                           'Classe',
                                           style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 17),
+                                              fontSize: 15),
                                         ),
                                         Text(
                                           home.classe?.libelle ?? " ",
@@ -96,20 +96,25 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          'Trimestre'.tr,
-                                          style: textStyle.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
+                                        Expanded(
+                                          child: Text(
+                                            'Trimestre'.tr,
+                                            style: textStyle.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                            ),
                                           ),
                                         ),
-                                        Text(
-                                          home.categorie?.categorie.libelle ??
-                                              " ",
-                                          style: textStyle.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17,
-                                            color: primaryColor,
+                                        Expanded(
+                                          child: Text(
+                                            home.categorie?.categorie.libelle ??
+                                                " ",
+                                            textAlign: TextAlign.end,
+                                            style: textStyle.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                              color: primaryColor,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -129,7 +134,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
                                           "${home.categorie?.categorie.prix.toString() ?? " "} XAF",
                                           style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 17,
+                                              fontSize: 15,
                                               color: primaryColor),
                                         ),
                                       ],
