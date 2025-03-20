@@ -22,7 +22,7 @@ class _ContratUserState extends State<ContratUser> {
           child: Column(children: [
             GestureDetector(
               onTap: () {
-                launchUrl(Uri.parse("https://taxichrono.net/"));
+                launchUrl(Uri.parse("https://mutrix.org/privacy"));
               },
               child: rowCompte(
                 Colors.blue,
@@ -35,7 +35,7 @@ class _ContratUserState extends State<ContratUser> {
             ),
             GestureDetector(
                 onTap: () {
-                  launchUrl(Uri.parse("https://taxichrono.net/"));
+                  launchUrl(Uri.parse("https://mutrix.org/terms"));
                 },
                 child: rowCompte(
                     Colors.blue, 'Poltique générale de vente'.tr, Icons.info)),
@@ -44,7 +44,7 @@ class _ContratUserState extends State<ContratUser> {
             ),
             GestureDetector(
                 onTap: () {
-                  launchUrl(Uri.parse("https://taxichrono.net/"));
+                  launchUrl(Uri.parse("https://mutrix.org/terms/"));
                 },
                 child:
                     rowCompte(Colors.blue, 'Mentions légales'.tr, Icons.info)),

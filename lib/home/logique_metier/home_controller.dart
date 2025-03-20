@@ -68,21 +68,21 @@ class HomeController extends GetxController {
   }
 
   listenserDeviceUpdated(BuildContext context) async {
-    final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
-    FirebaseFirestore.instance
-        .collection('UserDevices')
-        .doc(users!.phone)
-        .snapshots()
-        .listen((event) {
-      if (event.data()?['user_device'] != mobileDeviceIdentifier) {
-        Notify.toastError("Vous vous êtes connecté sur un autre appareil");
-        logout();
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) {
-          return const LoginScreen();
-        }), (route) => false);
-      }
-    });
+    // final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
+    // FirebaseFirestore.instance
+    //     .collection('UserDevices')
+    //     .doc(users!.phone)
+    //     .snapshots()
+    //     .listen((event) {
+    //   if (event.data()?['user_device'] != mobileDeviceIdentifier) {
+    //     Notify.toastError("Vous vous êtes connecté sur un autre appareil");
+    //     logout();
+    //     Navigator.pushAndRemoveUntil(context,
+    //         MaterialPageRoute(builder: (context) {
+    //       return const LoginScreen();
+    //     }), (route) => false);
+    //   }
+    // });
     // .set({
     //   'user_device': mobileDeviceIdentifier,
     // });

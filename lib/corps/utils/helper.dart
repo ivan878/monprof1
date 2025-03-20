@@ -69,10 +69,10 @@ Size taille(BuildContext context) => MediaQuery.sizeOf(context);
 
 class Utils {
   static Future openUrl(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      throw 'Could not launch $url';
-    }
+    // if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url));
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
   }
 }

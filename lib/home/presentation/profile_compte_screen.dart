@@ -414,7 +414,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                     children: [
                       InkWell(
                         onTap: () async {
-                          await Utils.openUrl('https://www.monprof.org/wp');
+                          await Utils.openUrl('https://mutrix.org/');
                         },
                         child: const CircleAvatar(
                           maxRadius: 20,
