@@ -32,7 +32,6 @@ class SplaController extends GetxController {
       (element) => element.locale.languageCode == loc,
       orElse: () => languageList[0],
     );
-    // update();
   }
 
   changeLangaue(LangageModel langageModel) async {

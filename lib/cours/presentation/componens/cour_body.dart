@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
-import 'package:monprof/UI/lecteurvideoScreen.dart';
+import 'package:monprof/UI/lecteurvideo_screen.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:flutter/material.dart';
@@ -138,12 +140,17 @@ class _BuildCourComponenState extends State<BuildCourComponen> {
             } else {
               printer(widget.cours.video_url);
               if (widget.videoController.files.value.path.isNotEmpty) {
-                changeScreen(
-                  context,
-                  LectureCoursVideo(
-                    video: widget.videoController.files.value,
-                  ),
-                );
+                final File cryptedFile = widget.videoController.files.value;
+                final decryptedFile =
+                    await widget.videoController.getFileDecrypted(cryptedFile);
+                if (context.mounted) {
+                  changeScreen(
+                    context,
+                    LectureCoursVideo(
+                      video: decryptedFile,
+                    ),
+                  );
+                }
                 return;
               }
               await widget.videoController.downloadvideo().then((value) {

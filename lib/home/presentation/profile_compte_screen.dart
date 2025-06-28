@@ -494,6 +494,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                           MaterialPageRoute(
                               builder: (context) => const LoginScreen()),
                           (route) => false);
+                      setState(() {});
                     } else {
                       Notify.showFailure(
                           context, 'Impossible de se déconnecter'.tr);

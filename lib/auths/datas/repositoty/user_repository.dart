@@ -115,9 +115,11 @@ class UserRepository {
     try {
       final response = await service.getClasse();
       if (response['status']) {
-        return List.from((response['data'] as List)
-            .map((json) => Classe.fromJson(json))
-            .toList());
+        return response['data'] is List
+            ? List.from((response['data'] as List)
+                .map((json) => Classe.fromJson(json))
+                .toList())
+            : [];
       } else {
         throw Exception(response['error']);
       }

@@ -1,14 +1,13 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:monprof/corps/api_service.dart';
+import 'package:monprof/corps/utils/constantes.dart';
 import 'package:monprof/corps/utils/helper.dart';
-// import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/cours/data/models/cours_model.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:monprof/UI/lecteurvideoScreen.dart';
-// import 'package:monprof/corps/utils/navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:typed_data';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class VideoController extends GetxController {
   Cours cours;
@@ -66,6 +65,27 @@ class VideoController extends GetxController {
 
   Directory? directory;
 
+  Uint8List decryptFile(Uint8List encryptedData, String keyString) {
+    final key = encrypt.Key.fromUtf8(keyString.padRight(32).substring(0, 32));
+    final iv = encrypt.IV(encryptedData.sublist(0, 16));
+    final data = encryptedData.sublist(16);
+
+    final encrypter =
+        encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
+    final decrypted = encrypter.decryptBytes(encrypt.Encrypted(data), iv: iv);
+
+    return Uint8List.fromList(encryptedData);
+  }
+
+  Future<File> getFileDecrypted(File cryptedFile) async {
+    Uint8List encryptedData = cryptedFile.readAsBytesSync();
+    Uint8List decryptedData = decryptFile(encryptedData, encryptedKey);
+    File decryptedFile =
+        File("${directory!.path}/${cryptedFile.path.split('/').last}");
+    await decryptedFile.writeAsBytes(decryptedData);
+    return decryptedFile;
+  }
+
   Future<bool> saveVideo() async {
     String fileName = cours.created_at
         .replaceAll('-', '_')
@@ -75,12 +95,6 @@ class VideoController extends GetxController {
       // final permission =
       await getPersmission();
       directory = await getDirectory();
-
-      // if (!permission) {
-      //   loger('Permission non accordé');
-      //   return false;
-      // }
-
       if (!await directory!.exists()) {
         await directory!.create(recursive: true);
       }

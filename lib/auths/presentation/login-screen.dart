@@ -121,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 15),
                           DefaultButton(
                             onPressed: () async {
+                              FocusScope.of(context).unfocus();
                               await controller.login().then((value) {
                                 if (controller.state.hasData) {
                                   Notify.toastSuccess('Opérations réusite'.tr);

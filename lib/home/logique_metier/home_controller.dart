@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile_device_identifier/mobile_device_identifier.dart';
 import 'package:monprof/auths/datas/repositoty/user_repository.dart';
 import 'package:monprof/auths/datas/services/user_services.dart';
-import 'package:monprof/auths/presentation/login-screen.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:monprof/corps/utils/helper.dart';
