@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -51,7 +52,7 @@ class VideoController extends GetxController {
         ? await getApplicationSupportDirectory()
         : await getExternalStorageDirectory();
     //final targetFile = Directory("${dir.path}/books/$fileName.pdf");
-    File targetFile = File("${dir!.path}/$fileName");
+    File targetFile = File("${dir!.path}/$fileName.mprf");
     if (targetFile.existsSync()) {
       targetFile.deleteSync(recursive: true);
       update();
@@ -65,8 +66,12 @@ class VideoController extends GetxController {
 
   Directory? directory;
 
-  Uint8List decryptFile(Uint8List encryptedData, String keyString) {
-    final key = encrypt.Key.fromUtf8(keyString.padRight(32).substring(0, 32));
+  Uint8List decryptFile(Uint8List encryptedData, String base64Key) {
+    final keyString =
+        base64Key.startsWith('base64:') ? base64Key.substring(7) : base64Key;
+    final keyBytes = base64.decode(keyString);
+    // final key = encrypt.Key.fromUtf8(keyString.padRight(32).substring(0, 32));
+    final key = encrypt.Key(keyBytes);
     final iv = encrypt.IV(encryptedData.sublist(0, 16));
     final data = encryptedData.sublist(16);
 
@@ -74,7 +79,7 @@ class VideoController extends GetxController {
         encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
     final decrypted = encrypter.decryptBytes(encrypt.Encrypted(data), iv: iv);
 
-    return Uint8List.fromList(encryptedData);
+    return Uint8List.fromList(decrypted);
   }
 
   Future<File> getFileDecrypted(File cryptedFile) async {
@@ -98,7 +103,7 @@ class VideoController extends GetxController {
       if (!await directory!.exists()) {
         await directory!.create(recursive: true);
       }
-      File saveFile = File("${directory!.path}/$fileName");
+      File saveFile = File("${directory!.path}/$fileName.mprf");
       loading.value = true;
       update();
       // final head = await header();
@@ -135,7 +140,7 @@ class VideoController extends GetxController {
         .replaceAll('.', '');
     await getPersmission();
     directory = await getDirectory();
-    File targetFile = File("${directory!.path}/$fileName");
+    File targetFile = File("${directory!.path}/$fileName.mprf");
     final exist = await targetFile.exists();
     loger(exist);
     if (exist) {

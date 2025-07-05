@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
+
 import 'package:monprof/corps/widgets/loading.dart';
+import 'package:monprof/cours/file_listen_controller.dart';
 import 'package:monprof/sugestion/suggestionScreen.dart';
 // import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/corps/utils/navigation.dart';
@@ -28,6 +30,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
   @override
+  void dispose() {
+    Get.delete<FileListenController>();
+    super.dispose();
+  }
+
+  @override
   didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((t) {
@@ -42,6 +50,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void initState() {
     Get.put(NotificationController(api: GetIt.instance<NotificationApi>()));
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Get.put(FileListenController());
       Get.find<HomeController>().listenserDeviceUpdated(context);
       Get.find<HomeController>().checkUpdate().then((value) {
         if (value == "true") {

@@ -8,7 +8,7 @@ import 'package:monprof/corps/utils/navigation.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
-import 'package:monprof/cours/logique_metier/cous_controller.dart';
+import 'package:monprof/cours/logique_metier/cours_controller.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
 import 'package:monprof/paiements/presentation/paiements_screen.dart';
 import 'package:monprof/questions/data/models/question.dart';

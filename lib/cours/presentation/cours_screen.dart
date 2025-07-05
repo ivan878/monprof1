@@ -5,7 +5,7 @@ import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/home/data/models/categorie_model.dart';
 import 'package:monprof/home/data/models/matieres_models.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
-import 'package:monprof/cours/logique_metier/cous_controller.dart';
+import 'package:monprof/cours/logique_metier/cours_controller.dart';
 import 'package:monprof/cours/presentation/componens/cour_body.dart';
 import 'package:monprof/cours/data/repository/cours_repository.dart';
 import 'package:monprof/questions/presentation/question_body.dart';

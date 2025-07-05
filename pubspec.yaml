@@ -68,6 +68,7 @@ dependencies:
   url_launcher: ^6.3.1
   flutter_in_store_app_version_checker: ^1.7.0
   encrypt: ^5.0.3
+  receive_sharing_intent: ^1.8.1
 
 dev_dependencies:
   flutter_test:

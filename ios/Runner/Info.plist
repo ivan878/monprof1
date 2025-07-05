@@ -26,6 +26,44 @@
 		<true />
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
+		<!-- Gestion de l'ouverture des fichier d'extension mprf -->
+		<key>CFBundleDocumentTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeName</key>
+				<string>Mon fichier perso</string>
+				<key>LSHandlerRank</key>
+				<string>Owner</string>
+				<key>LSItemContentTypes</key>
+				<array>
+					<string>public.data</string>
+					<string>mutrix_tech.monprof.app.mprf</string>
+				</array>
+			</dict>
+		</array>
+		<key>UTExportedTypeDeclarations</key>
+		<array>
+			<dict>
+				<key>UTTypeConformsTo</key>
+				<array>
+					<string>public.data</string>
+				</array>
+				<key>UTTypeDescription</key>
+				<string>Mon fichier perso</string>
+				<key>UTTypeIdentifier</key>
+				<string>mutrix_tech.monprof.app.mprf</string>
+				<key>UTTypeTagSpecification</key>
+				<dict>
+					<key>public.filename-extension</key>
+					<array>
+						<string>mprf</string>
+					</array>
+				</dict>
+			</dict>
+		</array>
+
+		<!-- Fin de la gestion de l'ouverture des fichier d'extension mprf -->
+
 		<!-- pour la gestion des fichiers  -->
 		<key>LSSupportsOpeningDocumentsInPlace</key>
 		<true />

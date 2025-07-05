@@ -9,7 +9,7 @@ import 'package:monprof/corps/utils/navigation.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/cours/data/models/cours_model.dart';
-import 'package:monprof/cours/logique_metier/cous_controller.dart';
+import 'package:monprof/cours/logique_metier/cours_controller.dart';
 import 'package:monprof/paiements/presentation/paiements_screen.dart';
 import 'package:monprof/cours/logique_metier/video_reader_controller.dart';
 
