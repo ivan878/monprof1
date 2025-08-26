@@ -603,7 +603,9 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                 : SizedBox(
                     height: 100,
                     child: ClipOval(
-                      child: Image.asset('assets/study3.png'),
+                      child: Image.asset(controller.eleve?.sexe == "HOMME"
+                          ? 'assets/study3.png'
+                          : 'assets/study4.png'),
                     ),
                   ),
             Positioned(

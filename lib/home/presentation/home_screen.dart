@@ -84,7 +84,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       color: Colors.white.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(10)),
                   child: SimpleText(
-                      text: controller.classe?.shortName ?? '', size: 15),
+                    text: controller.classe?.shortName ?? '',
+                    size: 12,
+                  ),
                 ),
               ),
               GetBuilder<NotificationController>(
@@ -163,48 +165,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               children: [
                                 Image.asset('assets/mp2.png'),
                                 const SizedBox(height: 15),
-                                (controller.matiereState.data ?? []).isEmpty
-                                    ? SimpleText(
-                                        text:
-                                            'Aucune matière disponible por le moment'
-                                                .tr)
-                                    : DropdownButtonFormField<Matiere?>(
-                                        // focusColor: Colors.white,
-                                        value: controller.matiere,
-                                        validator: (value) {
-                                          return value == null
-                                              ? "choisir une matière".tr
-                                              : null;
-                                        },
-                                        alignment:
-                                            AlignmentDirectional.centerStart,
-                                        isExpanded: true,
-                                        // style: textStyle.copyWith(color: white),
-                                        // iconEnabledColor: Colors.black,
-                                        iconSize: 30,
-                                        elevation: 16,
-                                        decoration: appInputDecoration(),
-                                        items: (controller.matiereState.data ??
-                                                [])
-                                            .map<DropdownMenuItem<Matiere?>>(
-                                                (Matiere value) {
-                                          return DropdownMenuItem<Matiere>(
-                                            value: value,
-                                            child: SimpleText(
-                                              text: value.libelle ?? '',
-                                              // color: Colors.black,
-                                            ),
-                                          );
-                                        }).toList(),
-                                        hint: SimpleText(
-                                          text: "Matière".tr,
-                                          size: 16,
-                                          weight: FontWeight.w500,
-                                        ),
-                                        onChanged: (Matiere? value) {
-                                          controller.changeMatiere(value);
-                                        }),
-                                const SizedBox(height: 20),
                                 (controller.categorieState.data ?? []).isEmpty
                                     ? SimpleText(
                                         text:
@@ -252,6 +212,48 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                         ),
                                         onChanged: (CategorieStatus? value) {
                                           controller.changeCategorie(value);
+                                        }),
+                                const SizedBox(height: 20),
+                                (controller.matiereState.data ?? []).isEmpty
+                                    ? SimpleText(
+                                        text:
+                                            'Aucune matière disponible por le moment'
+                                                .tr)
+                                    : DropdownButtonFormField<Matiere?>(
+                                        // focusColor: Colors.white,
+                                        value: controller.matiere,
+                                        validator: (value) {
+                                          return value == null
+                                              ? "choisir une matière".tr
+                                              : null;
+                                        },
+                                        alignment:
+                                            AlignmentDirectional.centerStart,
+                                        isExpanded: true,
+                                        // style: textStyle.copyWith(color: white),
+                                        // iconEnabledColor: Colors.black,
+                                        iconSize: 30,
+                                        elevation: 16,
+                                        decoration: appInputDecoration(),
+                                        items: (controller.matiereState.data ??
+                                                [])
+                                            .map<DropdownMenuItem<Matiere?>>(
+                                                (Matiere value) {
+                                          return DropdownMenuItem<Matiere>(
+                                            value: value,
+                                            child: SimpleText(
+                                              text: value.libelle ?? '',
+                                              // color: Colors.black,
+                                            ),
+                                          );
+                                        }).toList(),
+                                        hint: SimpleText(
+                                          text: "Matière".tr,
+                                          size: 16,
+                                          weight: FontWeight.w500,
+                                        ),
+                                        onChanged: (Matiere? value) {
+                                          controller.changeMatiere(value);
                                         }),
                                 const SizedBox(height: 15),
                                 DefaultButton(

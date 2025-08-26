@@ -75,8 +75,6 @@ class _CoursBodyState extends State<CoursBody> {
                                 children: [
                                   BuildCourComponen(
                                     cours: cours,
-                                    videoController:
-                                        VideoController(cours: cours),
                                   ),
                                 ],
                               ),
@@ -91,89 +89,98 @@ class _CoursBodyState extends State<CoursBody> {
 
 class BuildCourComponen extends StatefulWidget {
   final Cours cours;
-  final VideoController videoController;
-  const BuildCourComponen(
-      {super.key, required this.cours, required this.videoController});
+
+  const BuildCourComponen({super.key, required this.cours});
 
   @override
   State<BuildCourComponen> createState() => _BuildCourComponenState();
 }
 
 class _BuildCourComponenState extends State<BuildCourComponen> {
+  late VideoController videoController;
   @override
-  Widget build(BuildContext context) {
-    return Builder(builder: (_) {
-      widget.videoController.existCour();
-      return Obx(
-        () => ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.blue,
-            child: widget.videoController.files.value.path.isNotEmpty
-                ? const Icon(Icons.play_circle, color: Colors.white)
-                : !widget.videoController.loading.value
-                    ? const Icon(Icons.download, color: Colors.white)
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          value: widget.videoController.progrees.value,
-                        ),
-                      ),
-          ),
-          title: SimpleText(
-            text: widget.cours.libelle,
-            maxlines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: SimpleText(
-            text: widget.cours.description,
-            maxlines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: Container(
-            child:
-                !widget.cours.open ? const Icon(Icons.lock) : BuildPopUpVideo(),
-          ),
-          onTap: () async {
-            if (!widget.cours.open) {
-              changeScreen(context, const PaiementsScreen());
-            } else {
-              printer(widget.cours.video_url);
-              if (widget.videoController.files.value.path.isNotEmpty) {
-                final File cryptedFile = widget.videoController.files.value;
-                final decryptedFile =
-                    await widget.videoController.getFileDecrypted(cryptedFile);
-                if (context.mounted) {
-                  changeScreen(
-                    context,
-                    LectureCoursVideo(
-                      video: decryptedFile,
-                    ),
-                  );
-                }
-                return;
-              }
-              await widget.videoController.downloadvideo().then((value) {
-                setState(() {});
-                if (!value) {
-                  // loger('echec');
-                  Notify.toastError("Erreur de téléchargement de la vidéo".tr);
-                }
-              });
-            }
-          },
-        ),
-      );
-    });
+  initState() {
+    videoController = Get.put(
+      VideoController(cours: widget.cours),
+      tag: widget.cours.id.toString(),
+    );
+
+    super.initState();
   }
 
-  PopupMenuButton<dynamic> BuildPopUpVideo() {
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<VideoController>(
+      tag: widget.cours.id.toString(),
+      init: videoController,
+      initState: (state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          videoController.existCour();
+        });
+      },
+      builder: (controller) => ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Colors.blue,
+          child: controller.isDownloaded
+              ? const Icon(Icons.play_circle, color: Colors.white)
+              : !controller.loading
+                  ? const Icon(Icons.download, color: Colors.white)
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        value: controller.progrees,
+                      ),
+                    ),
+        ),
+        title: SimpleText(
+          text: widget.cours.libelle,
+          maxlines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: SimpleText(
+          text: widget.cours.description,
+          maxlines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Container(
+          child: !widget.cours.open
+              ? const Icon(Icons.lock)
+              : buildPopUpVideo(controller),
+        ),
+        onTap: () async {
+          if (!widget.cours.open) {
+            changeScreen(context, const PaiementsScreen());
+          } else {
+            printer(widget.cours.video_url);
+            if (controller.isDownloaded) {
+              final File cryptedFile = controller.files;
+              final decryptedFile =
+                  await controller.getFileDecrypted(cryptedFile);
+              if (context.mounted) {
+                changeScreen(
+                  context,
+                  LectureCoursVideo(
+                    video: decryptedFile,
+                  ),
+                );
+              }
+              return;
+            }
+            await controller.downloadvideo();
+          }
+        },
+      ),
+    );
+  }
+
+  PopupMenuButton<dynamic> buildPopUpVideo(VideoController controller) {
     return PopupMenuButton(
       itemBuilder: ((context) => [
             PopupMenuItem(
                 child: Text('retélécharger'.tr),
                 onTap: () async {
-                  await widget.videoController.downloadvideo().then((value) {
+                  await controller.downloadvideo().then((value) {
                     setState(() {});
                     if (!value) {
                       Notify.toastError(
@@ -184,19 +191,9 @@ class _BuildCourComponenState extends State<BuildCourComponen> {
             PopupMenuItem(
                 child: Text('Supprimer'.tr),
                 onTap: () async {
-                  await widget.videoController.supprimer();
+                  await controller.supprimer();
                 }),
           ]),
-    );
-  }
-
-  BuildCourComponen copyWith({
-    Cours? cours,
-    VideoController? videoController,
-  }) {
-    return BuildCourComponen(
-      cours: cours ?? this.widget.cours,
-      videoController: videoController ?? this.widget.videoController,
     );
   }
 }
