@@ -11,11 +11,11 @@ class UserLocalStorageService {
   SharedPreferences preference;
   UserLocalStorageService({required this.preference});
 
-  storeToken(String token) async {
+  Future<void> storeToken(String token) async {
     await preference.setString(localToken, token);
   }
 
-  storeRefreshToken(String token) async {
+  Future<void> storeRefreshToken(String token) async {
     await preference.setString(refreshToken, token);
   }
 
@@ -35,7 +35,7 @@ class UserLocalStorageService {
     return tokenString;
   }
 
-  storeUser(Users user) async {
+  Future<void> storeUser(Users user) async {
     final String userString = jsonEncode(user.toJson());
     await preference.setString(userStorage, userString);
   }
@@ -50,7 +50,7 @@ class UserLocalStorageService {
     return user;
   }
 
-  storeClasse(Classe classe) async {
+  Future<void> storeClasse(Classe classe) async {
     final String classeString = jsonEncode(classe.toJson());
     await preference.setString(classeStorage, classeString);
   }
@@ -64,7 +64,7 @@ class UserLocalStorageService {
     return classe;
   }
 
-  storeEleve(Eleve eleve) async {
+  Future<void> storeEleve(Eleve eleve) async {
     final String eleveString = jsonEncode(eleve.toJson());
     await preference.setString(studentStorage, eleveString);
   }
@@ -78,7 +78,7 @@ class UserLocalStorageService {
     return eleve;
   }
 
-  storeParent(ParentModel model) async {
+  Future<void> storeParent(ParentModel model) async {
     final String eleveString = jsonEncode(model.toJson());
     await preference.setString(parentStorage, eleveString);
   }

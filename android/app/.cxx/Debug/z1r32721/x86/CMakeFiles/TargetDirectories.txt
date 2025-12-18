@@ -1,0 +1,2 @@
+/Users/user/Project professionel/Mutrix/monprofapp/android/app/.cxx/Debug/z1r32721/x86/CMakeFiles/rebuild_cache.dir
+/Users/user/Project professionel/Mutrix/monprofapp/android/app/.cxx/Debug/z1r32721/x86/CMakeFiles/edit_cache.dir

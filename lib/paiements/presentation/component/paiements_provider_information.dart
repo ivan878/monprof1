@@ -1,91 +1,219 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monprof/corps/utils/helper.dart';
+import 'package:monprof/corps/utils/notify.dart';
+// import 'package:monprof/corps/utils/notify.dart';
+import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/components/row_compte.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/home/logique_metier/home_controller.dart';
+import 'package:monprof/paiements/logique_metier/paiement_controller.dart';
+import 'package:monprof/paiements/presentation/categorie_summary_widget.dart';
+import 'package:monprof/paiements/presentation/component/payment_status_component.dart';
 
 class PaiementsProviderInformation extends StatelessWidget {
   const PaiementsProviderInformation({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        rowCompte(Colors.blue, "Mode de Paiements".tr, Icons.wallet_giftcard),
-        const SizedBox(height: 10),
-        Material(
-          borderRadius: BorderRadius.circular(10),
-          elevation: 2,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final home = Get.find<HomeController>();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Resume de paiement".tr),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: GetBuilder<PaiementsController>(builder: (controller) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              rowCompte(Colors.blue, "Resume".tr, Icons.wallet_giftcard),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                        height: 50, child: Image.asset('assets/orange.png')),
-                    Text(
-                      ' #150*47*769460*Montant#',
-                      style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                    const CategorieSummaryWidget(),
+                    const SizedBox(height: 5),
+                    const Divider(),
+                    const SizedBox(height: 5),
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Numero du payeur'.tr,
+                              style: textStyle.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                            const Spacer(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: Image.asset(
+                                controller.paiementProvider?.img ?? "",
+                                height: 27,
+                              ),
+                            ),
+                            SpacerWidth(8),
+                            Text(
+                              controller.controllerNumeroPayeur.text,
+                              style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Moyen de paiement'.tr,
+                              style: textStyle.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                            const Spacer(),
+                            Text(
+                              controller.paiementProvider?.title ?? " ",
+                              style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: primaryColor,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Frais MONPROF '.tr,
+                              style: textStyle.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                            const Spacer(),
+                            Text(
+                              "0 XAF",
+                              style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green.shade800,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Frais du fournisseur '.tr,
+                              style: textStyle.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                            const Spacer(),
+                            Text(
+                              "${((home.categorie?.categorie.prix ?? 0) * 2.5 / 100).toInt()} XAF",
+                              style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red.shade800,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        const Divider(),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Montant total  à payer '.tr,
+                              style: textStyle.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                            const Spacer(),
+                            Text(
+                              "${((home.categorie?.categorie.prix ?? 0) + ((home.categorie?.categorie.prix ?? 0) * 2.5 / 100)).toInt()} XAF",
+                              style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: primaryColor,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 15),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              const Spacer(),
+              DefaultButton(
+                wdiget: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 45, child: Image.asset('assets/momo.jpg')),
-                    Text(
-                      ' 657 140 696',
-                      style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                    SimpleText(
+                      text: "Confirmer le paiement".tr,
+                      color: white,
+                      size: 17,
+                      weight: FontWeight.bold,
                     ),
+                    if (controller.paiementState.isLoading) ...[
+                      SpacerWidth(10),
+                      const SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ]
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  '${"Nom affiché".tr} : MUTRIX TECHNOLOGY',
-                  style: textStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const Divider(),
-        Column(
-          children: [
-            SimpleText(
-              text:
-                  "Veuiller initier le paiement avec la chaine de paiement correspondante à votre opérateur"
-                      .tr,
-              align: TextAlign.center,
-              weight: FontWeight.bold,
-            ),
-            const SizedBox(height: 15),
-            SimpleText(
-              text:
-                  'Vous allez recevoir un sms dans moins de 24h pour activer votre abonnement.'
-                      .tr,
-              weight: FontWeight.w300,
-              color: Colors.blue,
-              align: TextAlign.center,
-            ),
-          ],
-        ),
-        SpacerHeight(15),
-      ],
+                onPressed: () async {
+                  await controller.requestPaiement();
+                  if (context.mounted) {
+                    if (controller.paiementState.hasError) {
+                      Notify.showFailure(context,
+                          controller.paiementState.errorModel?.error ?? "");
+                    } else if (controller.paiementState.hasData) {
+                      Notify.toastSuccess(
+                          'Demande de paiment prise en compte'.tr);
+                      showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: false,
+                          isDismissible: false,
+                          builder: (context) {
+                            return const Padding(
+                              padding: EdgeInsets.all(20),
+                              child: PaymentStatusComponent(),
+                            );
+                          });
+                    }
+                  }
+                },
+              ),
+              SpacerHeight(40),
+            ],
+          );
+        }),
+      ),
     );
   }
 }

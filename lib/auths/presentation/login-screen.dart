@@ -245,27 +245,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                 },
               ),
-              ListTile(
-                title: SimpleText(
-                  text: "Parent/Bienfaiteur".tr,
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 27,
-                ),
-                onTap: () async {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      alignment: Alignment.bottomCenter,
-                      type: PageTransitionType.rightToLeft,
-                      child: const RegisterParentScreen(),
-                      childCurrent: const LoginScreen(),
-                    ),
-                  );
-                },
-              ),
+              // ListTile(
+              //   title: SimpleText(
+              //     text: "Parent/Bienfaiteur".tr,
+              //   ),
+              //   trailing: const Icon(
+              //     Icons.arrow_forward_ios,
+              //     size: 27,
+              //   ),
+              //   onTap: () async {
+              //     Navigator.pop(context);
+              //     Navigator.push(
+              //       context,
+              //       PageTransition(
+              //         alignment: Alignment.bottomCenter,
+              //         type: PageTransitionType.rightToLeft,
+              //         child: const RegisterParentScreen(),
+              //         childCurrent: const LoginScreen(),
+              //       ),
+              //     );
+              //   },
+              // ),
             ],
           ),
         );

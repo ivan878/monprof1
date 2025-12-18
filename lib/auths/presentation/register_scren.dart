@@ -99,14 +99,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: TextFielApp(
-                                      validator: ValidationBuilder(
-                                              requiredMessage:
-                                                  "Renseignez le nom".tr)
-                                          .minLength(3, 'Nom incorrect'.tr)
-                                          .required()
-                                          .build(),
+                                      // validator: ValidationBuilder(
+                                      //         requiredMessage:
+                                      //             "Renseignez le nom".tr)
+                                      // .minLength(3, 'Nom incorrect'.tr)
+                                      // .required()
+                                      // .build(),
                                       controller: controller.controllerName,
-                                      hinText: 'Nom'.tr,
+                                      hinText: 'Nom (Optionnel)'.tr,
                                       suffixIcon:
                                           const Icon(Icons.person_outline),
                                     ),
@@ -117,13 +117,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: TextFielApp(
-                                      validator: ValidationBuilder(
-                                              requiredMessage:
-                                                  "Renseignez le nom".tr)
-                                          .minLength(3, 'Nom incorrect'.tr)
-                                          .build(),
+                                      // validator: ValidationBuilder(
+                                      //         requiredMessage:
+                                      //             "Renseignez le nom".tr)
+                                      //     .minLength(3, 'Nom incorrect'.tr)
+                                      //     .build(),
                                       controller: controller.controllerLastName,
-                                      hinText: 'Prenom'.tr,
+                                      hinText: 'Prenom (Optionnel)'.tr,
                                       suffixIcon:
                                           const Icon(Icons.person_outline),
                                     ),
@@ -169,13 +169,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: TextFielApp(
-                                      validator: ValidationBuilder(
-                                              requiredMessage: "Votre école".tr)
-                                          .required()
-                                          .build(),
+                                      // validator: ValidationBuilder(
+                                      //         requiredMessage: "Votre école".tr)
+                                      //     // .required()
+                                      //     .build(),
                                       controller:
                                           controller.controllerEtablissement,
-                                      hinText: 'Etablissement'.tr,
+                                      hinText: 'Etablissement (Optionnel)'.tr,
                                       suffixIcon:
                                           const Icon(Icons.school_outlined),
                                     ),
@@ -230,17 +230,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               const SizedBox(height: 10),
                               TextFielApp(
-                                validator: ValidationBuilder(
-                                        requiredMessage:
-                                            "Renseignez un numéro de téléphone"
-                                                .tr)
-                                    .maxLength(9, 'le numéro a 9 chiffre'.tr)
-                                    .minLength(9, 'le numéro a 9 chiffre'.tr)
-                                    .required()
-                                    .build(),
+                                // validator: ValidationBuilder(
+                                //         requiredMessage:
+                                //             "Renseignez un numéro de téléphone"
+                                //                 .tr)
+                                //     .maxLength(9, 'le numéro a 9 chiffre'.tr)
+                                //     .minLength(9, 'le numéro a 9 chiffre'.tr)
+                                //     // .required()
+                                //     .build(),
                                 controller: controller.controllerPhone,
                                 lenght: 9,
-                                hinText: 'Téléphone'.tr,
+                                hinText: 'Téléphone (Optionnel)'.tr,
                                 suffixIcon: const Icon(Icons.phone_outlined),
                               ),
 

@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-loger(Object object) {
+void loger(Object object) {
   if (kDebugMode) {
     log(object.toString());
   }
 }
 
-printer(Object? object, {String type = 'i'}) {
+void printer(Object? object, {String type = 'i'}) {
   if (kDebugMode) {
     switch (type) {
       case 'e':

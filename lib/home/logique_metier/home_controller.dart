@@ -100,17 +100,17 @@ class HomeController extends GetxController {
     update();
   }
 
-  changeMatiere(Matiere? newMatiere) {
+  void changeMatiere(Matiere? newMatiere) {
     matiere = newMatiere;
     update();
   }
 
-  changeCategorie(CategorieStatus? newCategorie) {
+  void changeCategorie(CategorieStatus? newCategorie) {
     categorie = newCategorie;
     update();
   }
 
-  changeCategorieParent(CategorieParentStatus? newCategorie) {
+  void changeCategorieParent(CategorieParentStatus? newCategorie) {
     categorieParent = newCategorie;
     update();
   }
@@ -233,9 +233,7 @@ class HomeController extends GetxController {
         appId: "mutrix_tech.monprof.app",
         currentVersion: packageInfo.version,
       );
-
       var status = await checker.checkUpdate();
-
       printer(
           "updated status  Version from package info ${packageInfo.version}");
       printer(
@@ -244,9 +242,8 @@ class HomeController extends GetxController {
           "updated status currentVersion ${status.currentVersion}"); //return current app version
       printer(
           "updated status newVersionn ${status.newVersion}"); //return the new app version
-      printer("updated status appURL ${status.appURL}"); //return the app url
-      printer(
-          "updated status errorMessage ${status.errorMessage}"); //return error message if found else it will return null
+      printer("updated status appURL ${status.appURL}");
+      printer("updated status errorMessage ${status.errorMessage}");
 
       if (status.canUpdate) {
         return "true";

@@ -20,7 +20,7 @@ class VideoController extends GetxController {
         .replaceAll('-', '_')
         .replaceAll(':', '_')
         .replaceAll('.', '');
-    fileName += ".mprf";
+    fileName += ".mprf.mp4";
     super.onInit();
   }
 
@@ -55,7 +55,7 @@ class VideoController extends GetxController {
     Directory? dir = Platform.isIOS
         ? await getApplicationSupportDirectory()
         : await getExternalStorageDirectory();
-    //final targetFile = Directory("${dir.path}/books/$fileName.pdf");
+    // final targetFile = Directory("${dir.path}/books/$fileName.pdf");
     File targetFile = File("${dir!.path}/$fileName");
     if (targetFile.existsSync()) {
       targetFile.deleteSync(recursive: true);
@@ -102,31 +102,35 @@ class VideoController extends GetxController {
   Future saveVideo() async {
     try {
       // final permission =
-      await getPersmission();
-      directory = await getDirectory();
-      if (!await directory!.exists()) {
-        await directory!.create(recursive: true);
+      bool permissionGranted = await getPersmission();
+      if (permissionGranted || Platform.isIOS) {
+        directory = await getDirectory();
+        if (!await directory!.exists()) {
+          await directory!.create(recursive: true);
+        }
+        File saveFile = File("${directory!.path}/$fileName");
+        loading = true;
+        update();
+        // final head = await header();
+        await Dio().download(
+          cours.video_url,
+          saveFile.path,
+          // options: Options(headers: head),
+          onReceiveProgress: (received, total) {
+            final progressvalue = received / total;
+            printer(progressvalue);
+            progrees = progressvalue;
+            update();
+          },
+        );
+        files = saveFile;
+        await existCour();
+        loading = false;
+        progrees = 0.0;
+        update();
+      } else {
+        Notify.toastError("Permission non accrodee");
       }
-      File saveFile = File("${directory!.path}/$fileName");
-      loading = true;
-      update();
-      // final head = await header();
-      await Dio().download(
-        cours.video_url,
-        saveFile.path,
-        // options: Options(headers: head),
-        onReceiveProgress: (received, total) {
-          final progressvalue = received / total;
-          printer(progressvalue);
-          progrees = progressvalue;
-          update();
-        },
-      );
-      files = saveFile;
-      await existCour();
-      loading = false;
-      progrees = 0.0;
-      update();
     } catch (e) {
       loger(e);
       supprimer();
@@ -136,11 +140,11 @@ class VideoController extends GetxController {
     }
   }
 
-  Future<bool> downloadvideo() async {
-    return await saveVideo();
+  Future downloadvideo() async {
+    return saveVideo();
   }
 
-  existCour() async {
+  Future<void> existCour() async {
     await getPersmission();
     directory = await getDirectory();
     File targetFile = File("${directory!.path}/$fileName");

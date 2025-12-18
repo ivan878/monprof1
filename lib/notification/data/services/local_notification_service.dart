@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:monprof/corps/utils/helper.dart';
+// import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/notification/data/services/fcm_notification_services.dart';
 import 'package:path_provider/path_provider.dart';
 // import 'package:koree/services/marketplace_service.dart';
@@ -34,7 +34,7 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 class LocalNotificationService {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  initLocalNotification() async {
+  Future<void> initLocalNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings('@drawable/ic_launcher'); //app_icon
 
@@ -43,9 +43,9 @@ class LocalNotificationService {
       requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
-      onDidReceiveLocalNotification: (a, b, c, d) {
-        printer("local Notification: $a, $b, $c, $d");
-      },
+      // onDidReceiveLocalNotification: (a, b, c, d) {
+      //   printer("local Notification: $a, $b, $c, $d");
+      // },
     );
 
     final InitializationSettings initializationSettings =

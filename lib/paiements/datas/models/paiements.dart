@@ -6,11 +6,13 @@ class Paiements {
   String numero_client;
   int nombre_de_code;
   int? categorie_id;
+  int? subscription_id;
   Paiements({
     required this.numero_payeur,
     required this.numero_client,
     required this.nombre_de_code,
     this.categorie_id,
+    this.subscription_id,
   });
 
   Paiements copyWith({
@@ -18,12 +20,14 @@ class Paiements {
     String? numero_client,
     int? nombre_de_code,
     int? categorie_id,
+    int? subscription_id,
   }) {
     return Paiements(
       numero_payeur: numero_payeur ?? this.numero_payeur,
       numero_client: numero_client ?? this.numero_client,
       nombre_de_code: nombre_de_code ?? this.nombre_de_code,
       categorie_id: categorie_id ?? this.categorie_id,
+      subscription_id: subscription_id ?? this.subscription_id,
     );
   }
 
@@ -33,6 +37,7 @@ class Paiements {
       'numero_client': numero_client,
       'nombre_de_code': nombre_de_code,
       'categorie_id': categorie_id,
+      'subscription_id': subscription_id,
     };
   }
 
@@ -42,6 +47,8 @@ class Paiements {
       numero_client: map['numero_client'] as String,
       nombre_de_code: map['nombre_de_code'] as int,
       categorie_id: map['categorie_id'] as int,
+      subscription_id:
+          map['subscription_id'] != null ? map['subscription_id'] as int : null,
     );
   }
 

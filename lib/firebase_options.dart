@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB8FIb4lafy8jcSHq-8wTs5ypSIcpyJuAM',
-    appId: '1:281038751817:android:6f2844ce804155f214d798',
-    messagingSenderId: '281038751817',
-    projectId: 'monprof-729ca',
-    storageBucket: 'monprof-729ca.firebasestorage.app',
+    apiKey: 'AIzaSyC0yIoSCBn6PErtCgDB3ErUAOM6Edzygxk',
+    appId: '1:689877979601:android:9975913c61af1f4e8810f0',
+    messagingSenderId: '689877979601',
+    projectId: 'monprof-d8308',
+    storageBucket: 'monprof-d8308.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAHqqhX0a5KiXwlwi5D9jNJR81Pey5UWgs',
-    appId: '1:689877979601:ios:660873ad7500f3578810f0',
+    appId: '1:689877979601:ios:4ec32f12e8d697388810f0',
     messagingSenderId: '689877979601',
     projectId: 'monprof-d8308',
-    storageBucket: 'monprof-d8308.appspot.com',
-    iosBundleId: 'com.example.monprof',
+    storageBucket: 'monprof-d8308.firebasestorage.app',
+    iosBundleId: 'tech.monprof.app',
   );
+
 }

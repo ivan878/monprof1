@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "281038751817",
-    "project_id": "monprof-729ca",
-    "storage_bucket": "monprof-729ca.firebasestorage.app"
+    "project_number": "689877979601",
+    "project_id": "monprof-d8308",
+    "storage_bucket": "monprof-d8308.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:281038751817:android:6f2844ce804155f214d798",
+        "mobilesdk_app_id": "1:689877979601:android:9975913c61af1f4e8810f0",
         "android_client_info": {
           "package_name": "mutrix_tech.monprof.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB8FIb4lafy8jcSHq-8wTs5ypSIcpyJuAM"
+          "current_key": "AIzaSyC0yIoSCBn6PErtCgDB3ErUAOM6Edzygxk"
         }
       ],
       "services": {

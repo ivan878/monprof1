@@ -73,6 +73,7 @@ class _CoursBodyState extends State<CoursBody> {
                               ),
                               child: Column(
                                 children: [
+                                  // if (cours.open || Platform.isAndroid)
                                   BuildCourComponen(
                                     cours: cours,
                                   ),
@@ -144,31 +145,33 @@ class _BuildCourComponenState extends State<BuildCourComponen> {
           overflow: TextOverflow.ellipsis,
         ),
         trailing: Container(
-          child: !widget.cours.open
-              ? const Icon(Icons.lock)
-              : buildPopUpVideo(controller),
+          // child: !widget.cours.open
+          //     ? const Icon(Icons.lock)
+          //     : buildPopUpVideo(controller),
+
+          child: buildPopUpVideo(controller),
         ),
         onTap: () async {
-          if (!widget.cours.open) {
-            changeScreen(context, const PaiementsScreen());
-          } else {
-            printer(widget.cours.video_url);
-            if (controller.isDownloaded) {
-              final File cryptedFile = controller.files;
-              final decryptedFile =
-                  await controller.getFileDecrypted(cryptedFile);
-              if (context.mounted) {
-                changeScreen(
-                  context,
-                  LectureCoursVideo(
-                    video: decryptedFile,
-                  ),
-                );
-              }
-              return;
+          // if (!widget.cours.open) {
+          //   changeScreen(context, const PaiementsScreen());
+          // } else {
+          printer(widget.cours.video_url);
+          if (controller.isDownloaded) {
+            final File cryptedFile = controller.files;
+            final decryptedFile =
+                await controller.getFileDecrypted(cryptedFile);
+            if (context.mounted) {
+              changeScreen(
+                context,
+                LectureCoursVideo(
+                  video: decryptedFile,
+                ),
+              );
             }
-            await controller.downloadvideo();
+            return;
           }
+          await controller.downloadvideo();
+          // }
         },
       ),
     );

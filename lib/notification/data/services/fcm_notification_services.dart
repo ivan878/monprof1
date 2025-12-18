@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/notification/data/services/local_notification_service.dart';
 import 'package:monprof/notification/notification_controller.dart';
+import 'package:monprof/paiements/logique_metier/paiement_controller.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   // LocalNotificationService().showLocalNotification(message);
@@ -84,6 +85,16 @@ class NotificationService {
         if (Get.isRegistered<NotificationController>()) {
           Get.find<NotificationController>()
               .getNotificationList(isRefresh: true);
+        }
+      }
+      if (type == 'PAYMENT_STATUS') {
+        if (Get.isRegistered<PaiementsController>()) {
+          final controller = Get.find<PaiementsController>();
+          controller
+              .changeSuccessPaymentStatue(message.data['status'] == 'SUCCESS');
+          controller.changeFailedPaymentStatue(
+              message.data['status'].toString().toUpperCase() != 'SUCCESS');
+          controller.chanRaisonFialedPayment(message.data['raison_reject']);
         }
       }
     }

@@ -17,7 +17,7 @@ import 'package:monprof/questions/logique_metier/questions_controller.dart';
 import 'package:monprof/questions/presentation/components/pieceJointeScreen.dart';
 import 'package:monprof/questions/presentation/create_question_screen.dart';
 import 'package:monprof/corps/utils/navigation.dart' as navigator;
-import 'package:widget_zoom/widget_zoom.dart';
+// import 'package:widget_zoom/widget_zoom.dart';
 
 class QuestionBody extends StatefulWidget {
   final CoursController controller;
@@ -45,12 +45,13 @@ class _QuestionBodyState extends State<QuestionBody> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0.0,
             onPressed: () {
-              homeController.categorie?.status == true
-                  ? changeScreen(context, const CreateQuestionScreen())
-                  : changeScreen(
-                      context,
-                      const PaiementsScreen(),
-                    );
+              // homeController.categorie?.status == true
+              //     ?
+              changeScreen(context, const CreateQuestionScreen());
+              // : changeScreen(
+              //     context,
+              //     const PaiementsScreen(),
+              //   );
             },
             label: SimpleText(
               text: 'Question'.tr,
@@ -117,31 +118,30 @@ class _QuestionBodyState extends State<QuestionBody> {
                                                     ),
                                                   ),
                                                   Visibility(
-                                                      visible:
-                                                          question.image_url !=
-                                                              null,
-                                                      child: SizedBox(
-                                                          height: 100,
-                                                          child: WidgetZoom(
-                                                            heroAnimationTag:
-                                                                question.id!,
-                                                            zoomWidget:
-                                                                CachedNetworkImage(
-                                                              imageUrl: question
-                                                                  .image_url!,
-                                                              placeholder:
-                                                                  (context,
-                                                                          url) =>
-                                                                      Center(
-                                                                child:
-                                                                    CircularProgressIndicator(
-                                                                  color: white,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ))),
-                                                  buildQuestion(question,
-                                                      homeController, context),
+                                                    visible:
+                                                        question.image_url !=
+                                                            null,
+                                                    child: SizedBox(
+                                                      height: 100,
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            question.image_url!,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            color: white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  buildQuestion(
+                                                    question,
+                                                    homeController,
+                                                    context,
+                                                  ),
                                                 ],
                                               ),
                                             ),

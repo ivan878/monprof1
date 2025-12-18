@@ -1,3 +1,5 @@
+import 'package:monprof/corps/utils/app_state.dart';
+import 'package:monprof/paiements/datas/models/paiement_provider.dart';
 import 'package:monprof/paiements/datas/models/paiements.dart';
 import 'package:monprof/paiements/datas/services/paiements_services.dart';
 
@@ -20,6 +22,15 @@ class PaiementRepository {
       return datas['status'];
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<AppState<List<PaiementProvider>>> getPaymentServices() async {
+    try {
+      final datas = await services.getPaymentServices();
+      return AppState.complete(datas);
+    } catch (e) {
+      return AppState.track(e);
     }
   }
 }
