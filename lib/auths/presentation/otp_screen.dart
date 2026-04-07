@@ -14,10 +14,10 @@ class OtpScreen extends StatefulWidget {
   final String phone;
   final String? otpType;
   const OtpScreen({
-    Key? key,
+    super.key,
     required this.phone,
     this.otpType = OtpType.password,
-  }) : super(key: key);
+  });
 
   @override
   State<OtpScreen> createState() => OtpScreenState();

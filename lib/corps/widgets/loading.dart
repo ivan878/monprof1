@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 
 class Loading extends StatelessWidget {
-  const Loading({Key? key}) : super(key: key);
+  const Loading({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +44,12 @@ class ErrorPage extends StatelessWidget {
   final double? texteSize;
   final Color? textColor;
   const ErrorPage({
-    Key? key,
+    super.key,
     required this.errorMessage,
     this.reload,
     this.texteSize,
     this.textColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

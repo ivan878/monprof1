@@ -20,7 +20,7 @@ class NotificationController extends GetxController {
     super.onInit();
   }
 
-  getNotificationList({bool isRefresh = false}) {
+  void getNotificationList({bool isRefresh = false}) {
     if (isRefresh) {
       currentPage = 1;
     }
@@ -41,7 +41,7 @@ class NotificationController extends GetxController {
     });
   }
 
-  getUnreadNotification() {
+  void getUnreadNotification() {
     unreadNotification = AppState(status: AppStatus.loading);
     update();
     api.getUnreaNotification().then((value) {

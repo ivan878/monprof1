@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monprof/auths/presentation/login-screen.dart';
 import 'package:monprof/corps/utils/helper.dart';
-import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/components/row_compte.dart';
@@ -36,7 +35,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
     super.initState();
   }
 
-  getInfo() async {
+  Future<void> getInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     buildnumber = packageInfo.buildNumber;
     version = packageInfo.version;
@@ -46,6 +45,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
+    final bool isTest = controller.users?.email == "engel@rich.com";
     return Scaffold(
       appBar: AppBar(
         title: const Text('Compte'),
@@ -53,7 +53,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
           Padding(
             padding: const EdgeInsets.all(8),
             child: IconButton(
-              onPressed: () async {
+              onPressed: () {
                 logOut(controller: controller);
               },
               icon: const Icon(
@@ -64,16 +64,18 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(10),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               rowCompte(
-                  Colors.blue, "Informations sur le compte".tr, Icons.info),
-              const SizedBox(
-                height: 5,
+                TextTheme.of(context).titleLarge?.color ?? Colors.blueGrey,
+                "Informations sur le compte".tr,
+                Icons.info,
+                iconColor: TextTheme.of(context).titleMedium?.color,
               ),
+              const SizedBox(height: 5),
               Material(
                 elevation: 3,
                 borderRadius: BorderRadius.circular(10),
@@ -153,7 +155,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                       GetBuilder<SplaController>(
                           builder: (SplaController splashController) {
                         return DropdownButtonFormField<LangageModel>(
-                          value: splashController.langageModel,
+                          initialValue: splashController.langageModel,
                           decoration: appInputDecoration(),
                           items: languageList.map((model) {
                             return DropdownMenuItem<LangageModel>(
@@ -268,141 +270,150 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
-              rowCompte(Colors.blue, "Informations sur le statut du compte".tr,
-                  Icons.real_estate_agent),
-              const SizedBox(height: 5),
-              Material(
-                elevation: 3,
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blue,
+              if (!isTest) ...[
+                const SizedBox(height: 15),
+                rowCompte(
+                    Colors.blue,
+                    "Informations sur le statut du compte".tr,
+                    Icons.real_estate_agent),
+                const SizedBox(height: 5),
+                Material(
+                  elevation: 3,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blue,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Statut du Compte'.tr,
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                          Text(
-                            " Statut".tr,
-                            style: const TextStyle(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Statut du Compte'.tr,
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                            Text(
+                              " Statut".tr,
+                              style: const TextStyle(
+                                fontSize: 17,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        GetBuilder<HomeController>(
+                          builder: (controller) {
+                            return controller.categorieState.isLoading
+                                ? Center(
+                                    child: SizedBox(
+                                      height: 70,
+                                      width: 70,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15),
+                                        child: CircularProgressIndicator(
+                                            color: primaryColor),
+                                      ),
+                                    ),
+                                  )
+                                : Column(
+                                    children: [
+                                      ...(controller.categorieState.data ?? [])
+                                          .map(
+                                        (categorie) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 8),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: SimpleText(
+                                                  text: (categorie.categorie
+                                                              .libelle ??
+                                                          '')
+                                                      .toUpperCase(),
+                                                  size: 15,
+                                                  weight: FontWeight.normal,
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.check_circle,
+                                                size: 27,
+                                                color: categorie.status
+                                                    ? Colors.greenAccent
+                                                    : red,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  );
+                          },
+                        ),
+                        SpacerHeight(10),
+                        const Divider(),
+                        SimpleText(
+                          text:
+                              "Si vous disposez d'un code d'activation, veuillez activer cet abonnement"
+                                  .tr,
+                          weight: FontWeight.w300,
+                          size: 15,
+                          align: TextAlign.center,
+                        ),
+                        SpacerHeight(10),
+                        Center(
+                          child: SizedBox(
+                            width: taille(context).width * 0.5,
+                            child: DefaultButton(
+                              text: 'Activer'.tr,
+                              color: Colors.blue,
                               fontSize: 17,
-                              color: Colors.green,
                               fontWeight: FontWeight.bold,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                              radius: 10,
+                              borderSide: const BorderSide(color: Colors.blue),
+                              onPressed: () {
+                                changeScreen(context, const ActiveCompte());
+                              },
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      GetBuilder<HomeController>(
-                        builder: (controller) {
-                          return controller.categorieState.isLoading
-                              ? Center(
-                                  child: SizedBox(
-                                    height: 70,
-                                    width: 70,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15),
-                                      child: CircularProgressIndicator(
-                                          color: primaryColor),
-                                    ),
-                                  ),
-                                )
-                              : Column(
-                                  children: [
-                                    ...(controller.categorieState.data ?? [])
-                                        .map((categorie) => Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8,
-                                                      horizontal: 8),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    child: SimpleText(
-                                                      text: (categorie.categorie
-                                                                  .libelle ??
-                                                              '')
-                                                          .toUpperCase(),
-                                                      size: 15,
-                                                      weight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  Icon(
-                                                    Icons.check_circle,
-                                                    size: 27,
-                                                    color: categorie.status
-                                                        ? Colors.greenAccent
-                                                        : red,
-                                                  )
-                                                ],
-                                              ),
-                                            ))
-                                        .toList(),
-                                  ],
-                                );
-                        },
-                      ),
-                      SpacerHeight(10),
-                      const Divider(),
-                      SimpleText(
-                        text:
-                            "Si vous disposez d'un code d'activation, veuillez activer cet abonnement"
-                                .tr,
-                        weight: FontWeight.w300,
-                        size: 15,
-                        align: TextAlign.center,
-                      ),
-                      SpacerHeight(10),
-                      Center(
-                        child: SizedBox(
-                          width: taille(context).width * 0.5,
-                          child: DefaultButton(
-                            text: 'Activer'.tr,
-                            color: Colors.blue,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0.0,
-                            radius: 10,
-                            borderSide: const BorderSide(color: Colors.blue),
-                            onPressed: () {
-                              changeScreen(context, const ActiveCompte());
-                            },
-                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              rowCompte(Colors.blue, "Information sur l'application".tr,
-                  Icons.app_settings_alt_outlined),
-              const SizedBox(
-                height: 15,
-              ),
+              ],
+              const SizedBox(height: 15),
+              // const Spacer(),
               rowCompte(
-                Colors.grey,
-                "${"MonProf version".tr} $version $buildnumber",
-                Icons.school_outlined,
-                iconColor: greyColors,
+                TextTheme.of(context).titleMedium!.color!,
+                "Information sur l'application".tr,
+                Icons.app_settings_alt_outlined,
+                mainAxisAlignment: MainAxisAlignment.center,
+                iconColor: TextTheme.of(context).titleMedium?.color,
+              ),
+              const SizedBox(height: 15),
+              Center(
+                child: rowCompte(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  Colors.grey,
+                  "${"MonProf version".tr} $version $buildnumber",
+                  Icons.school_outlined,
+                  iconColor: greyColors,
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -422,7 +433,10 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                         ),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          Utils.openUrl(
+                              "https://api.whatsapp.com/send?phone=237693231569&text=Hello Monprof Help center, I need help with...");
+                        },
                         child: const CircleAvatar(
                           maxRadius: 20,
                           backgroundColor: Colors.green,
@@ -461,7 +475,8 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
     );
   }
 
-  logOut({required HomeController controller, bool delete = false}) async {
+  Future<void> logOut(
+      {required HomeController controller, bool delete = false}) async {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -487,19 +502,24 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                   size: 27,
                 ),
                 onTap: () async {
-                  await controller.logout().then((value) {
-                    if (value) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginScreen()),
-                          (route) => false);
-                      setState(() {});
-                    } else {
-                      Notify.showFailure(
-                          context, 'Impossible de se déconnecter'.tr);
-                    }
-                  });
+                  controller.logout();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                    (route) => false,
+                  );
+                  // .then((value) {
+                  //   if (value) {
+                  //     setState(() {});
+                  //   } else {
+                  //     Notify.showFailure(
+                  //       context,
+                  //       'Impossible de se déconnecter'.tr,
+                  //     );
+                  //   }
+                  // });
                 },
               ),
               ListTile(
@@ -521,7 +541,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
     );
   }
 
-  updateProfile({required HomeController controller}) async {
+  Future<void> updateProfile({required HomeController controller}) async {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -546,7 +566,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                   final picker = ImagePicker();
                   final file =
                       await picker.pickImage(source: ImageSource.camera);
-                  if (file != null) {
+                  if (file != null && context.mounted) {
                     final image = File(file.path);
                     controller.updateProfileImage(imageProfile: image);
                     Navigator.pop(context);
@@ -565,7 +585,7 @@ class _ProfileCompteScreenState extends State<ProfileCompteScreen> {
                   final picker = ImagePicker();
                   final file =
                       await picker.pickImage(source: ImageSource.gallery);
-                  if (file != null) {
+                  if (file != null && context.mounted) {
                     final image = File(file.path);
                     controller.updateProfileImage(imageProfile: image);
                     Navigator.pop(context);

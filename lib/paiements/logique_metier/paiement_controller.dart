@@ -29,32 +29,32 @@ class PaiementsController extends GetxController {
 
   CategorieParentStatus? categorie;
 
-  changeCategorieParent(CategorieParentStatus? newCategorie) {
+  void changeCategorieParent(CategorieParentStatus? newCategorie) {
     categorie = newCategorie;
     update();
   }
 
-  changeSuccessPaymentStatue(bool val) {
+  void changeSuccessPaymentStatue(bool val) {
     successPayment = val;
     update();
   }
 
-  changeFailedPaymentStatue(bool val) {
+  void changeFailedPaymentStatue(bool val) {
     failedPayment = val;
     update();
   }
 
-  chanRaisonFialedPayment(String? val) {
+  void chanRaisonFialedPayment(String? val) {
     raisonFailedPayment = val;
     update();
   }
 
-  changePaymentProvider(PaiementProvider? newPaiementProvider) {
+  void changePaymentProvider(PaiementProvider? newPaiementProvider) {
     paiementProvider = newPaiementProvider;
     update();
   }
 
-  selectPaymentProviderFromNumber(String numero) {
+  void selectPaymentProviderFromNumber(String numero) {
     final data = paiementProviderState.data ?? [];
     // paiementProvider =
     //     paiementProviderState.data?.firstWhereOrNull((element) {});
@@ -75,7 +75,7 @@ class PaiementsController extends GetxController {
 
   int get totalPrice =>
       (int.tryParse(controllerQuantite.text) ?? 1) * categorie!.categorie.prix!;
-  changeQuantite(String val) {
+  void changeQuantite(String val) {
     update();
   }
 
@@ -122,7 +122,7 @@ class PaiementsController extends GetxController {
     }
   }
 
-  getPaiementProviders() async {
+  Future<void> getPaiementProviders() async {
     try {
       paiementProviderState = AppState(status: AppStatus.loading);
       update();

@@ -89,7 +89,7 @@ class LocalNotificationService {
     return filePath;
   }
 
-  showLocalNotification(RemoteMessage message) async {
+  Future<void> showLocalNotification(RemoteMessage message) async {
     var notification = message.notification;
     String? filePath;
     if (notification != null) {
@@ -154,7 +154,7 @@ class LocalNotificationService {
 
 ////
   final paylod = {'event_type': 'NEW_ARTICLE', 'topic': "{'id': 23}"};
-  testeNotif() {
+  void testeNotif() {
     final RemoteMessage message = RemoteMessage(
       notification: const RemoteNotification(title: 'teste', body: 'actions'),
       data: paylod,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -49,22 +51,22 @@ class RegisterController extends GetxController {
     super.onInit();
   }
 
-  chanObscureText(bool obscure) {
+  void chanObscureText(bool obscure) {
     obscureText = obscure;
     update();
   }
 
-  changePolitique(bool value) {
+  void changePolitique(bool value) {
     politiqueAccepted = value;
     update();
   }
 
-  changeClasse(Classe? classeChoices) {
+  void changeClasse(Classe? classeChoices) {
     classe = classeChoices;
     update();
   }
 
-  changeSexe(String? sexe) {
+  void changeSexe(String? sexe) {
     controllerSexe = sexe ?? '';
     update();
   }
@@ -75,15 +77,23 @@ class RegisterController extends GetxController {
       update();
       try {
         Users users = Users(
-          name: controllerName.text,
+          name: controllerName.text.trim().isEmpty
+              ? "Name to complete"
+              : controllerName.text,
           email: controllerEmail.text,
-          phone: controllerPhone.text,
-          lastName: controllerLastName.text,
+          phone: controllerPhone.text.isEmpty
+              ? "+237${generatePhoneWith9Digits()}"
+              : controllerPhone.text,
+          lastName: controllerLastName.text.trim().isEmpty
+              ? "LastName to complete"
+              : controllerLastName.text,
         );
         Eleve eleve = Eleve(
-          etablissement: controllerEtablissement.text,
+          etablissement: controllerEtablissement.text.isEmpty
+              ? "Etablissement to complete"
+              : controllerEtablissement.text,
           sexe: controllerSexe,
-          classeId: classe!.id!,
+          classeId: classe?.id ?? classes?.first.id,
         );
         final data =
             await repository.register(users, eleve, controllerPassword.text);
@@ -164,10 +174,21 @@ class RegisterController extends GetxController {
     }
   }
 
-  resetPhoneFromFirestore(String phone) async {
+  Future<void> resetPhoneFromFirestore(String phone) async {
     final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
     FirebaseFirestore.instance.collection('UserDevices').doc(phone).set({
       'user_device': mobileDeviceIdentifier,
     });
   }
+}
+
+String generatePhoneWith9Digits() {
+  final Random random = Random();
+  String randomNumber = '';
+
+  for (int i = 0; i < 9; i++) {
+    randomNumber += random.nextInt(10).toString();
+  }
+
+  return randomNumber;
 }

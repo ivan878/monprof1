@@ -76,7 +76,7 @@ class _PaimentParentScreenState extends State<PaimentParentScreen> {
                                                   .tr)
                                       : DropdownButtonFormField<
                                               CategorieParentStatus?>(
-                                          value: controller.categorie,
+                                          initialValue: controller.categorie,
                                           validator: (value) {
                                             return value == null
                                                 ? "choisir une catégorie".tr

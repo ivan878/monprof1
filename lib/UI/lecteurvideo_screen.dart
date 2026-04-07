@@ -10,8 +10,8 @@ class Lecteurvideo extends StatefulWidget {
   const Lecteurvideo({
     // required this.videoPlayerController,
     required this.file,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   @override
   State<Lecteurvideo> createState() => _LecteurvideoState();
 }
@@ -54,7 +54,7 @@ class _LecteurvideoState extends State<Lecteurvideo> {
 
 class LectureCoursVideo extends StatefulWidget {
   final File video;
-  const LectureCoursVideo({Key? key, required this.video}) : super(key: key);
+  const LectureCoursVideo({super.key, required this.video});
 
   @override
   State<LectureCoursVideo> createState() => _LectureCoursVideState();

@@ -33,7 +33,7 @@ class NotificationService {
     initPushNotification();
   }
 
-  initPushNotification() async {
+  Future<void> initPushNotification() async {
     FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       sound: true,
@@ -47,25 +47,25 @@ class NotificationService {
     FirebaseMessaging.onMessage.listen(handleOnMessage);
   }
 
-  handleMessageOpenApp(RemoteMessage? message) async {
+  Future<void> handleMessageOpenApp(RemoteMessage? message) async {
     if (message == null) return;
 
     handleOnReceiveMessage(message);
   }
 
-  handleGetInitialMessage(RemoteMessage? message) async {
-    if (message == null) return;
-    LocalNotificationService().showLocalNotification(message);
-    handleOnReceiveMessage(message);
-  }
-
-  handleMessage(RemoteMessage? message) async {
+  Future<void> handleGetInitialMessage(RemoteMessage? message) async {
     if (message == null) return;
     LocalNotificationService().showLocalNotification(message);
     handleOnReceiveMessage(message);
   }
 
-  handleOnMessage(RemoteMessage message) async {
+  Future<void> handleMessage(RemoteMessage? message) async {
+    if (message == null) return;
+    LocalNotificationService().showLocalNotification(message);
+    handleOnReceiveMessage(message);
+  }
+
+  Future<void> handleOnMessage(RemoteMessage message) async {
     printer(message.notification?.toMap(), type: 'w');
     if (Platform.isAndroid) {
       LocalNotificationService().showLocalNotification(message);

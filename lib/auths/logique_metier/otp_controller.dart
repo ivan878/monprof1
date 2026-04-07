@@ -69,7 +69,7 @@ class OtpController extends GetxController {
     update();
   }
 
-  resetPhoneFromFirestore(String phone) async {
+  Future<void> resetPhoneFromFirestore(String phone) async {
     final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
     FirebaseFirestore.instance.collection('UserDevices').doc(phone).set({
       'user_device': mobileDeviceIdentifier,

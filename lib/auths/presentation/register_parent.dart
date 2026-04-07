@@ -138,7 +138,7 @@ class _RegisterScreenState extends State<RegisterParentScreen> {
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
                         focusColor: Colors.white,
-                        value: controller.controllerSexe,
+                        initialValue: controller.controllerSexe,
                         alignment: AlignmentDirectional.centerStart,
                         isExpanded: true,
 

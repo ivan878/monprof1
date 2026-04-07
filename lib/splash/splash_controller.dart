@@ -34,7 +34,7 @@ class SplaController extends GetxController {
     );
   }
 
-  changeLangaue(LangageModel langageModel) async {
+  Future<void> changeLangaue(LangageModel langageModel) async {
     this.langageModel = langageModel;
     update();
     await updateLocal(langageModel.locale);

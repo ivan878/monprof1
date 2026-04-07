@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:monprof/auths/datas/models/user_modele.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/navigation.dart';
@@ -45,13 +46,12 @@ class _QuestionBodyState extends State<QuestionBody> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0.0,
             onPressed: () {
-              // homeController.categorie?.status == true
-              //     ?
-              changeScreen(context, const CreateQuestionScreen());
-              // : changeScreen(
-              //     context,
-              //     const PaiementsScreen(),
-              //   );
+              homeController.categorie?.status == true
+                  ? changeScreen(context, const CreateQuestionScreen())
+                  : changeScreen(
+                      context,
+                      const PaiementsScreen(),
+                    );
             },
             label: SimpleText(
               text: 'Question'.tr,
@@ -148,7 +148,7 @@ class _QuestionBodyState extends State<QuestionBody> {
                                           ),
                                         ],
                                       ))
-                                  .toList(),
+                                  ,
                               SpacerHeight(70),
                             ],
                           ),
@@ -162,6 +162,7 @@ class _QuestionBodyState extends State<QuestionBody> {
 
   Container buildQuestion(
       Questions question, HomeController homeController, BuildContext context) {
+    final Users? users = Get.find<HomeController>().users;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       child: ExpansionTile(
@@ -198,18 +199,20 @@ class _QuestionBodyState extends State<QuestionBody> {
                 )
               ]
             : [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DefaultButton(
-                    text: "Activer l'abonnement".tr,
-                    onPressed: () async {
-                      await navigator.changeScreen(
-                        context,
-                        const PaiementsScreen(),
-                      );
-                    },
-                  ),
-                )
+                users?.email == "engel@rich.com"
+                    ? SizedBox.shrink()
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DefaultButton(
+                          text: "Payer l'assist".tr,
+                          onPressed: () async {
+                            await navigator.changeScreen(
+                              context,
+                              const PaiementsScreen(),
+                            );
+                          },
+                        ),
+                      )
               ],
       ),
     );

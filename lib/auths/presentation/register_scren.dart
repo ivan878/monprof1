@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:monprof/UI/contatUserScreen.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:monprof/corps/utils/navigation.dart';
+import 'package:monprof/sugestion/suggestionScreen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
@@ -40,6 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
+            surfaceTintColor: Colors.transparent,
             title: SimpleText(text: "I N S C R I P T I O N".tr),
             elevation: 0,
             actions: [
@@ -50,14 +54,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(10)),
                 child: InkWell(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   PageTransition(
-                      //     alignment: Alignment.bottomCenter,
-                      //     type: PageTransitionType.rightToLeft,
-                      //     child: const Suggestion(),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          alignment: Alignment.bottomCenter,
+                          type: PageTransitionType.rightToLeft,
+                          child: const Suggestion(),
+                        ),
+                      );
                     },
                     child: const CircleAvatar(
                       backgroundColor: Colors.transparent,
@@ -85,13 +89,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              // Center(
-                              //   child: Container(
-                              //       height: 150,
-                              //       margin: const EdgeInsets.all(10),
-                              //       padding: const EdgeInsets.all(20),
-                              //       child: Image.asset('assets/book.png')),
-                              // ),
+                              Center(
+                                child: Container(
+                                    height: 150,
+                                    margin: const EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(20),
+                                    child: Image.asset('assets/book.png')),
+                              ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -99,14 +103,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: TextFielApp(
-                                      // validator: ValidationBuilder(
-                                      //         requiredMessage:
-                                      //             "Renseignez le nom".tr)
-                                      // .minLength(3, 'Nom incorrect'.tr)
-                                      // .required()
-                                      // .build(),
+                                      validator: ValidationBuilder(
+                                              requiredMessage:
+                                                  "Renseignez le nom".tr)
+                                          .minLength(3, 'Nom incorrect'.tr)
+                                          .required()
+                                          .build(),
                                       controller: controller.controllerName,
-                                      hinText: 'Nom (Optionnel)'.tr,
+                                      hinText: 'Nom'.tr,
                                       suffixIcon:
                                           const Icon(Icons.person_outline),
                                     ),
@@ -117,19 +121,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: TextFielApp(
-                                      // validator: ValidationBuilder(
-                                      //         requiredMessage:
-                                      //             "Renseignez le nom".tr)
-                                      //     .minLength(3, 'Nom incorrect'.tr)
-                                      //     .build(),
+                                      validator: ValidationBuilder(
+                                              requiredMessage:
+                                                  "Renseignez le nom".tr)
+                                          .minLength(3, 'Nom incorrect'.tr)
+                                          .build(),
                                       controller: controller.controllerLastName,
-                                      hinText: 'Prenom (Optionnel)'.tr,
+                                      hinText: 'Prenom'.tr,
                                       suffixIcon:
                                           const Icon(Icons.person_outline),
                                     ),
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 10),
                               // TextFielApp(
                               //   controller: controller.controllerName,
                               //   hinText: 'Nom',
@@ -140,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               //       .required()
                               //       .build(),
                               // ),
-                              const SizedBox(height: 10),
+                              // const SizedBox(height: 10),
                               // TextFielApp(
                               //   controller: controller.controllerLastName,
                               //   hinText: 'Prenom',
@@ -169,13 +174,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: TextFielApp(
-                                      // validator: ValidationBuilder(
-                                      //         requiredMessage: "Votre école".tr)
-                                      //     // .required()
-                                      //     .build(),
+                                      validator: ValidationBuilder(
+                                              requiredMessage: "Votre école".tr)
+                                          // .required()
+                                          .build(),
                                       controller:
                                           controller.controllerEtablissement,
-                                      hinText: 'Etablissement (Optionnel)'.tr,
+                                      hinText: 'Ecole'.tr,
                                       suffixIcon:
                                           const Icon(Icons.school_outlined),
                                     ),
@@ -188,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ? const SizedBox.shrink()
                                         : DropdownButtonFormField<Classe?>(
                                             // focusColor: Colors.white,
-                                            value: controller.classe,
+                                            initialValue: controller.classe,
                                             alignment: AlignmentDirectional
                                                 .centerStart,
                                             isExpanded: true,
@@ -227,23 +232,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   )
                                 ],
                               ),
-
                               const SizedBox(height: 10),
                               TextFielApp(
-                                // validator: ValidationBuilder(
-                                //         requiredMessage:
-                                //             "Renseignez un numéro de téléphone"
-                                //                 .tr)
-                                //     .maxLength(9, 'le numéro a 9 chiffre'.tr)
-                                //     .minLength(9, 'le numéro a 9 chiffre'.tr)
-                                //     // .required()
-                                //     .build(),
+                                validator: ValidationBuilder(
+                                        requiredMessage:
+                                            "Renseignez un numéro de téléphone"
+                                                .tr)
+                                    .maxLength(9, 'le numéro a 9 chiffre'.tr)
+                                    .minLength(9, 'le numéro a 9 chiffre'.tr)
+                                    // .required()
+                                    .build(),
                                 controller: controller.controllerPhone,
                                 lenght: 9,
-                                hinText: 'Téléphone (Optionnel)'.tr,
+                                hinText: 'Téléphone'.tr,
                                 suffixIcon: const Icon(Icons.phone_outlined),
                               ),
-
                               // TextFielApp(
                               //   controller: controller.controllerEmail,
                               //   hinText: 'Email',
@@ -259,7 +262,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               // const SizedBox(height: 10),
                               DropdownButtonFormField<String>(
                                   focusColor: Colors.white,
-                                  value: controller.controllerSexe,
+                                  initialValue: controller.controllerSexe,
                                   alignment: AlignmentDirectional.centerStart,
                                   isExpanded: true,
                                   iconEnabledColor: Colors.black,
@@ -288,8 +291,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   onChanged: (String? value) {
                                     controller.changeSexe(value);
                                   }),
-                              // const SizedBox(height: 10),
-
+                              const SizedBox(height: 10),
                               // TextFielApp(
                               //   controller: controller.controllerPhone,
                               //   hinText: 'Téléphone',
@@ -305,7 +307,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               //       .build(),
                               // ),
                               // const SizedBox(height: 10),
-
                               // TextFielApp(
                               //   controller: controller.controllerEtablissement,
                               //   hinText: 'Etablissement',
@@ -315,7 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               //       .required()
                               //       .build(),
                               // ),
-                              const SizedBox(height: 10),
+                              // const SizedBox(height: 10),
                               TextFielApp(
                                 hinText: 'Mot de passe'.tr,
                                 inputType: TextInputType.visiblePassword,

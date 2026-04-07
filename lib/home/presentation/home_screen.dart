@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
+// import 'package:monprof/auths/datas/models/user_modele.dart';
 
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/cours/file_listen_controller.dart';
+import 'package:monprof/cours/presentation_test/cours_screen_test.dart';
 import 'package:monprof/sugestion/suggestionScreen.dart';
 // import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/corps/utils/navigation.dart';
@@ -69,6 +71,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         repository: GetIt.instance<HomeRepository>(),
       ),
       builder: (HomeController controller) {
+        final bool isTest = controller.users?.email == "engel@rich.com";
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -172,7 +175,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                 .tr)
                                     : DropdownButtonFormField<CategorieStatus?>(
                                         // focusColor: Colors.white,
-                                        value: controller.categorie,
+                                        initialValue: controller.categorie,
                                         validator: (value) {
                                           return value == null
                                               ? "choisir une catégorie".tr
@@ -221,7 +224,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                 .tr)
                                     : DropdownButtonFormField<Matiere?>(
                                         // focusColor: Colors.white,
-                                        value: controller.matiere,
+                                        initialValue: controller.matiere,
                                         validator: (value) {
                                           return value == null
                                               ? "choisir une matière".tr
@@ -262,9 +265,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     if (formkey.currentState!.validate()) {
                                       changeScreen(
                                         context,
-                                        CoursScreen(
-                                            categorie: controller.categorie!,
-                                            matiere: controller.matiere!),
+                                        isTest
+                                            ? CoursScreenTest(
+                                                categorie:
+                                                    controller.categorie!,
+                                                matiere: controller.matiere!)
+                                            : CoursScreen(
+                                                categorie:
+                                                    controller.categorie!,
+                                                matiere: controller.matiere!),
                                       );
                                     }
                                   },

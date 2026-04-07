@@ -7,6 +7,7 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:get/get.dart';
 // import 'package:monprof/UI/lecteurvideo_screen.dart';
 import 'package:monprof/corps/utils/constantes.dart';
+import 'package:monprof/corps/utils/helper.dart';
 // import 'package:monprof/corps/utils/helper.dart';
 // import 'package:monprof/corps/utils/navigation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,7 +44,7 @@ class FileListenController extends GetxController {
     return decryptedFile;
   }
 
-  late StreamSubscription intentSub;
+  // late StreamSubscription intentSub;
   // final RxList<SharedMediaFile> _sharedFiles = <SharedMediaFile>[].obs;
 
   void openFileFromListOfMediaFiles() async {
@@ -85,7 +86,12 @@ class FileListenController extends GetxController {
     //   // Tell the library that we are done processing the intent.
     //   ReceiveSharingIntent.instance.reset();
     // });
-    intentSub.resume();
+    // try {
+    //   // intentSub = Stream.empty().listen((event) {});
+    //   intentSub.resume();
+    // } catch (e) {
+    //   printer("Error initializing intent subscription: $e");
+    // }
   }
 
   @override
@@ -96,13 +102,17 @@ class FileListenController extends GetxController {
 
   @override
   void onClose() {
-    intentSub.cancel();
+    try {
+      // intentSub.cancel();
+    } catch (e) {
+      printer("Error cancelling intent subscription: $e");
+    }
     super.onClose();
   }
 
   @override
   void dispose() {
-    intentSub.cancel();
+    // intentSub.cancel();
     // _sharedFiles.clear();
     super.dispose();
   }

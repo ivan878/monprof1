@@ -88,6 +88,7 @@ Future<Map<String, dynamic>> header() async {
   final preference = await SharedPreferences.getInstance();
   final mobileDeviceIdentifier = await MobileDeviceIdentifier().getDeviceId();
   String? token = UserLocalStorageService(preference: preference).getToken();
+  loger('Bearer $token');
   return {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

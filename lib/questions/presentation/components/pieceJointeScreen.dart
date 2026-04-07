@@ -6,9 +6,9 @@ import 'package:photo_view/photo_view.dart';
 class PieceJointe extends StatefulWidget {
   final String imagepj;
   const PieceJointe({
-    Key? key,
+    super.key,
     required this.imagepj,
-  }) : super(key: key);
+  });
 
   @override
   State<PieceJointe> createState() => _PieceJointeState();

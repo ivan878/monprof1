@@ -13,9 +13,9 @@ import 'package:monprof/corps/widgets/simple_text.dart';
 class OtpPhoneScreen extends StatefulWidget {
   final String type;
   const OtpPhoneScreen({
-    Key? key,
+    super.key,
     this.type = OtpType.password,
-  }) : super(key: key);
+  });
 
   @override
   State<OtpPhoneScreen> createState() => OtpPhoneScreenState();

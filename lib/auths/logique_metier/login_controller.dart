@@ -21,7 +21,7 @@ class LoginController extends GetxController {
   AppState<Users?> state = AppState<Users?>();
   bool obscureText = true;
 
-  chanObscureText() {
+  void chanObscureText() {
     obscureText = !obscureText;
     update();
   }

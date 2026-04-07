@@ -9,7 +9,7 @@ import 'package:monprof/auths/presentation/login-screen.dart';
 // ignore_for_file: file_names
 
 class SpashScreen extends StatefulWidget {
-  const SpashScreen({Key? key}) : super(key: key);
+  const SpashScreen({super.key});
 
   @override
   State<SpashScreen> createState() => _SpashScreenState();
@@ -44,7 +44,7 @@ class _SpashScreenState extends State<SpashScreen> {
     super.initState();
   }
 
-  chekUser() async {}
+  Future<void> chekUser() async {}
 
   @override
   Widget build(BuildContext context) {

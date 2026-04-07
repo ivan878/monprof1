@@ -12,8 +12,7 @@ import 'package:monprof/corps/widgets/simple_text.dart';
 class ResetPasswordScreen extends StatefulWidget {
   final String code;
   final String phone;
-  const ResetPasswordScreen({Key? key, required this.code, required this.phone})
-      : super(key: key);
+  const ResetPasswordScreen({super.key, required this.code, required this.phone});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();

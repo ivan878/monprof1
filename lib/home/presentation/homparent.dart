@@ -297,7 +297,7 @@ class _HomeParentScreenState extends State<HomeParentScreen> {
         });
   }
 
-  logOut({required HomeController controller, bool delete = false}) async {
+  Future<void> logOut({required HomeController controller, bool delete = false}) async {
     showModalBottomSheet(
       context: context,
       builder: (context) {

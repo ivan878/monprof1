@@ -1,0 +1,86 @@
+import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:flutter/material.dart';
+import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/cours/presentation_test/componens/cour_body_test.dart';
+import 'package:monprof/home/data/models/categorie_model.dart';
+import 'package:monprof/home/data/models/matieres_models.dart';
+import 'package:monprof/home/logique_metier/home_controller.dart';
+import 'package:monprof/cours/logique_metier/cours_controller.dart';
+// import 'package:monprof/cours/presentation/componens/cour_body.dart';z
+import 'package:monprof/cours/data/repository/cours_repository.dart';
+import 'package:monprof/questions/presentation/question_body.dart';
+// import 'package:monprof/auths/datas/models/classe_model.dart';
+
+class CoursScreenTest extends StatefulWidget {
+  final CategorieStatus categorie;
+  final Matiere matiere;
+  const CoursScreenTest(
+      {super.key, required this.categorie, required this.matiere});
+
+  @override
+  State<CoursScreenTest> createState() => _CoursScreenTestState();
+}
+
+class _CoursScreenTestState extends State<CoursScreenTest> {
+  late CategorieStatus categorie;
+  late Matiere matiere;
+  int indextab = 0;
+
+  @override
+  void initState() {
+    categorie = widget.categorie;
+    matiere = widget.matiere;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder(
+        init: CoursController(
+          repository: GetIt.instance<CoursRepository>(),
+          matiere: matiere,
+          categorie: categorie.categorie,
+        ),
+        builder: (CoursController controller) {
+          return DefaultTabController(
+            length: 2,
+            child: RefreshIndicator(
+              onRefresh: () async {},
+              child: Scaffold(
+                appBar: AppBar(
+                  title: SimpleText(
+                      text: HomeController.data.classe?.libelle ?? 'Classe'.tr),
+                  bottom: TabBar(
+                    onTap: (value) {
+                      setState(() {
+                        indextab = value;
+                      });
+                    },
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    tabs: [
+                      Tab(
+                        icon: const Icon(Icons.book),
+                        text: 'Programe des cours'.tr,
+                      ),
+                      Tab(
+                        icon: const Icon(Icons.message),
+                        text: 'Forum'.tr,
+                      ),
+                    ],
+                  ),
+                ),
+                body: TabBarView(
+                  children: [
+                    CoursBodyTest(
+                      controller: controller,
+                    ),
+                    QuestionBody(controller: controller),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+}

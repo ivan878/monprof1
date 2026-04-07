@@ -41,7 +41,7 @@ class _PaiementsScreenState extends State<PaiementsScreen> {
       builder: (PaiementsController controller) {
         return Scaffold(
             appBar: AppBar(
-              title: Text("Paiement d'un abonnement".tr),
+              title: Text("Paiement d'une place".tr),
             ),
             body: Container(
               padding: const EdgeInsets.all(8.0),

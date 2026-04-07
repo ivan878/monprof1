@@ -5,7 +5,7 @@ class PaiementProvider {
   final String? description;
   final int status;
   final String subtitle;
-  final int isActive;
+  final bool isActive;
   final String regExp;
   final int? subscriptionId;
   final String? sens;
@@ -33,7 +33,7 @@ class PaiementProvider {
       description: map['description'],
       status: map['status'],
       subtitle: map['subtitle'],
-      isActive: map['is_active'],
+      isActive: map['is_active'] == 1,
       regExp: map['reg_exp'],
       subscriptionId: map['subscription_id'],
       sens: map['sens'],
