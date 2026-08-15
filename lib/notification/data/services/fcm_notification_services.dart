@@ -2,11 +2,8 @@
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:get/get.dart';
-
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/notification/data/services/local_notification_service.dart';
-import 'package:monprof/notification/notification_controller.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   // LocalNotificationService().showLocalNotification(message);
@@ -80,12 +77,7 @@ class NotificationService {
       loger("Notification ${message?.data}");
       printer(message?.data ?? '', type: '');
       final type = message!.data['EVENT_TYPE'];
-      if (type == 'APP_MESSAGE') {
-        if (Get.isRegistered<NotificationController>()) {
-          Get.find<NotificationController>()
-              .getNotificationList(isRefresh: true);
-        }
-      }
+      if (type == 'APP_MESSAGE') {}
     }
   }
 }

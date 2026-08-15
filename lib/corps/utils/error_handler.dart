@@ -1,46 +1,29 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/error_model.dart';
 import 'package:monprof/corps/utils/notify.dart';
 
-// import 'package:firebase_core/firebase_core.dart';
-
-///
-///Le fichier que voicie contient les fonctions de gestion des erreur
-///
-
-// Gestion des errrue globale
-
 ErrorModel returnError(error) {
-  // error.printInfo();
   switch (error.runtimeType) {
     case SocketException:
-      // printer('socket exception');
-      return ErrorModel.fromMap({"error": 'Erreur de connection internet'.tr});
+      return ErrorModel.fromMap({"error": 'Erreur de connection internet'});
     case TimeoutException:
-      // printer('socket exception');
       return ErrorModel.fromMap(
-          {"error": 'Delet d\'attente dépaasé veillez réssayer'.tr});
+          {"error": 'Délai d\'attente dépassé, veuillez réessayer'});
     case PlatformException:
       printer(error);
-      return ErrorModel.fromMap({"error": 'Erreur systeme inconnue'.tr});
+      return ErrorModel.fromMap({"error": 'Erreur système inconnue'});
     case CustomException:
       return ErrorModel(error: error.error.toString());
-
     case DioException:
-      // printer('error dio');
       return manageDioError(error as DioException);
     default:
-      // printer('cant\'t get error type ${error.runtimeType}');
       return ErrorModel.fromMap({'error': error.toString()});
   }
 }
-
-// Gestion des erreur web service du packages Dio
 
 ErrorModel manageDioError(DioException except) {
   final code = except.response?.statusCode;
@@ -50,15 +33,15 @@ ErrorModel manageDioError(DioException except) {
   }
   switch (code) {
     case 401:
-      Notify.toastError("Vous devez vous reconnecter".tr);
+      Notify.toastError('Vous devez vous reconnecter');
       return ErrorModel.fromMap(
-          {"error": 'AUthorisation refusée'.tr, 'code': code});
+          {"error": 'Autorisation refusée', 'code': code});
     case 403:
       printer(except.response?.data['error'] ??
           except.response?.data ??
           except.response?.statusMessage);
       return ErrorModel.fromMap({
-        "error": except.response?.statusMessage ?? 'Données incorrectes'.tr,
+        "error": except.response?.statusMessage ?? 'Données incorrectes',
         'code': code
       });
     case 500:
@@ -69,13 +52,13 @@ ErrorModel manageDioError(DioException except) {
         "error": except.response?.data['error'] ??
             except.response?.data ??
             except.response?.statusMessage ??
-            'Erreur de serveur interne'.tr,
+            'Erreur de serveur interne',
         'code': code
       });
     case 404:
       return ErrorModel.fromMap({
         'error': except.response?.data['error'] ??
-            'Connection au serveur impossible'.tr,
+            'Connexion au serveur impossible',
         'code': code
       });
     case null:
@@ -84,26 +67,22 @@ ErrorModel manageDioError(DioException except) {
       return ErrorModel.fromMap({
         'code': code,
         'error': except.response?.data['error'] ??
-            "Quelque chose n'a pas fonctionné".tr
+            "Quelque chose n'a pas fonctionné"
       });
   }
 }
-
-// Gestion des erreur inconnues .
 
 ErrorModel returnCatchError(error) {
   switch (error.runtimeType) {
     case SocketException:
       printer('error SOCKET $error');
-      return ErrorModel.fromMap({"error": 'Erreur de connection internet'.tr});
-
+      return ErrorModel.fromMap({"error": 'Erreur de connection internet'});
     case HttpException:
       printer('error HTTP');
-      return ErrorModel.fromMap({"error": 'Erreur de connection internet'.tr});
+      return ErrorModel.fromMap({"error": 'Erreur de connection internet'});
     default:
-      // printer('cant\'t get error type');
       return ErrorModel.fromMap(
-          {'error': "Quelque chose n'a pas fonctionné".tr});
+          {'error': "Quelque chose n'a pas fonctionné"});
   }
 }
 

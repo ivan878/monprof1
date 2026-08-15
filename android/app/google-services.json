@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "281038751817",
-    "project_id": "monprof-729ca",
-    "storage_bucket": "monprof-729ca.firebasestorage.app"
+    "project_number": "382795080487",
+    "project_id": "prepas-concours",
+    "storage_bucket": "prepas-concours.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:281038751817:android:6f2844ce804155f214d798",
+        "mobilesdk_app_id": "1:382795080487:android:9b8c5e266f9bd3192f3f02",
         "android_client_info": {
-          "package_name": "mutrix_tech.monprof.app"
+          "package_name": "mutrix.app.concours"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "382795080487-q1lhkqhn4ivrv0au85j6260ipssgeco6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyB8FIb4lafy8jcSHq-8wTs5ypSIcpyJuAM"
+          "current_key": "AIzaSyADTW5nAk-HGCowUdD3PDgX-V742UMfRJo"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382795080487-q1lhkqhn4ivrv0au85j6260ipssgeco6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -57,8 +57,8 @@ class _TextFielAppState extends State<TextFielApp> {
       validator: widget.validator,
       inputFormatters: widget.inputFormatters,
       maxLength: widget.lenght,
-      minLines: widget.minLine,
-      maxLines: widget.maxLines,
+      minLines: (widget.obscureTexte ?? false) ? 1 : widget.minLine,
+      maxLines: (widget.obscureTexte ?? false) ? 1 : widget.maxLines,
       decoration: appInputDecoration(
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.suffixIcon,

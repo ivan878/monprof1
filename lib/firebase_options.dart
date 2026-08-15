@@ -50,11 +50,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB8FIb4lafy8jcSHq-8wTs5ypSIcpyJuAM',
-    appId: '1:281038751817:android:6f2844ce804155f214d798',
-    messagingSenderId: '281038751817',
-    projectId: 'monprof-729ca',
-    storageBucket: 'monprof-729ca.firebasestorage.app',
+    apiKey: 'AIzaSyADTW5nAk-HGCowUdD3PDgX-V742UMfRJo',
+    appId: '1:382795080487:android:9b8c5e266f9bd3192f3f02',
+    messagingSenderId: '382795080487',
+    projectId: 'prepas-concours',
+    storageBucket: 'prepas-concours.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

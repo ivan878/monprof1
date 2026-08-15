@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/prepa/common/prepa_theme.dart';
+import 'package:monprof/prepa/home/home_controller.dart';
+import 'package:monprof/prepa/home/widgets/home_concours_scroll.dart';
+import 'package:monprof/prepa/home/widgets/home_historique_section.dart';
+import 'package:monprof/prepa/home/widgets/home_section_header.dart';
+import 'package:monprof/prepa/home/widgets/home_vos_concours_section.dart';
+import 'package:provider/provider.dart';
+
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<HomeController>().load(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<HomeController>(
+      builder: (context, ctrl, _) {
+        return Scaffold(
+          backgroundColor: const Color(0xFFF5F5F5),
+          appBar: _buildAppBar(ctrl),
+          body: RefreshIndicator(
+            onRefresh: ctrl.refresh,
+            color: prepaPrimaryColor,
+            child: ListView(
+              padding: const EdgeInsets.only(bottom: 32),
+              children: [
+                const SizedBox(height: 12),
+                HomeSectionHeader(title: 'Concours en cours'),
+                HomeConcoursScroll(ctrl: ctrl),
+                const SizedBox(height: 20),
+                HomeSectionHeader(
+                  title: 'Vos Concours',
+                  actionLabel: 'Voir tout',
+                  onAction: () {},
+                ),
+                HomeVosConcoursSection(ctrl: ctrl),
+                const SizedBox(height: 20),
+                HomeSectionHeader(
+                  title: 'Historique des cours',
+                  actionLabel: 'Voir tout',
+                  onAction: () {},
+                ),
+                HomeHistoriqueSection(ctrl: ctrl),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  AppBar _buildAppBar(HomeController ctrl) {
+    final initials = _userInitials(ctrl);
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          Icon(Icons.school_rounded, color: prepaPrimaryColor, size: 26),
+          const SizedBox(width: 8),
+          const SimpleText(
+            text: 'Prépas Concours',
+            size: 18,
+            weight: FontWeight.bold,
+          ),
+          const Spacer(),
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: prepaPrimaryColor,
+            child: SimpleText(
+              text: initials,
+              size: 13,
+              weight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _userInitials(HomeController ctrl) {
+    final name = ctrl.user?.name ?? '';
+    if (name.isEmpty) return '?';
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name.substring(0, name.length.clamp(0, 2)).toUpperCase();
+  }
+}

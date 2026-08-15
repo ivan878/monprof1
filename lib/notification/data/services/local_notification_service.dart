@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:monprof/corps/utils/helper.dart';
+// import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/notification/data/services/fcm_notification_services.dart';
 import 'package:path_provider/path_provider.dart';
 // import 'package:koree/services/marketplace_service.dart';
@@ -43,9 +43,9 @@ class LocalNotificationService {
       requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
-      onDidReceiveLocalNotification: (a, b, c, d) {
-        printer("local Notification: $a, $b, $c, $d");
-      },
+      // onDidReceiveLocalNotification: (a, b, c, d) {
+      //   printer("local Notification: $a, $b, $c, $d");
+      // },
     );
 
     final InitializationSettings initializationSettings =
@@ -130,7 +130,7 @@ class LocalNotificationService {
           AndroidNotificationDetails(
         androidChanel.id,
         androidChanel.name,
-        icon: '@drawable/ic_launcher',
+        icon: '@drawable/launcher_icon',
         channelDescription: androidChanel.description,
         styleInformation: informations,
         importance: Importance.max,
