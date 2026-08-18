@@ -8,7 +8,8 @@ import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/auth/data/models/prepa_user.dart';
 import 'package:monprof/prepa/user/controllers/profile_controller.dart';
 import 'package:monprof/prepa/user/screens/complete_profile_screen.dart';
-import 'package:monprof/prepa/user/screens/profile_screen.dart' show showLogoutDialog;
+import 'package:monprof/prepa/user/screens/profile_screen.dart'
+    show showLogoutDialog, showRemoveAccountDialog;
 import 'package:provider/provider.dart';
 import 'package:monprof/prepa/user/screens/update_password_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -98,26 +99,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                   ),
-                  _Divider(),
-                  _SettingsRow(
-                    icon: _IconBox(
-                        icon: Icons.school_outlined,
-                        color: Colors.green.shade500),
-                    title: 'Exam Preferences',
-                    onTap: () {
-                      Notify.toast('Fonctionnalité bientôt disponible');
-                    },
-                  ),
-                  _Divider(),
-                  _SettingsRow(
-                    icon: _IconBox(
-                        icon: Icons.notifications_outlined,
-                        color: Colors.purple.shade400),
-                    title: 'Notifications',
-                    onTap: () {
-                      Notify.toast('Fonctionnalité bientôt disponible');
-                    },
-                  ),
+                  // _Divider(),
+                  // _SettingsRow(
+                  //   icon: _IconBox(
+                  //       icon: Icons.school_outlined,
+                  //       color: Colors.green.shade500),
+                  //   title: 'Exam Preferences',
+                  //   onTap: () {
+                  //     Notify.toast('Fonctionnalité bientôt disponible');
+                  //   },
+                  // ),
+                  // _Divider(),
+                  // _SettingsRow(
+                  //   icon: _IconBox(
+                  //       icon: Icons.notifications_outlined,
+                  //       color: Colors.purple.shade400),
+                  //   title: 'Notifications',
+                  //   onTap: () {
+                  //     Notify.toast('Fonctionnalité bientôt disponible');
+                  //   },
+                  // ),
                 ],
               ),
 
@@ -129,8 +130,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   _SettingsRow(
                     icon: _IconBox(
-                        icon: Icons.language_rounded,
-                        color: Colors.blue.shade600),
+                      icon: Icons.language_rounded,
+                      color: Colors.blue.shade600,
+                    ),
                     title: 'Language',
                     trailing: SimpleText(
                       text: 'Français',
@@ -152,17 +154,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             color: Colors.blueGrey.shade600),
                         const SizedBox(width: 14),
                         Expanded(
-                          child: SimpleText(
-                              text: 'Dark Mode', size: 14),
+                          child: SimpleText(text: 'Dark Mode', size: 14),
                         ),
                         Switch(
                           value: _darkMode,
                           activeThumbColor: prepaPrimaryColor,
-                          activeTrackColor: prepaPrimaryColor.withValues(alpha: 0.4),
+                          activeTrackColor:
+                              prepaPrimaryColor.withValues(alpha: 0.4),
                           onChanged: (v) {
                             setState(() => _darkMode = v);
-                            Notify.toast(
-                                'Mode sombre bientôt disponible');
+                            Notify.toast('Mode sombre bientôt disponible');
                           },
                         ),
                       ],
@@ -207,13 +208,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         color: Colors.red.shade400),
                     title: 'Contact Customer Service',
                     trailingIcon: Icons.open_in_new_rounded,
-                    onTap: () async {
-                      final uri =
-                          Uri.parse('mailto:support@mutrix.org');
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri);
-                      }
-                    },
+                    onTap: () => _openUri(
+                      Uri.parse('mailto:mutrix.tech@gmail.com'),
+                    ),
                   ),
                   _Divider(),
                   _SettingsRow(
@@ -221,14 +218,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         icon: Icons.privacy_tip_outlined,
                         color: Colors.green.shade600),
                     title: 'Privacy Policy',
-                    onTap: () async {
-                      final uri = Uri.parse(
-                          'https://mutrix.org/privacy');
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri,
-                            mode: LaunchMode.externalApplication);
-                      }
-                    },
+                    onTap: () => _openUri(
+                      Uri.parse('https://prepa.mutrix.org/privacy-policy'),
+                    ),
                   ),
                   _Divider(),
                   _SettingsRow(
@@ -236,53 +228,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         icon: Icons.description_outlined,
                         color: Colors.blueGrey.shade500),
                     title: 'Terms of Service',
-                    onTap: () async {
-                      final uri =
-                          Uri.parse('https://mutrix.org/terms');
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri,
-                            mode: LaunchMode.externalApplication);
-                      }
-                    },
+                    onTap: () => _openUri(
+                      Uri.parse('https://prepa.mutrix.org/terms-of-service'),
+                    ),
                   ),
                 ],
-              ),
-
-              const SizedBox(height: 20),
-
-              // ── FOLLOW US ────────────────────────────────────────────────
-              _SectionHeader(text: 'FOLLOW US'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _SocialButton(
-                      icon: Icons.facebook_rounded,
-                      label: 'Facebook',
-                      color: const Color(0xFF1877F2),
-                      url: 'https://facebook.com/mutrix',
-                    ),
-                    _SocialButton(
-                      icon: Icons.alternate_email_rounded,
-                      label: 'Twitter',
-                      color: const Color(0xFF1DA1F2),
-                      url: 'https://twitter.com/mutrix',
-                    ),
-                    _SocialButton(
-                      icon: Icons.camera_alt_rounded,
-                      label: 'Instagram',
-                      color: const Color(0xFFE1306C),
-                      url: 'https://instagram.com/mutrix',
-                    ),
-                    _SocialButton(
-                      icon: Icons.work_outline_rounded,
-                      label: 'LinkedIn',
-                      color: const Color(0xFF0077B5),
-                      url: 'https://linkedin.com/company/mutrix',
-                    ),
-                  ],
-                ),
               ),
 
               const SizedBox(height: 28),
@@ -317,7 +267,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 4),
+
+              Center(
+                child: TextButton(
+                  onPressed: () => _showRemoveAccountDialog(context),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.red.shade500,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                  child: const SimpleText(
+                    text: 'Supprimer le compte',
+                    size: 12,
+                    weight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
 
               // ── Version ──────────────────────────────────────────────────
               Center(
@@ -338,6 +308,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Même parcours que depuis le profil : session fermée + purge locale.
   void _showLogoutDialog(BuildContext context) => showLogoutDialog(context);
+
+  // Retire la session de cet appareil sans supprimer les données côté serveur.
+  void _showRemoveAccountDialog(BuildContext context) =>
+      showRemoveAccountDialog(context);
+
+  Future<void> _openUri(Uri uri) async {
+    final opened = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened && mounted) {
+      Notify.toast('Impossible d’ouvrir ce lien');
+    }
+  }
 }
 
 // ── Widgets utilitaires ──────────────────────────────────────────────────────
@@ -410,9 +394,8 @@ class _UserTile extends StatelessWidget {
             ),
             child: Center(
               child: SimpleText(
-                text: user?.name.isNotEmpty == true
-                    ? _initials(user!.name)
-                    : '?',
+                text:
+                    user?.name.isNotEmpty == true ? _initials(user!.name) : '?',
                 size: 18,
                 weight: FontWeight.bold,
                 color: Colors.white,
@@ -443,8 +426,7 @@ class _UserTile extends StatelessWidget {
             onPressed: onEdit,
             style: TextButton.styleFrom(
               foregroundColor: prepaPrimaryColor,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             ),
             child: const SimpleText(
               text: 'Edit',
@@ -527,47 +509,6 @@ class _IconBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(icon, size: 18, color: color),
-    );
-  }
-}
-
-class _SocialButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final String url;
-
-  const _SocialButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.url,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final uri = Uri.parse(url);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-      },
-      child: Column(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: Colors.white, size: 24),
-          ),
-          const SizedBox(height: 6),
-          SimpleText(text: label, size: 11, color: onGrey300),
-        ],
-      ),
     );
   }
 }

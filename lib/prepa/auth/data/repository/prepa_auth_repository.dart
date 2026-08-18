@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
+import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/local_storage/app_storage_cleaner.dart';
 import 'package:monprof/prepa/auth/data/models/auth_response.dart';
 import 'package:monprof/prepa/auth/data/models/otp_initiate_result.dart';
@@ -156,6 +157,7 @@ class PrepaAuthRepository {
       final authResponse = await oAuthService!.signInWithGoogle();
       // L'utilisateur est déjà connecté Firebase via signInWithCredential.
       // On stocke juste le profil retourné par le backend.
+      loger('signInWithGoogle: authResponse: ${authResponse.toString()}');
       final user = await _storeUser(authResponse);
       return AppState(status: AppStatus.data, data: user);
     } catch (e) {
@@ -205,11 +207,17 @@ class PrepaAuthRepository {
     if (authResponse.token.isNotEmpty) {
       await FirebaseAuth.instance.signInWithCustomToken(authResponse.token);
     }
-    return _storeUser(authResponse);
+    return _storeAuthResponseUser(authResponse);
   }
 
-  Future<PrepaUser> _storeUser(AuthResponse authResponse) async {
+  Future<PrepaUser> _storeAuthResponseUser(AuthResponse authResponse) async {
     final user = authResponse.userResponse!.toPrepaUser();
+    await tokenStorage.setUser(user);
+    return user;
+  }
+
+  Future<PrepaUser> _storeUser(UserResponse authResponse) async {
+    final user = authResponse.toPrepaUser();
     await tokenStorage.setUser(user);
     return user;
   }

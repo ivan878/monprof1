@@ -99,9 +99,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               ),
               children: [
                 _AvatarPicker(controller: _ctrl, user: widget.user),
-
                 const SizedBox(height: 28),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -142,9 +140,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             color: onGrey300,
                           ),
                         ),
-
                       const SizedBox(height: 18),
-
                       _Label(text: 'Email Address'),
                       const SizedBox(height: 8),
                       TextFielApp(
@@ -166,9 +162,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           color: onGrey300,
                         ),
                       ),
-
                       const SizedBox(height: 18),
-
                       _Label(text: 'Numéro de téléphone'),
                       const SizedBox(height: 8),
                       CountryPhoneField(
@@ -185,13 +179,11 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           return null;
                         },
                       ),
-
                       if (!_ctrl.hasPassword) ...[
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20),
                           child: Divider(),
                         ),
-
                         _Label(text: 'Créer un code PIN'),
                         const SizedBox(height: 8),
                         _PasswordField(
@@ -208,9 +200,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             return null;
                           },
                         ),
-
                         const SizedBox(height: 16),
-
                         _Label(text: 'Confirmer le code PIN'),
                         const SizedBox(height: 8),
                         _PasswordField(
@@ -227,11 +217,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             return null;
                           },
                         ),
-
                         const SizedBox(height: 32),
                       ] else
                         const SizedBox(height: 32),
-
                       if (_ctrl.updateState.hasError ||
                           _ctrl.uploadState.hasError ||
                           _ctrl.setPasswordState.hasError) ...[
@@ -252,7 +240,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                         ),
                         const SizedBox(height: 16),
                       ],
-
                       DefaultButton(
                         onPressed:
                             _ctrl.isSaving ? null : () => _ctrl.saveProfile(),
@@ -269,10 +256,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(
-                                      Icons.check_circle_outline_rounded,
-                                      color: Colors.white,
-                                      size: 20),
+                                  const Icon(Icons.check_circle_outline_rounded,
+                                      color: Colors.white, size: 20),
                                   const SizedBox(width: 8),
                                   SimpleText(
                                     text: 'Save Profile',
@@ -283,9 +268,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                                 ],
                               ),
                       ),
-
                       const SizedBox(height: 14),
-
                       RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
@@ -372,18 +355,22 @@ class _AvatarPicker extends StatelessWidget {
       imageQuality: 85,
     );
     if (picked != null) {
-      controller.setLocalImage(picked.path);
+      final uploaded = await controller.uploadProfilePicture(picked.path);
+      if (uploaded && context.mounted) {
+        Notify.toastSuccess('Photo de profil mise à jour');
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final hasFirebasePhoto = user?.profilePictureUrl != null;
     return Center(
       child: Column(
         children: [
           GestureDetector(
-            onTap: hasFirebasePhoto ? null : () => _pickImage(context),
+            onTap: controller.uploadState.isLoading
+                ? null
+                : () => _pickImage(context),
             child: Stack(
               alignment: Alignment.bottomRight,
               children: [
@@ -427,18 +414,28 @@ class _AvatarPicker extends StatelessWidget {
                         )
                       : null,
                 ),
-                if (!hasFirebasePhoto)
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: prepaPrimaryColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                    child: const Icon(Icons.camera_alt_rounded,
-                        color: Colors.white, size: 16),
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: prepaPrimaryColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
+                  child: controller.uploadState.isLoading
+                      ? const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.camera_alt_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                ),
               ],
             ),
           ),

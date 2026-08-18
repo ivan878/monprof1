@@ -225,13 +225,36 @@ void showLogoutDialog(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (ctx) => _LogoutDialog(parentContext: context),
+    builder: (ctx) => _LogoutDialog(
+      parentContext: context,
+      mode: _SessionExitMode.logout,
+    ),
   );
 }
 
+/// Retire le compte de l'appareil en utilisant le même nettoyage que la
+/// déconnexion. Le compte et ses données distantes restent conservés.
+void showRemoveAccountDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (ctx) => _LogoutDialog(
+      parentContext: context,
+      mode: _SessionExitMode.removeAccount,
+    ),
+  );
+}
+
+enum _SessionExitMode { logout, removeAccount }
+
 class _LogoutDialog extends StatefulWidget {
   final BuildContext parentContext;
-  const _LogoutDialog({required this.parentContext});
+  final _SessionExitMode mode;
+
+  const _LogoutDialog({
+    required this.parentContext,
+    required this.mode,
+  });
 
   @override
   State<_LogoutDialog> createState() => _LogoutDialogState();
@@ -239,6 +262,8 @@ class _LogoutDialog extends StatefulWidget {
 
 class _LogoutDialogState extends State<_LogoutDialog> {
   bool _busy = false;
+
+  bool get _removesAccount => widget.mode == _SessionExitMode.removeAccount;
 
   Future<void> _confirm() async {
     setState(() => _busy = true);
@@ -249,7 +274,9 @@ class _LogoutDialogState extends State<_LogoutDialog> {
     if (!mounted) return;
     Navigator.pop(context); // ferme la boîte de dialogue
 
-    Notify.toastSuccess('Déconnecté');
+    Notify.toastSuccess(
+      _removesAccount ? 'Compte retiré de cet appareil' : 'Déconnecté',
+    );
     Navigator.pushAndRemoveUntil(
       widget.parentContext,
       PageTransition(
@@ -266,8 +293,10 @@ class _LogoutDialogState extends State<_LogoutDialog> {
       canPop: !_busy,
       child: AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const SimpleText(
-          text: 'Déconnexion',
+        title: SimpleText(
+          text: _removesAccount
+              ? 'Retirer le compte de cet appareil ?'
+              : 'Déconnexion',
           size: 17,
           weight: FontWeight.bold,
         ),
@@ -286,16 +315,22 @@ class _LogoutDialogState extends State<_LogoutDialog> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: SimpleText(
-                      text: 'Suppression des données locales…',
+                      text: _removesAccount
+                          ? 'Retrait du compte en cours…'
+                          : 'Suppression des données locales…',
                       size: 14,
                       color: onGrey300,
                     ),
                   ),
                 ],
               )
-            : const SimpleText(
-                text: 'Vous serez déconnecté et les données téléchargées '
-                    '(cours et vidéos) seront supprimées de cet appareil.',
+            : SimpleText(
+                text: _removesAccount
+                    ? 'Ce compte sera retiré de cet appareil et vous serez '
+                        'déconnecté. Vos données en ligne et votre abonnement '
+                        'ne seront pas supprimés.'
+                    : 'Vous serez déconnecté et les données téléchargées '
+                        '(cours et vidéos) seront supprimées de cet appareil.',
                 size: 14,
               ),
         actions: _busy
@@ -309,7 +344,7 @@ class _LogoutDialogState extends State<_LogoutDialog> {
                 TextButton(
                   onPressed: _confirm,
                   child: SimpleText(
-                    text: 'Déconnecter',
+                    text: _removesAccount ? 'Retirer le compte' : 'Déconnecter',
                     color: Colors.red.shade600,
                     size: 14,
                     weight: FontWeight.bold,

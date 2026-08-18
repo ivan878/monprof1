@@ -4,7 +4,6 @@ import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/concours/screens/concours_list_screen.dart';
 import 'package:monprof/prepa/home/widgets/dashboard_page.dart';
 import 'package:monprof/prepa/home/widgets/keep_alive_page.dart';
-import 'package:monprof/prepa/home/widgets/mes_cours_placeholder.dart';
 import 'package:monprof/prepa/user/screens/profile_screen.dart';
 
 class PrepaHomeScreen extends StatefulWidget {
@@ -30,17 +29,25 @@ class _PrepaHomeScreenState extends State<PrepaHomeScreen> {
     super.dispose();
   }
 
+  void _goToTab(int i) {
+    _pageController.animateToPage(
+      i,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    setState(() => _currentIndex = i);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
-        children: const [
-          KeepAlivePage(child: DashboardPage()),
-          KeepAlivePage(child: ConcoursListScreen()),
-          // KeepAlivePage(child: MesCoursPlaceholder()),
-          KeepAlivePage(child: PrepaProfileScreen()),
+        children: [
+          KeepAlivePage(child: DashboardPage(onSeeAllConcours: () => _goToTab(1))),
+          const KeepAlivePage(child: ConcoursListScreen()),
+          const KeepAlivePage(child: PrepaProfileScreen()),
         ],
       ),
       bottomNavigationBar: Container(
@@ -55,14 +62,7 @@ class _PrepaHomeScreenState extends State<PrepaHomeScreen> {
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (i) {
-            _pageController.animateToPage(
-              i,
-              duration: const Duration(milliseconds: 750),
-              curve: Curves.easeInOut,
-            );
-            setState(() => _currentIndex = i);
-          },
+          onTap: _goToTab,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           selectedItemColor: prepaPrimaryColor,

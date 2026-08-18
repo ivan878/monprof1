@@ -11,7 +11,21 @@ import 'package:page_transition/page_transition.dart';
 
 class HomeVosConcoursSection extends StatelessWidget {
   final HomeController ctrl;
-  const HomeVosConcoursSection({super.key, required this.ctrl});
+
+  /// Nombre maximum d'éléments affichés. `null` = tous.
+  /// Le tableau de bord en montre 2 et renvoie vers l'onglet dédié pour le reste.
+  final int? limit;
+
+  const HomeVosConcoursSection({super.key, required this.ctrl, this.limit});
+
+  /// Souscriptions exploitables — partagées entre le tableau de bord et
+  /// l'onglet « Mes Concours » pour garantir une liste identique.
+  static List<SubscriptionModel> activeSubscriptions(HomeController ctrl) {
+    return (ctrl.subscriptionsState.data ?? []).where((s) {
+      final st = s.status?.toUpperCase();
+      return st == 'RUNNING' || st == 'PENDING' || st == 'INITIATE';
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +36,8 @@ class HomeVosConcoursSection extends StatelessWidget {
       );
     }
 
-    // Show RUNNING, PENDING or INITIATE (any non-terminated subscription)
-    final actives = (ctrl.subscriptionsState.data ?? [])
-        .where((s) {
-          final st = s.status?.toUpperCase();
-          return st == 'RUNNING' || st == 'PENDING' || st == 'INITIATE';
-        })
-        .take(5)
-        .toList();
+    final all = activeSubscriptions(ctrl);
+    final actives = limit != null ? all.take(limit!).toList() : all;
 
     if (actives.isEmpty) {
       return const HomeEmptyState(

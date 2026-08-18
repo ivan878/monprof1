@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:monprof/corps/utils/constantes.dart';
-import 'package:monprof/corps/utils/helper.dart' as Utils;
+import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/prepa/auth/data/models/auth_response.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -29,7 +29,7 @@ class PrepaOAuthService {
 
   // ── Google ─────────────────────────────────────────────────────────────────
 
-  Future<AuthResponse> signInWithGoogle() async {
+  Future<UserResponse> signInWithGoogle() async {
     await _ensureInitialized();
 
     try {
@@ -57,16 +57,16 @@ class PrepaOAuthService {
       }
 
       final idToken = await userCredential.user!.getIdToken();
-      return _notifyBackend(idToken!);
+      return _notifyBackend(idToken!, userCredential.user!.uid);
     } catch (e) {
-      Utils.loger('[PrepaOAuthService] signInWithGoogle error: $e');
+      loger('[PrepaOAuthService] signInWithGoogle error: $e');
       rethrow;
     }
   }
 
   // ── Apple ──────────────────────────────────────────────────────────────────
 
-  Future<AuthResponse> signInWithApple() async {
+  Future<UserResponse> signInWithApple() async {
     final appleCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
@@ -83,17 +83,26 @@ class PrepaOAuthService {
         await FirebaseAuth.instance.signInWithCredential(oauthCredential);
 
     final idToken = await userCredential.user!.getIdToken();
-    return _notifyBackend(idToken!);
+    return _notifyBackend(idToken!, userCredential.user!.uid);
   }
 
   /// Envoie l'ID Token Firebase au backend pour créer / retrouver le compte.
   /// Le backend renvoie un AuthResponse (userResponse + token optionnel).
-  Future<AuthResponse> _notifyBackend(String idToken) async {
-    final res = await dio.post(
-      '/auth/login/oauth2',
-      data: {'idToken': idToken},
-    );
-    return AuthResponse.fromJson(res.data['data'] as Map<String, dynamic>);
+  Future<UserResponse> _notifyBackend(
+      String idToken, String firebaseUserId) async {
+    try {
+      final res = await dio.post(
+        '/auth/login/oauth2',
+        data: {'idToken': idToken, 'firebaseUid': firebaseUserId},
+      );
+      final data = res.data;
+      final authResponse =
+          UserResponse.fromJson(data['data'] as Map<String, dynamic>);
+      return authResponse;
+    } catch (e) {
+      loger('[PrepaOAuthService] _notifyBackend error: $e');
+      rethrow;
+    }
   }
 
   // ── Déconnexion ────────────────────────────────────────────────────────────

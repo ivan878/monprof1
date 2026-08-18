@@ -42,8 +42,13 @@ class _MatiereDetailScreenState extends State<MatiereDetailScreen> {
       matiereId: widget.matiere.id,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _coursCtrl.loadCours();
-      if (widget.concours != null) _resolveConcours();
+      if (widget.concours != null) {
+        // La liste dépend de la session : on attend sa résolution plutôt que
+        // de charger tout le catalogue de la matière pour le remplacer ensuite.
+        _resolveConcours();
+      } else {
+        _coursCtrl.loadCours();
+      }
     });
   }
 
@@ -51,12 +56,14 @@ class _MatiereDetailScreenState extends State<MatiereDetailScreen> {
     final c = widget.concours!;
     if (c.activeSession != null) {
       if (mounted) setState(() => _resolvedConcours = c);
+      _loadForSession(c);
       return;
     }
     final hive = GetIt.instance<HiveService>();
     final cached = hive.getConcoursDetail(c.id);
     if (cached?.activeSession != null) {
       if (mounted) setState(() => _resolvedConcours = cached);
+      _loadForSession(cached!);
       return;
     }
     final result =
@@ -64,7 +71,21 @@ class _MatiereDetailScreenState extends State<MatiereDetailScreen> {
     if (result.hasData && result.data != null) {
       hive.saveConcoursDetail(result.data!);
       if (mounted) setState(() => _resolvedConcours = result.data);
+      _loadForSession(result.data!);
+      return;
     }
+    // Concours non résolu : on retombe sur le catalogue de la matière
+    if (mounted) _coursCtrl.loadCours();
+  }
+
+  /// Restreint la liste aux cours de la matière rattachés à la session active.
+  void _loadForSession(ConcoursModel concours) {
+    final sessionId = concours.activeSession?.id;
+    if (sessionId == null) {
+      _coursCtrl.loadCours();
+      return;
+    }
+    _coursCtrl.loadSessionCours(sessionId);
   }
 
   @override

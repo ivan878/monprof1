@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/prepa/auth/data/models/prepa_user.dart';
@@ -42,9 +41,14 @@ class CompleteProfileController extends ChangeNotifier {
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
-  void setLocalImage(String path) {
+  Future<bool> uploadProfilePicture(String path) async {
     localImagePath = path;
+    uploadState = AppState(status: AppStatus.loading);
     notifyListeners();
+
+    uploadState = await repository.uploadProfilePicture(path);
+    notifyListeners();
+    return uploadState.hasData;
   }
 
   Future<void> saveProfile() async {
@@ -52,19 +56,8 @@ class CompleteProfileController extends ChangeNotifier {
     updateState = AppState(status: AppStatus.loading);
     notifyListeners();
 
-    if (localImagePath != null) {
-      uploadState = AppState(status: AppStatus.loading);
-      notifyListeners();
-      uploadState = await repository.uploadProfilePicture(localImagePath!);
-      if (uploadState.hasError) {
-        updateState = AppState();
-        notifyListeners();
-        return;
-      }
-      notifyListeners();
-    }
-
-    final localDigits = phoneController.text.trim().replaceAll(RegExp(r'\s'), '');
+    final localDigits =
+        phoneController.text.trim().replaceAll(RegExp(r'\s'), '');
     updateState = await repository.updateProfile(
       fullName: nameController.text.trim().isNotEmpty
           ? nameController.text.trim()

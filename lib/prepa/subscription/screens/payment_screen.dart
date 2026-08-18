@@ -221,7 +221,15 @@ class _FormView extends StatelessWidget {
     required this.onSubmit,
   });
 
-  double get _total => (session.amount ?? 0) * count;
+  double get _subscriptionFee => (session.amount ?? 0) * count;
+
+  double get _combinedProviderRate =>
+      (selectedService?.rate ?? 0) + (selectedService?.providerRate ?? 0);
+
+  double get _total =>
+      (_subscriptionFee * (1 + _combinedProviderRate)).roundToDouble();
+
+  double get _providerFee => _total - _subscriptionFee;
 
   @override
   Widget build(BuildContext context) {
@@ -235,6 +243,8 @@ class _FormView extends StatelessWidget {
                 concours: concours,
                 session: session,
                 count: count,
+                subscriptionFee: _subscriptionFee,
+                providerFee: _providerFee,
                 total: _total,
               ),
               Divider(height: 1, color: Colors.grey.shade100),
@@ -370,12 +380,16 @@ class _SummaryBlock extends StatelessWidget {
   final ConcoursModel concours;
   final SessionModel session;
   final int count;
+  final double subscriptionFee;
+  final double providerFee;
   final double total;
 
   const _SummaryBlock({
     required this.concours,
     required this.session,
     required this.count,
+    required this.subscriptionFee,
+    required this.providerFee,
     required this.total,
   });
 
@@ -421,6 +435,22 @@ class _SummaryBlock extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 20),
+          _SummaryAmountRow(
+            label: 'Frais d’abonnement',
+            amount: subscriptionFee,
+            detail: count > 1
+                ? '$count × ${session.amount?.toStringAsFixed(0)} FCFA'
+                : null,
+          ),
+          const SizedBox(height: 12),
+          _SummaryAmountRow(
+            label: 'Frais fournisseur',
+            amount: providerFee,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Divider(height: 1, color: Colors.grey.shade200),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -434,13 +464,6 @@ class _SummaryBlock extends StatelessWidget {
                     weight: FontWeight.bold,
                     color: onGrey300,
                   ),
-                  if (count > 1)
-                    SimpleText(
-                      text:
-                          '$count × ${session.amount?.toStringAsFixed(0)} FCFA',
-                      size: 12,
-                      color: onGrey300,
-                    ),
                 ],
               ),
               SimpleText(
@@ -453,6 +476,52 @@ class _SummaryBlock extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SummaryAmountRow extends StatelessWidget {
+  final String label;
+  final double amount;
+  final String? detail;
+
+  const _SummaryAmountRow({
+    required this.label,
+    required this.amount,
+    this.detail,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SimpleText(
+                text: label,
+                size: 13,
+                color: onGrey300,
+              ),
+              if (detail != null)
+                SimpleText(
+                  text: detail!,
+                  size: 11,
+                  color: Colors.grey.shade400,
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 16),
+        SimpleText(
+          text: '${amount.toStringAsFixed(0)} FCFA',
+          size: 14,
+          weight: FontWeight.w600,
+          color: darkColor,
+        ),
+      ],
     );
   }
 }

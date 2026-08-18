@@ -30,7 +30,7 @@ class PrepaOtpController extends ChangeNotifier {
   bool isSwitchingChannel = false;
 
   // ── Countdown ───────────────────────────────────────────────────────────────
-  static const int _countdownSeconds = 60 * 1;
+  static const int _countdownSeconds = 60 * 3;
   int remainingSeconds = _countdownSeconds;
   Timer? _timer;
 

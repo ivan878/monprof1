@@ -21,7 +21,43 @@ class PrepaCoursListController extends ChangeNotifier {
   bool hasMore = true;
   List<PrepaCoursModel> items = [];
 
+  /// Session à laquelle restreindre la liste. Renseignée après résolution du
+  /// concours : la liste ne contient alors que les cours de la matière
+  /// effectivement rattachés à cette session, pas tout le catalogue.
+  String? sessionId;
+
+  /// Charge les cours de la matière pour une session donnée.
+  /// La route renvoie la liste complète — aucune pagination à gérer.
+  Future<void> loadSessionCours(String sessionId) async {
+    this.sessionId = sessionId;
+    if (matiereId == null) return;
+
+    if (items.isEmpty) {
+      state = AppState(status: AppStatus.loading);
+      notifyListeners();
+    }
+
+    final result =
+        await repository.getSessionCoursByMatiere(sessionId, matiereId!);
+
+    if (result.hasData) {
+      items = result.data ?? [];
+      hasMore = false;
+      currentPage = 1;
+      state = AppState(status: AppStatus.data);
+    } else if (items.isEmpty) {
+      state = AppState(status: AppStatus.error, errorModel: result.errorModel);
+    }
+    notifyListeners();
+  }
+
   Future<void> loadCours({bool refresh = false}) async {
+    // En mode session, la source de vérité est la liste de la session.
+    if (sessionId != null) {
+      if (refresh) items = [];
+      return loadSessionCours(sessionId!);
+    }
+
     if (refresh) {
       currentPage = 0;
       items = [];

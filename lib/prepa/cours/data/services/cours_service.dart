@@ -46,4 +46,18 @@ class PrepaCoursService {
     );
     return res.data['data'] as Map<String, dynamic>;
   }
+
+  /// GET /concours-sessions/{sessionId}/matieres/{matiereId}/cours
+  ///
+  /// Cours de la matière effectivement rattachés à la session — et non tout le
+  /// catalogue de la matière. Réponse non paginée (liste complète).
+  Future<List<dynamic>> getSessionCoursByMatiere(
+    String sessionId,
+    String matiereId,
+  ) async {
+    final res =
+        await dio.get('/concours-sessions/$sessionId/matieres/$matiereId/cours');
+    final data = res.data['data'];
+    return data is List ? data : const [];
+  }
 }

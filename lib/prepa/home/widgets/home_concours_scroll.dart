@@ -84,11 +84,12 @@ class HomeConcoursCard extends StatelessWidget {
               child: concours.logoUrl != null
                   ? CachedNetworkImage(
                       imageUrl: concours.logoUrl!,
-                      width: 180,
+                      width: 200,
                       height: 120,
                       fit: BoxFit.cover,
-                      // memCacheWidth: 320,
-                      // memCacheHeight: 200,
+                      // memCacheWidth: 180,
+                      // memCacheHeight: 120,
+                      // color: red,
                       errorWidget: (_, __, ___) => _imgPlaceholder(),
                     )
                   : _imgPlaceholder(),

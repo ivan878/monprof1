@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId = "mutrix.app.concours"
         minSdk = flutter.minSdkVersion
-        targetSdk = 35 // flutter.targetSdkVersion
+        targetSdk = 36 // flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

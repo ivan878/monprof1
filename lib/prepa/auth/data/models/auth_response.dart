@@ -91,8 +91,7 @@ class AuthResponse {
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
     return AuthResponse(
       userResponse: json['userResponse'] is Map
-          ? UserResponse.fromJson(
-              json['userResponse'] as Map<String, dynamic>)
+          ? UserResponse.fromJson(json['userResponse'] as Map<String, dynamic>)
           : null,
       token: json['token']?.toString() ?? '',
     );

@@ -70,4 +70,20 @@ class PrepaCoursRepository {
       return AppState(status: AppStatus.error, errorModel: returnError(e));
     }
   }
+
+  /// Cours d'une matière rattachés à une session de concours (liste complète).
+  Future<AppState<List<PrepaCoursModel>>> getSessionCoursByMatiere(
+    String sessionId,
+    String matiereId,
+  ) async {
+    try {
+      final list = await service.getSessionCoursByMatiere(sessionId, matiereId);
+      final models = list
+          .map((e) => PrepaCoursModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return AppState(status: AppStatus.data, data: models);
+    } catch (e) {
+      return AppState(status: AppStatus.error, errorModel: returnError(e));
+    }
+  }
 }

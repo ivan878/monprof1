@@ -91,10 +91,10 @@ class _PrepaOtpScreenState extends State<PrepaOtpScreen> {
 
   String _maskPhone(String phone) {
     final digits = phone.replaceAll(RegExp(r'\D'), '');
-    if (digits.length < 4) return phone;
+    if (digits.length < 2) return phone;
     final lastTwo = digits.substring(digits.length - 2);
-    final prefix = phone.substring(0, phone.length - 2);
-    return '$prefix**$lastTwo';
+    final prefix = phone.substring(0, 2);
+    return '$prefix******$lastTwo';
   }
 
   // ── Validation et navigation ───────────────────────────────────────────────
@@ -493,7 +493,6 @@ class _ResendCard extends StatelessWidget {
               ),
             ),
           ],
-
           if (canSwitch && ctrl.canResend) ...[
             const SizedBox(height: 10),
             GestureDetector(

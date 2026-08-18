@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/prepa/common/prepa_theme.dart';
 
 class Loading extends StatelessWidget {
   const Loading({Key? key}) : super(key: key);
@@ -17,8 +18,8 @@ class Loading extends StatelessWidget {
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.5,
-                  child: const SpinKitPulsingGrid(
-                    color: Colors.blue,
+                  child: const SpinKitCircle(
+                    color: prepaPrimaryColor,
                     size: 70.0,
                   ),
                 ),
@@ -27,7 +28,7 @@ class Loading extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17,
-                    color: Colors.blue,
+                    color: prepaPrimaryColor,
                   ),
                 ),
               ],

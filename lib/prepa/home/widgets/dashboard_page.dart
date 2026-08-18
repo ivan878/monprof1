@@ -9,7 +9,11 @@ import 'package:monprof/prepa/home/widgets/home_vos_concours_section.dart';
 import 'package:provider/provider.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  /// Bascule vers l'onglet « Mes Concours ». Fourni par l'écran hôte, qui seul
+  /// possède le contrôleur de pages.
+  final VoidCallback? onSeeAllConcours;
+
+  const DashboardPage({super.key, this.onSeeAllConcours});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -44,9 +48,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 HomeSectionHeader(
                   title: 'Vos Concours',
                   actionLabel: 'Voir tout',
-                  onAction: () {},
+                  onAction: widget.onSeeAllConcours,
                 ),
-                HomeVosConcoursSection(ctrl: ctrl),
+                // Aperçu limité à 2 — la liste complète est dans l'onglet dédié.
+                HomeVosConcoursSection(ctrl: ctrl, limit: 2),
                 const SizedBox(height: 20),
                 HomeSectionHeader(
                   title: 'Historique des cours',
