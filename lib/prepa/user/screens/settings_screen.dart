@@ -5,6 +5,7 @@ import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
+import 'package:monprof/prepa/common/widgets/user_avatar.dart';
 import 'package:monprof/prepa/auth/data/models/prepa_user.dart';
 import 'package:monprof/prepa/user/controllers/profile_controller.dart';
 import 'package:monprof/prepa/user/screens/complete_profile_screen.dart';
@@ -384,24 +385,7 @@ class _UserTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          // Avatar initiales
-          Container(
-            width: 52,
-            height: 52,
-            decoration: const BoxDecoration(
-              color: prepaPrimaryColor,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: SimpleText(
-                text:
-                    user?.name.isNotEmpty == true ? _initials(user!.name) : '?',
-                size: 18,
-                weight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          UserAvatar(user: user, size: 52),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -439,13 +423,6 @@ class _UserTile extends StatelessWidget {
     );
   }
 
-  String _initials(String name) {
-    final parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    return name[0].toUpperCase();
-  }
 }
 
 class _SettingsRow extends StatelessWidget {

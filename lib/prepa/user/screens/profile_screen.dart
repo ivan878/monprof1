@@ -8,6 +8,7 @@ import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/utils/injectors.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
+import 'package:monprof/prepa/common/widgets/user_avatar.dart';
 import 'package:monprof/prepa/auth/data/models/prepa_user.dart';
 import 'package:monprof/prepa/auth/data/repository/prepa_auth_repository.dart';
 import 'package:monprof/prepa/auth/screens/prepa_login_screen.dart';
@@ -70,21 +71,10 @@ class _PrepaProfileScreenState extends State<PrepaProfileScreen> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             elevation: 0,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.settings_outlined),
-                tooltip: 'Paramètres',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.rightToLeft,
-                      child: const SettingsScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(1),
+              child: Divider(height: 1, color: Colors.grey.shade200),
+            ),
           ),
           body: RefreshIndicator(
             onRefresh: controller.refresh,
@@ -166,6 +156,30 @@ class _PrepaProfileScreenState extends State<PrepaProfileScreen> {
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
                             child: const MesTransactionsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                // ── Préférences ────────────────────────────────────────────────
+                _SectionCard(
+                  title: 'Préférences',
+                  children: [
+                    _MenuRow(
+                      icon: Icons.settings_outlined,
+                      label: 'Paramètres',
+                      sublabel: 'Compte, langue, notifications, support',
+                      showArrow: true,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: const SettingsScreen(),
                           ),
                         );
                       },
@@ -374,24 +388,7 @@ class _AvatarSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: const BoxDecoration(
-              color: prepaPrimaryColor,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: SimpleText(
-                text: (user?.name.isNotEmpty == true
-                    ? user!.name[0].toUpperCase()
-                    : '?'),
-                size: 32,
-                weight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          UserAvatar(user: user, size: 88, initialsSize: 30),
           const SizedBox(height: 12),
           SimpleText(
             text: user?.name ?? 'Utilisateur',
@@ -451,12 +448,16 @@ class _SectionCard extends StatelessWidget {
 class _MenuRow extends StatelessWidget {
   final IconData icon;
   final String label;
+
+  /// Ligne secondaire optionnelle, pour préciser ce que la page contient.
+  final String? sublabel;
   final VoidCallback? onTap;
   final bool showArrow;
 
   const _MenuRow({
     required this.icon,
     required this.label,
+    this.sublabel,
     this.onTap,
     this.showArrow = false,
   });
@@ -473,7 +474,21 @@ class _MenuRow extends StatelessWidget {
             Icon(icon, size: 20, color: prepaPrimaryColor),
             const SizedBox(width: 14),
             Expanded(
-              child: SimpleText(text: label, size: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SimpleText(text: label, size: 14),
+                  if (sublabel != null) ...[
+                    const SizedBox(height: 2),
+                    SimpleText(
+                      text: sublabel!,
+                      size: 11.5,
+                      color: onGrey300,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
             ),
             if (showArrow)
               Icon(Icons.arrow_forward_ios_rounded, size: 14, color: onGrey300),

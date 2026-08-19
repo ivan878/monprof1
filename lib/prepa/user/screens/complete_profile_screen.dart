@@ -148,6 +148,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             text: widget.user?.email ?? ''),
                         hinText: 'jean.dupont@example.com',
                         inputType: TextInputType.emailAddress,
+                        maxLines: 1,
                         prefixIcon: const Icon(Icons.email_outlined,
                             color: Colors.grey),
                         filled: true,

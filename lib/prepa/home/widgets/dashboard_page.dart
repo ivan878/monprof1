@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
+import 'package:monprof/prepa/common/widgets/user_avatar.dart';
 import 'package:monprof/prepa/home/home_controller.dart';
 import 'package:monprof/prepa/home/widgets/home_concours_scroll.dart';
 import 'package:monprof/prepa/home/widgets/home_historique_section.dart';
@@ -68,7 +69,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   AppBar _buildAppBar(HomeController ctrl) {
-    final initials = _userInitials(ctrl);
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -83,28 +83,9 @@ class _DashboardPageState extends State<DashboardPage> {
             weight: FontWeight.bold,
           ),
           const Spacer(),
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: prepaPrimaryColor,
-            child: SimpleText(
-              text: initials,
-              size: 13,
-              weight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          UserAvatar(user: ctrl.user, size: 36, initialsSize: 13),
         ],
       ),
     );
-  }
-
-  String _userInitials(HomeController ctrl) {
-    final name = ctrl.user?.name ?? '';
-    if (name.isEmpty) return '?';
-    final parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    return name.substring(0, name.length.clamp(0, 2)).toUpperCase();
   }
 }
