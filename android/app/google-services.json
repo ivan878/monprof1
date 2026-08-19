@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "382795080487-580idukuef0a8rcfgl9b6pq872n0u09o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mutrix.app.concours",
+            "certificate_hash": "4278a6c51da3d075537e7de214f6fae1bbfea636"
+          }
+        },
+        {
+          "client_id": "382795080487-t17km5nf8h8llbaavudhpcql9slohoq9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mutrix.app.concours",
+            "certificate_hash": "1b309fc363a84c513c5f2b706fcde6b8188216b9"
+          }
+        },
+        {
+          "client_id": "382795080487-tptcm0hu2f3isk13krivk28uc19pn2ma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mutrix.app.concours",
+            "certificate_hash": "ccd89f9f095e7ad2551d53acc36edcd535544a41"
+          }
+        },
+        {
           "client_id": "382795080487-q1lhkqhn4ivrv0au85j6260ipssgeco6.apps.googleusercontent.com",
           "client_type": 3
         }

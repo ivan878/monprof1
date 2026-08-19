@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
+import 'package:monprof/prepa/common/apple_review_mode.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/concours/controllers/concours_detail_controller.dart';
 import 'package:monprof/prepa/concours/data/models/concours_model.dart';
@@ -297,8 +298,12 @@ class _ConcoursDetailScreenState extends State<ConcoursDetailScreen> {
                           color: Colors.white, strokeWidth: 2.5),
                     )
                   : SimpleText(
-                      text:
-                          price.isNotEmpty ? 'Souscrire — $price' : 'Souscrire',
+                      // En mode restreint iOS, aucun tarif n'est affiché
+                      text: AppleReviewMode.instance.isActive
+                          ? 'Acheter une place'
+                          : (price.isNotEmpty
+                              ? 'Souscrire — $price'
+                              : 'Souscrire'),
                       size: 14,
                       weight: FontWeight.bold,
                       color: Colors.white,
@@ -595,21 +600,27 @@ class _MatiereTile extends StatelessWidget {
         ? 'Coeff. ${matiere.coefficient!.toStringAsFixed(0)}'
         : null;
 
+    // Mode restreint iOS : le détail d'une matière donne accès aux vidéos,
+    // la navigation est donc neutralisée.
+    final locked = AppleReviewMode.instance.isActive;
+
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        PageTransition(
-          type: PageTransitionType.rightToLeft,
-          child: MatiereDetailScreen(
-            matiere: MatiereModel(
-              id: matiere.id,
-              name: matiere.name,
-              logoUrl: matiere.logoUrl,
-            ),
-            concours: concours,
-          ),
-        ),
-      ),
+      onTap: locked
+          ? null
+          : () => Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: MatiereDetailScreen(
+                    matiere: MatiereModel(
+                      id: matiere.id,
+                      name: matiere.name,
+                      logoUrl: matiere.logoUrl,
+                    ),
+                    concours: concours,
+                  ),
+                ),
+              ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -673,8 +684,11 @@ class _MatiereTile extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
-            Icon(Icons.arrow_forward_ios_rounded, size: 13, color: onGrey300),
+            // Sans navigation possible, le chevron induirait en erreur
+            if (!locked) ...[
+              const SizedBox(width: 8),
+              Icon(Icons.arrow_forward_ios_rounded, size: 13, color: onGrey300),
+            ],
           ],
         ),
       ),

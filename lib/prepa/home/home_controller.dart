@@ -6,6 +6,7 @@ import 'package:monprof/corps/utils/local_storage/hive_service.dart';
 export 'package:monprof/corps/utils/local_storage/hive_service.dart'
     show PlaybackEntry;
 import 'package:monprof/prepa/auth/data/models/prepa_user.dart';
+import 'package:monprof/prepa/common/apple_review_mode.dart';
 import 'package:monprof/prepa/auth/data/repository/prepa_auth_repository.dart';
 import 'package:monprof/prepa/concours/data/models/concours_model.dart';
 import 'package:monprof/prepa/concours/data/repository/concours_repository.dart';
@@ -40,6 +41,9 @@ class HomeController extends ChangeNotifier {
   Future<void> loadUser() async {
     try {
       user = await prepaAuthRepository.getCachedUser();
+      // Le mode restreint iOS dépend du compte connecté : il est réévalué ici,
+      // puis lu de façon synchrone par les écrans.
+      AppleReviewMode.instance.applyTo(user);
       notifyListeners();
     } catch (e) {
       printer(e);
@@ -54,8 +58,7 @@ class HomeController extends ChangeNotifier {
       // Show cached concours immediately
       final cachedConcours = hiveService.getConcoursList();
       if (cachedConcours.isNotEmpty) {
-        concoursState =
-            AppState(status: AppStatus.data, data: cachedConcours);
+        concoursState = AppState(status: AppStatus.data, data: cachedConcours);
         subscriptionsState = AppState(status: AppStatus.loading);
       } else {
         concoursState = AppState(status: AppStatus.loading);

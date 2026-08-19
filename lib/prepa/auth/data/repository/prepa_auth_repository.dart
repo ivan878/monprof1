@@ -6,6 +6,7 @@ import 'package:monprof/corps/utils/local_storage/app_storage_cleaner.dart';
 import 'package:monprof/prepa/auth/data/models/auth_response.dart';
 import 'package:monprof/prepa/auth/data/models/otp_initiate_result.dart';
 import 'package:monprof/prepa/auth/data/models/prepa_user.dart';
+import 'package:monprof/prepa/common/apple_review_mode.dart';
 import 'package:monprof/prepa/auth/data/services/prepa_auth_service.dart';
 import 'package:monprof/prepa/auth/data/services/prepa_oauth_service.dart';
 import 'package:monprof/prepa/auth/data/services/prepa_token_storage.dart';
@@ -196,6 +197,8 @@ class PrepaAuthRepository {
     try {
       await tokenStorage.clear();
     } catch (_) {}
+    // Le mode restreint est lié au compte : il ne doit pas survivre à la session.
+    AppleReviewMode.instance.reset();
   }
 
   // ── Helpers ─────────────────────────────────────────────────────────────────

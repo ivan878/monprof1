@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+		<key>CADisableMinimumFrameDurationOnPhone</key>
+		<true />
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
@@ -20,64 +22,50 @@
 		<string>$(FLUTTER_BUILD_NAME)</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>google-sign-in</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.382795080487-vuagh1vcqa5qk2spte24e82r8ov9afjk</string>
+				</array>
+			</dict>
+		</array>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<key>GIDClientID</key>
+		<string>382795080487-vuagh1vcqa5qk2spte24e82r8ov9afjk.apps.googleusercontent.com</string>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false />
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>mailto</string>
+			<string>tel</string>
+			<string>https</string>
+			<string>http</string>
+		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true />
+		<key>NSCameraUsageDescription</key>
+		<string>Prépas Concours utilise l'appareil photo pour vous permettre de prendre votre photo
+			de profil.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Prépas Concours peut enregistrer une image dans votre photothèque à votre demande.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Prépas Concours accède à vos photos pour vous permettre de choisir votre photo de
+			profil.</string>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true />
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>remote-notification</string>
+		</array>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
-		<!-- Gestion de l'ouverture des fichier d'extension mprf -->
-		<key>CFBundleDocumentTypes</key>
-		<array>
-			<dict>
-				<key>CFBundleTypeName</key>
-				<string>Mon fichier perso</string>
-				<key>LSHandlerRank</key>
-				<string>Owner</string>
-				<key>LSItemContentTypes</key>
-				<array>
-					<string>public.data</string>
-					<string>mutrix_tech.monprof.app.mprf</string>
-				</array>
-			</dict>
-		</array>
-		<key>UTExportedTypeDeclarations</key>
-		<array>
-			<dict>
-				<key>UTTypeConformsTo</key>
-				<array>
-					<string>public.data</string>
-				</array>
-				<key>UTTypeDescription</key>
-				<string>Mon fichier perso</string>
-				<key>UTTypeIdentifier</key>
-				<string>mutrix_tech.monprof.app.mprf</string>
-				<key>UTTypeTagSpecification</key>
-				<dict>
-					<key>public.filename-extension</key>
-					<array>
-						<string>mprf</string>
-					</array>
-				</dict>
-			</dict>
-		</array>
-
-		<!-- Fin de la gestion de l'ouverture des fichier d'extension mprf -->
-
-		<!-- pour la gestion des fichiers  -->
-		<key>LSSupportsOpeningDocumentsInPlace</key>
-		<true />
-		<key>UIFileSharingEnabled</key>
-		<true />
-		<key>NSDocumentsFolderUsageDescription</key>
-		<string>App wants to access your documents folder</string>
-		<key>NSDownloadsFolderUsageDescription</key>
-		<string>App wants to access your downloads folder</string>
-		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Nous avons besoin d'accéder à votre galerie pour enregistrer des vidéos.</string>
-		<key>NSDownloadsUsageDescription</key>
-		<string>Nous avons besoin de télécharger et enregistrer des vidéos.</string>
-		<!-- Fin -->
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
 		<key>UISupportedInterfaceOrientations</key>
@@ -95,9 +83,5 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false />
-		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true />
-		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true />
 	</dict>
 </plist>

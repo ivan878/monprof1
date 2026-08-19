@@ -7,6 +7,7 @@ import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/utils/injectors.dart';
 import 'package:monprof/corps/widgets/theme.dart';
+import 'package:monprof/prepa/common/apple_review_mode.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/common/widgets/user_avatar.dart';
 import 'package:monprof/prepa/auth/data/models/prepa_user.dart';
@@ -118,23 +119,27 @@ class _PrepaProfileScreenState extends State<PrepaProfileScreen> {
                 _SectionCard(
                   title: 'Mes données',
                   children: [
-                    _MenuRow(
-                      icon: Icons.assignment_rounded,
-                      label: 'Mes inscriptions',
-                      showArrow: true,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: const MesSubscriptionsScreen(),
-                          ),
-                        );
-                      },
-                    ),
+                    // Masqué en mode restreint iOS
+                    if (!AppleReviewMode.instance.isActive)
+                      _MenuRow(
+                        icon: Icons.assignment_rounded,
+                        label: 'Mes inscriptions',
+                        showArrow: true,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: const MesSubscriptionsScreen(),
+                            ),
+                          );
+                        },
+                      ),
                     _MenuRow(
                       icon: Icons.confirmation_number_rounded,
-                      label: 'Mes codes',
+                      label: AppleReviewMode.instance.isActive
+                          ? 'Mes Tickets'
+                          : 'Mes codes',
                       showArrow: true,
                       onTap: () {
                         Navigator.push(
@@ -212,16 +217,16 @@ class _PrepaProfileScreenState extends State<PrepaProfileScreen> {
 
                 const SizedBox(height: 24),
 
-                // ── Déconnexion ────────────────────────────────────────────────
-                DefaultButton(
-                  text: 'Se déconnecter',
-                  backgroundColor: Colors.red,
-                  height: 50,
-                  color: white,
-                  onPressed: () => _showLogoutDialog(context),
-                ),
+                // // ── Déconnexion ────────────────────────────────────────────────
+                // DefaultButton(
+                //   text: 'Se déconnecter',
+                //   backgroundColor: Colors.red,
+                //   height: 50,
+                //   color: white,
+                //   onPressed: () => _showLogoutDialog(context),
+                // ),
 
-                const SizedBox(height: 32),
+                // const SizedBox(height: 32),
               ],
             ),
           ),
@@ -230,7 +235,7 @@ class _PrepaProfileScreenState extends State<PrepaProfileScreen> {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) => showLogoutDialog(context);
+  // void _showLogoutDialog(BuildContext context) => showLogoutDialog(context);
 }
 
 /// Déconnexion : ferme la session, purge le stockage local (dont les vidéos

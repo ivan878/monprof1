@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
+import 'package:monprof/prepa/common/apple_review_mode.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/common/widgets/user_avatar.dart';
 import 'package:monprof/prepa/home/home_controller.dart';
@@ -53,13 +54,17 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
                 // Aperçu limité à 2 — la liste complète est dans l'onglet dédié.
                 HomeVosConcoursSection(ctrl: ctrl, limit: 2),
-                const SizedBox(height: 20),
-                HomeSectionHeader(
-                  title: 'Historique des cours',
-                  actionLabel: 'Voir tout',
-                  onAction: () {},
-                ),
-                HomeHistoriqueSection(ctrl: ctrl),
+
+                // Historique de lecture masqué en mode restreint iOS
+                if (!AppleReviewMode.instance.isActive) ...[
+                  const SizedBox(height: 20),
+                  HomeSectionHeader(
+                    title: 'Historique des cours',
+                    actionLabel: 'Voir tout',
+                    onAction: () {},
+                  ),
+                  HomeHistoriqueSection(ctrl: ctrl),
+                ],
               ],
             ),
           ),
@@ -83,7 +88,8 @@ class _DashboardPageState extends State<DashboardPage> {
             weight: FontWeight.bold,
           ),
           const Spacer(),
-          UserAvatar(user: ctrl.user, size: 36, initialsSize: 13),
+          if (ctrl.user == null)
+            UserAvatar(user: ctrl.user, size: 36, initialsSize: 13),
         ],
       ),
     );

@@ -58,11 +58,14 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAHqqhX0a5KiXwlwi5D9jNJR81Pey5UWgs',
-    appId: '1:689877979601:ios:660873ad7500f3578810f0',
-    messagingSenderId: '689877979601',
-    projectId: 'monprof-d8308',
-    storageBucket: 'monprof-d8308.appspot.com',
-    iosBundleId: 'com.example.monprof',
+    apiKey: 'AIzaSyDhc_LH_Iejx4XoJUQEziE_iftgvDQE-1g',
+    appId: '1:382795080487:ios:a74cd823e63bbd6f2f3f02',
+    messagingSenderId: '382795080487',
+    projectId: 'prepas-concours',
+    storageBucket: 'prepas-concours.firebasestorage.app',
+    androidClientId: '382795080487-580idukuef0a8rcfgl9b6pq872n0u09o.apps.googleusercontent.com',
+    iosClientId: '382795080487-vuagh1vcqa5qk2spte24e82r8ov9afjk.apps.googleusercontent.com',
+    iosBundleId: 'mutrix.app.concours',
   );
+
 }

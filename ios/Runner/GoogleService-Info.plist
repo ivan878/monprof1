@@ -2,18 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>382795080487-vuagh1vcqa5qk2spte24e82r8ov9afjk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.382795080487-vuagh1vcqa5qk2spte24e82r8ov9afjk</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>382795080487-580idukuef0a8rcfgl9b6pq872n0u09o.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAHqqhX0a5KiXwlwi5D9jNJR81Pey5UWgs</string>
+	<string>AIzaSyDhc_LH_Iejx4XoJUQEziE_iftgvDQE-1g</string>
 	<key>GCM_SENDER_ID</key>
-	<string>689877979601</string>
+	<string>382795080487</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.monprof</string>
+	<string>mutrix.app.concours</string>
 	<key>PROJECT_ID</key>
-	<string>monprof-d8308</string>
+	<string>prepas-concours</string>
 	<key>STORAGE_BUCKET</key>
-	<string>monprof-d8308.appspot.com</string>
+	<string>prepas-concours.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:689877979601:ios:660873ad7500f3578810f0</string>
+	<string>1:382795080487:ios:a74cd823e63bbd6f2f3f02</string>
 </dict>
 </plist>

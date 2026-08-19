@@ -7,6 +7,7 @@ import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
+import 'package:monprof/prepa/common/apple_review_mode.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/subscription/controllers/mes_codes_controller.dart';
 import 'package:monprof/prepa/subscription/data/models/subscription_code_model.dart';
@@ -42,8 +43,9 @@ class _MesCodesScreenState extends State<MesCodesScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const SimpleText(
-          text: 'Mes codes',
+        title: SimpleText(
+          // Vocabulaire aligné sur le profil en mode restreint iOS
+          text: AppleReviewMode.instance.isActive ? 'Mes Tickets' : 'Mes codes',
           size: 17,
           weight: FontWeight.bold,
         ),

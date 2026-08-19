@@ -57,8 +57,8 @@ class UserAvatar extends StatelessWidget {
                 fit: BoxFit.cover,
                 // Décodage à la taille d'affichage : évite de garder en mémoire
                 // une image pleine résolution pour un cercle de 44 px.
-                memCacheWidth: (size * MediaQuery.of(context).devicePixelRatio)
-                    .round(),
+                memCacheWidth:
+                    (size * MediaQuery.of(context).devicePixelRatio).round(),
                 placeholder: (_, __) => _fallback(),
                 errorWidget: (_, __, ___) => _fallback(),
               )

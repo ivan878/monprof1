@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,6 +21,7 @@ import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/home/prepa_home_screen.dart';
 import 'package:monprof/prepa/user/screens/complete_profile_screen.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PrepaRegisterScreen extends StatefulWidget {
   const PrepaRegisterScreen({super.key});
@@ -272,6 +274,10 @@ class _PrepaRegisterScreenState extends State<PrepaRegisterScreen> {
                               ? null
                               : _onRegister,
                         ),
+                        const SizedBox(height: 14),
+
+                        // ── Acceptation des conditions ────────────────────────────
+                        const _TermsNotice(),
                         const SizedBox(height: 20),
 
                         // ── Lien vers login ───────────────────────────────────────
@@ -535,6 +541,66 @@ class _SocialButton extends StatelessWidget {
                   ),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+// ── Acceptation des conditions ───────────────────────────────────────────────
+
+/// Mention légale affichée sous le bouton d'inscription.
+/// L'inscription vaut acceptation : les deux documents sont consultables
+/// directement depuis les liens.
+class _TermsNotice extends StatelessWidget {
+  const _TermsNotice();
+
+  // Mêmes adresses que l'écran Paramètres
+  static const _termsUrl = 'https://prepa.mutrix.org/terms-of-service';
+  static const _privacyUrl = 'https://prepa.mutrix.org/privacy-policy';
+
+  Future<void> _open(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final base = TextStyle(
+      fontFamily: 'Poppins',
+      fontSize: 12,
+      height: 1.5,
+      color: onGrey300,
+    );
+    final link = base.copyWith(
+      color: prepaPrimaryColor,
+      fontWeight: FontWeight.w600,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: base,
+          children: [
+            const TextSpan(text: 'En vous inscrivant, vous acceptez nos '),
+            TextSpan(
+              text: "Conditions d'utilisation",
+              style: link,
+              recognizer: TapGestureRecognizer()..onTap = () => _open(_termsUrl),
+            ),
+            const TextSpan(text: ' et nos '),
+            TextSpan(
+              text: 'Règles de confidentialité',
+              style: link,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => _open(_privacyUrl),
+            ),
+            const TextSpan(text: '.'),
+          ],
+        ),
       ),
     );
   }
