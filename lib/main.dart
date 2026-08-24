@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monprof/corps/utils/injectors.dart';
 import 'package:monprof/corps/utils/local_storage/hive_service.dart';
+import 'package:monprof/corps/utils/navigation.dart';
+import 'package:monprof/corps/utils/notify.dart';
+import 'package:monprof/prepa/auth/data/repository/prepa_auth_repository.dart';
+import 'package:monprof/prepa/auth/domain/session_guard.dart';
+import 'package:monprof/prepa/auth/screens/prepa_login_screen.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:monprof/firebase_options.dart';
 import 'package:monprof/notification/data/services/fcm_notification_services.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
@@ -41,8 +49,49 @@ void main() async {
   runApp(const PrepaApp());
 }
 
-class PrepaApp extends StatelessWidget {
+class PrepaApp extends StatefulWidget {
   const PrepaApp({super.key});
+
+  @override
+  State<PrepaApp> createState() => _PrepaAppState();
+}
+
+class _PrepaAppState extends State<PrepaApp> {
+  StreamSubscription<SessionInvalidation>? _sessionSub;
+
+  @override
+  void initState() {
+    super.initState();
+    // Session invalidée côté serveur (compte réactivé ailleurs) :
+    // on purge tout et on renvoie à l'écran de connexion.
+    _sessionSub = SessionGuard.instance.onInvalidated.listen(_onSessionLost);
+  }
+
+  @override
+  void dispose() {
+    _sessionSub?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _onSessionLost(SessionInvalidation invalidation) async {
+    try {
+      await GetIt.instance<PrepaAuthRepository>().logout();
+      await resetSessionState();
+    } catch (_) {
+      // La déconnexion doit aboutir même si une étape de purge échoue.
+    }
+
+    Notify.toastError(invalidation.message);
+    SessionGuard.instance.reset();
+
+    rootNavigatorKey.currentState?.pushAndRemoveUntil(
+      PageTransition(
+        type: PageTransitionType.fade,
+        child: const PrepaLoginScreen(),
+      ),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +110,7 @@ class PrepaApp extends StatelessWidget {
       child: OKToast(
         child: MaterialApp(
           title: 'Prepa Concours',
+          navigatorKey: rootNavigatorKey,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: prepaPrimaryColor),

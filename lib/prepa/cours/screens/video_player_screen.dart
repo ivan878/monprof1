@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monprof/corps/utils/local_storage/hive_service.dart';
+import 'package:monprof/prepa/cours/data/crypto/encrypted_video_server.dart';
+import 'package:monprof/prepa/cours/data/crypto/mxv_container.dart';
+import 'package:monprof/prepa/cours/data/repository/video_key_repository.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:video_player/video_player.dart';
 
@@ -17,6 +20,10 @@ class VideoPlayerScreen extends StatefulWidget {
   final String? matiereId;
   final String? videoUrl;
 
+  /// Vrai si [filePath] désigne un conteneur chiffré : la lecture passe alors
+  /// par le serveur local de déchiffrement plutôt que par le fichier direct.
+  final bool isCrypted;
+
   const VideoPlayerScreen({
     super.key,
     required this.filePath,
@@ -24,6 +31,7 @@ class VideoPlayerScreen extends StatefulWidget {
     this.matiereId,
     this.title,
     this.videoUrl,
+    this.isCrypted = false,
   });
 
   @override
@@ -76,6 +84,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   // ── Plein écran : true = l'image remplit l'écran (rognée), false = adaptée ──
   bool _isFullscreen = false;
 
+  /// Identifiant de la source publiée sur le serveur local, à libérer à la sortie.
+  String? _serverSourceId;
+
   @override
   void initState() {
     super.initState();
@@ -111,7 +122,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         return;
       }
 
-      final ctrl = VideoPlayerController.file(file);
+      // Vidéo chiffrée : les octets en clair sont produits à la volée par un
+      // serveur local et ne touchent jamais le disque. Sinon, lecture directe.
+      final VideoPlayerController ctrl;
+      if (widget.isCrypted) {
+        ctrl = await _buildEncryptedController(file);
+      } else {
+        ctrl = VideoPlayerController.file(file);
+      }
       await ctrl.initialize();
 
       // Seek to saved position
@@ -149,11 +167,49 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       if (mounted) {
         setState(() {
           _hasError = true;
-          _errorMessage =
-              'Impossible de lire la vidéo.\nFormat non supporté ou fichier corrompu.';
+          // Une clé absente n'est pas un fichier corrompu : le message doit
+          // orienter vers la vraie cause, en général une lecture hors ligne
+          // d'une vidéo dont la clé n'a jamais été récupérée.
+          _errorMessage = e is StateError
+              ? 'Clé de lecture indisponible.\nConnectez-vous à Internet une '
+                  'fois pour débloquer cette vidéo.'
+              : 'Impossible de lire la vidéo.\nFormat non supporté ou fichier corrompu.';
         });
       }
     }
+  }
+
+  /// Publie le conteneur chiffré sur le serveur local et renvoie un contrôleur
+  /// pointant vers son URL. Le déchiffrement se fait bloc par bloc, à la demande.
+  Future<VideoPlayerController> _buildEncryptedController(File file) async {
+    // L'en-tête porte l'identifiant de la clé attendue. Le comparer à la clé
+    // en coffre permet de détecter une vidéo re-chiffrée côté administration
+    // et de renouveler la clé au lieu d'échouer sur un tag GCM invalide.
+    final handle = await file.open();
+    final String expectedKeyId;
+    try {
+      expectedKeyId = (await MxvHeader.readFrom(handle)).keyId;
+    } finally {
+      await handle.close();
+    }
+
+    final keyState = await GetIt.instance<VideoKeyRepository>()
+        .resolve(widget.coursId, expectedKeyId: expectedKeyId);
+
+    if (!keyState.hasData || keyState.data == null) {
+      throw StateError(keyState.errorModel?.error ??
+          'Clé de déchiffrement indisponible');
+    }
+
+    final server = await EncryptedVideoServer.instance();
+    _serverSourceId = '${widget.coursId}_${widget.matiereId ?? 'none'}';
+
+    final url = await server.publish(
+      id: _serverSourceId!,
+      encryptedFile: file,
+      key: keyState.data!.key,
+    );
+    return VideoPlayerController.networkUrl(url);
   }
 
   void _onValueChanged() {
@@ -295,6 +351,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _flashTimer?.cancel();
     _controller?.removeListener(_onValueChanged);
     _controller?.dispose();
+    // Referme le descripteur du conteneur chiffré et retire la source :
+    // aucun octet en clair ne reste accessible après la fermeture du lecteur.
+    final sourceId = _serverSourceId;
+    if (sourceId != null) {
+      EncryptedVideoServer.instance()
+          .then((server) => server.release(sourceId))
+          .catchError((_) {});
+    }
     ScreenBrightness().setScreenBrightness(_initialBrightness).catchError((_) {});
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

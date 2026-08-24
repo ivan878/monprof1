@@ -131,7 +131,10 @@ class HiveService {
 
   // ── Video file cache ────────────────────────────────────────────────────────
 
-  ({String filePath, String videoUrl})? getVideoCache(
+  /// [isCrypted] vaut `null` pour les entrées écrites avant l'introduction du
+  /// chiffrement : cette distinction permet de repérer les vidéos locales
+  /// dont l'état est inconnu et de forcer leur retéléchargement.
+  ({String filePath, String videoUrl, bool? isCrypted})? getVideoCache(
       String coursId, String? matiereId) {
     final raw = _videoCache.get(_key(coursId, matiereId));
     if (raw == null) return null;
@@ -140,6 +143,7 @@ class HiveService {
       return (
         filePath: map['filePath'] as String,
         videoUrl: map['videoUrl'] as String,
+        isCrypted: map['isCrypted'] as bool?,
       );
     } catch (_) {
       return null;
@@ -147,10 +151,19 @@ class HiveService {
   }
 
   void saveVideoCache(
-      String coursId, String? matiereId, String filePath, String videoUrl) {
+    String coursId,
+    String? matiereId,
+    String filePath,
+    String videoUrl, {
+    required bool isCrypted,
+  }) {
     _videoCache.put(
       _key(coursId, matiereId),
-      jsonEncode({'filePath': filePath, 'videoUrl': videoUrl}),
+      jsonEncode({
+        'filePath': filePath,
+        'videoUrl': videoUrl,
+        'isCrypted': isCrypted,
+      }),
     );
   }
 

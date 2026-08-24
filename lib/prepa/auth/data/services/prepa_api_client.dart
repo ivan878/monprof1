@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:monprof/corps/utils/device_identity.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
 import 'package:monprof/corps/utils/helper.dart';
+import 'package:monprof/prepa/auth/domain/session_guard.dart';
 
 const String _prepaBaseUrl = 'https://api.prepa.mutrix.org/api/v1';
 // const String prepaBasePath = '10.189.65.240';
@@ -45,6 +47,20 @@ class _PrepaInterceptor extends InterceptorsWrapper {
         }
       }
     } catch (_) {}
+
+    // Identité d'appareil — le backend s'en sert pour n'autoriser qu'un
+    // appareil actif par compte. Résolue une fois puis servie depuis le cache.
+    try {
+      final deviceId = await DeviceIdentity.instance.resolve();
+      if (deviceId != null) {
+        options.headers[DeviceIdentity.headerName] = deviceId;
+        options.headers[DeviceIdentity.platformHeaderName] =
+            DeviceIdentity.instance.platform;
+      }
+    } catch (_) {
+      // Une requête ne doit jamais échouer faute d'identifiant d'appareil.
+    }
+
     loger('[PrepaAPI] ${options.method} ${options.uri}');
     super.onRequest(options, handler);
   }
@@ -67,6 +83,20 @@ class _PrepaInterceptor extends InterceptorsWrapper {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final body = err.response?.data;
+
+    // Le compte a été réactivé sur un autre appareil : la session locale est
+    // morte. On le signale une seule fois ; la couche présentation déclenche
+    // la déconnexion complète — l'intercepteur n'a pas à naviguer.
+    if (body is Map &&
+        body['code']?.toString() == SessionInvalidation.deviceMismatch) {
+      loger('[PrepaAPI] DEVICE_MISMATCH — session invalidée par le serveur');
+      SessionGuard.instance.signal(SessionInvalidation(
+        code: SessionInvalidation.deviceMismatch,
+        message: body['error']?.toString() ??
+            'Votre compte a été connecté sur un autre appareil.',
+      ));
+    }
+
     if (body is Map && body['error'] != null) {
       final msg = body['error'].toString();
       loger('[PrepaAPI] Erreur backend: $msg');

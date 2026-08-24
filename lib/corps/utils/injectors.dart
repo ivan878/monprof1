@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:monprof/corps/utils/device_identity.dart';
 import 'package:monprof/corps/utils/local_storage/app_storage_cleaner.dart';
 import 'package:monprof/corps/utils/local_storage/hive_service.dart';
 import 'package:monprof/prepa/auth/data/repository/prepa_auth_repository.dart';
@@ -12,6 +15,7 @@ import 'package:monprof/prepa/concours/data/repository/concours_repository.dart'
 import 'package:monprof/prepa/concours/data/services/concours_service.dart';
 import 'package:monprof/prepa/cours/controllers/matieres_controller.dart';
 import 'package:monprof/prepa/cours/data/repository/cours_repository.dart';
+import 'package:monprof/prepa/cours/data/repository/video_key_repository.dart';
 import 'package:monprof/prepa/cours/data/services/cours_service.dart';
 import 'package:monprof/prepa/home/home_controller.dart';
 import 'package:monprof/prepa/subscription/controllers/mes_transactions_controller.dart';
@@ -22,6 +26,10 @@ import 'package:monprof/prepa/user/data/repository/user_repository.dart';
 import 'package:monprof/prepa/user/data/services/user_service.dart';
 
 Future<void> setupDependencies() async {
+  // Résolution anticipée de l'identifiant d'appareil : sans attendre, pour ne
+  // pas retarder le démarrage — la première requête l'attendra si nécessaire.
+  unawaited(DeviceIdentity.instance.warmUp());
+
   // ── Stockage sécurisé ─────────────────────────────────────────────────────
   const secureStorage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
@@ -71,6 +79,14 @@ Future<void> setupDependencies() async {
   );
   GetIt.instance.registerLazySingleton<PrepaCoursRepository>(
     () => PrepaCoursRepository(service: GetIt.instance<PrepaCoursService>()),
+  );
+
+  // Clés de déchiffrement des vidéos — mises en coffre pour la lecture hors ligne.
+  GetIt.instance.registerLazySingleton<VideoKeyRepository>(
+    () => VideoKeyRepository(
+      service: GetIt.instance<PrepaCoursService>(),
+      secureStorage: secureStorage,
+    ),
   );
 
   GetIt.instance.registerLazySingleton<SubscriptionService>(

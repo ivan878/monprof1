@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:monprof/corps/utils/local_storage/hive_service.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
@@ -55,6 +57,11 @@ class _VideoHistoryTile extends StatelessWidget {
     return GestureDetector(
       onTap: entry.filePath != null
           ? () async {
+              // L'état de chiffrement n'est pas porté par l'historique : il est
+              // relu depuis le cache vidéo, seule source fiable pour ce fichier.
+              final cache = GetIt.instance<HiveService>()
+                  .getVideoCache(entry.coursId, entry.matiereId);
+
               await Navigator.push(
                 context,
                 PageTransition(
@@ -65,6 +72,7 @@ class _VideoHistoryTile extends StatelessWidget {
                     matiereId: entry.matiereId,
                     title: entry.title,
                     videoUrl: entry.videoUrl,
+                    isCrypted: cache?.isCrypted ?? false,
                   ),
                 ),
               );

@@ -13,6 +13,10 @@ class PrepaCoursModel {
   final Map<String, dynamic>? metadata;
   final String? userId;
 
+  /// Vrai si la vidéo est stockée chiffrée : elle doit être déchiffrée avec la
+  /// clé de contenu avant lecture. Valeur fournie par le backend.
+  final bool hasBeenCrypted;
+
   const PrepaCoursModel({
     required this.id,
     this.title,
@@ -25,6 +29,7 @@ class PrepaCoursModel {
     this.updatedAt,
     this.metadata,
     this.userId,
+    this.hasBeenCrypted = false,
   });
 
   Map<String, dynamic> toJson() => {
@@ -39,6 +44,7 @@ class PrepaCoursModel {
         'updatedAt': updatedAt?.toIso8601String(),
         'metadata': metadata,
         'userId': userId,
+        'hasBeenCrypted': hasBeenCrypted,
       };
 
   factory PrepaCoursModel.fromJson(Map<String, dynamic> json) {
@@ -61,6 +67,7 @@ class PrepaCoursModel {
           : null,
       metadata: json['metadata'] as Map<String, dynamic>?,
       userId: json['userId']?.toString(),
+      hasBeenCrypted: json['hasBeenCrypted'] as bool? ?? false,
     );
   }
 }

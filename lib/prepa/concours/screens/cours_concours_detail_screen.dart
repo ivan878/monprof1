@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monprof/corps/utils/local_storage/hive_service.dart';
+import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
@@ -15,6 +16,7 @@ import 'package:monprof/prepa/concours/data/models/concours_model.dart';
 import 'package:monprof/prepa/cours/controllers/cours_detail_controller.dart';
 import 'package:monprof/prepa/cours/data/models/cours_model.dart';
 import 'package:monprof/prepa/cours/data/repository/cours_repository.dart';
+import 'package:monprof/prepa/cours/data/repository/video_key_repository.dart';
 import 'package:monprof/prepa/cours/screens/video_player_screen.dart';
 import 'package:monprof/prepa/subscription/screens/payment_screen.dart';
 import 'package:page_transition/page_transition.dart';
@@ -48,6 +50,8 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
 
   // Local video file path — non-null means the video is available offline
   String? _localFilePath;
+  /// Vrai si le fichier local est un conteneur chiffré.
+  bool _localIsCrypted = false;
   bool _cacheChecked = false;
 
   @override
@@ -78,7 +82,16 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
 
     // URL changed → invalidate
     if (cache.videoUrl != cours.videoUrl) {
-      _hiveService.deleteVideoCache(cours.id, cours.matiereId);
+      await _discardLocalVideo(cours, cache.filePath);
+      return;
+    }
+
+    // Le backend indique désormais une vidéo chiffrée alors que la copie locale
+    // est en clair (ou d'état inconnu, antérieure au chiffrement) : la copie en
+    // clair ne doit pas continuer à servir. On la supprime et on force un
+    // nouveau téléchargement de la version chiffrée.
+    if (cache.isCrypted != cours.hasBeenCrypted) {
+      await _discardLocalVideo(cours, cache.filePath);
       return;
     }
 
@@ -88,7 +101,33 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
       return;
     }
 
-    if (mounted) setState(() => _localFilePath = cache.filePath);
+    if (mounted) {
+      setState(() {
+        _localFilePath = cache.filePath;
+        _localIsCrypted = cache.isCrypted ?? false;
+      });
+    }
+  }
+
+  /// Supprime le fichier local et ses métadonnées : la vidéo devra être
+  /// retéléchargée dans son état courant côté serveur.
+  Future<void> _discardLocalVideo(PrepaCoursModel cours, String path) async {
+    try {
+      final file = File(path);
+      if (await file.exists()) await file.delete();
+    } catch (_) {
+      // Un fichier verrouillé ne doit pas bloquer l'invalidation du cache
+    }
+    _hiveService.deleteVideoCache(cours.id, cours.matiereId);
+    _hiveService.deletePlaybackPosition(cours.id, cours.matiereId);
+    await GetIt.instance<VideoKeyRepository>().forget(cours.id);
+
+    if (mounted) {
+      setState(() {
+        _localFilePath = null;
+        _localIsCrypted = false;
+      });
+    }
   }
 
   @override
@@ -131,8 +170,31 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
         },
       );
 
+      // La clé est récupérée MAINTENANT, tant que le réseau est disponible :
+      // c'est ce qui rend la vidéo lisible hors connexion. La demander au
+      // moment de lire condamnerait toute lecture hors ligne.
+      String? keyWarning;
+      if (cours.hasBeenCrypted) {
+        final keyState =
+            await GetIt.instance<VideoKeyRepository>().fetchAndStore(cours.id);
+        if (!keyState.hasData) {
+          keyWarning = 'Vidéo téléchargée, mais la clé de lecture n\'a pas pu '
+              'être obtenue : elle ne sera pas lisible hors connexion.';
+        }
+      }
+
       // Persist in local cache
-      _hiveService.saveVideoCache(cours.id, cours.matiereId, savePath, url);
+      // L'état de chiffrement vient du backend : il détermine comment la
+      // vidéo sera lue, et permet de détecter plus tard une copie obsolète.
+      _hiveService.saveVideoCache(
+        cours.id,
+        cours.matiereId,
+        savePath,
+        url,
+        isCrypted: cours.hasBeenCrypted,
+      );
+
+      if (keyWarning != null) Notify.toast(keyWarning);
 
       if (mounted) {
         setState(() {
@@ -140,6 +202,7 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
           _downloadComplete = true;
           _progress = 1.0;
           _localFilePath = savePath;
+          _localIsCrypted = cours.hasBeenCrypted;
         });
         await _openVideoPlayer(cours, savePath);
       }
@@ -176,6 +239,7 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
           coursId: cours.id,
           matiereId: cours.matiereId,
           videoUrl: cours.videoUrl,
+          isCrypted: _localIsCrypted,
         ),
       ),
     );

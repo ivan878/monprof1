@@ -47,6 +47,15 @@ class PrepaCoursService {
     return res.data['data'] as Map<String, dynamic>;
   }
 
+  /// GET /cours/{id}/video-key
+  ///
+  /// Clé de déchiffrement d'une vidéo chiffrée. Le serveur ne la délivre qu'aux
+  /// comptes disposant d'un accès actif au cours.
+  Future<Map<String, dynamic>> getVideoKey(String coursId) async {
+    final res = await dio.get('/cours/$coursId/video-key');
+    return res.data['data'] as Map<String, dynamic>;
+  }
+
   /// GET /concours-sessions/{sessionId}/matieres/{matiereId}/cours
   ///
   /// Cours de la matière effectivement rattachés à la session — et non tout le
