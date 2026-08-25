@@ -1,145 +1,244 @@
-import 'package:get/get.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:monprof/corps/utils/app_state.dart';
 import 'package:monprof/corps/utils/error_handler.dart';
-import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/home/data/models/categorie_model.dart';
-import 'package:monprof/paiements/datas/models/paiement_provider.dart';
-import 'package:monprof/paiements/datas/models/paiements.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
+import 'package:monprof/paiements/datas/models/payment_creation_result.dart';
+import 'package:monprof/paiements/datas/models/payment_request.dart';
+import 'package:monprof/paiements/datas/models/payment_service.dart';
+import 'package:monprof/paiements/datas/models/payment_transaction.dart';
 import 'package:monprof/paiements/datas/reposytory/paiement_ripository.dart';
 
 class PaiementsController extends GetxController {
-  PaiementRepository repository;
+  static const Duration pollingInterval = Duration(seconds: 7);
+
+  final PaiementRepository repository;
 
   PaiementsController({required this.repository, this.categorie});
-  AppState<bool?> paiementState = AppState();
-  TextEditingController controllerQuantite = TextEditingController();
-  TextEditingController controllerNumeroClient = TextEditingController();
-  TextEditingController controllerNumeroPayeur = TextEditingController();
-  TextEditingController controllerCode = TextEditingController();
 
-  AppState<List<PaiementProvider>> paiementProviderState = AppState();
+  final TextEditingController controllerQuantite = TextEditingController();
+  final TextEditingController controllerNumeroClient = TextEditingController();
+  final TextEditingController controllerNumeroPayeur = TextEditingController();
+  final TextEditingController controllerCode = TextEditingController();
 
-  PaiementProvider? paiementProvider;
-  bool successPayment = false;
-  bool failedPayment = false;
-  String? raisonFailedPayment;
+  AppState<PaymentCreationResult?> paymentCreationState = AppState();
+  AppState<bool?> codeActivationState = AppState();
+  AppState<List<PaymentService>> paymentServiceState = AppState();
 
   CategorieParentStatus? categorie;
+  PaymentService? selectedPaymentService;
+  PaymentTransaction? currentTransaction;
+  PaymentFlowStatus paymentFlowStatus = PaymentFlowStatus.idle;
+  String? paymentFailureReason;
+  String? pollingError;
+  Timer? _pollingTimer;
+  bool _statusRequestInProgress = false;
 
   void changeCategorieParent(CategorieParentStatus? newCategorie) {
     categorie = newCategorie;
     update();
   }
 
-  void changeSuccessPaymentStatue(bool val) {
-    successPayment = val;
-    update();
+  Categorie? get selectedCategory =>
+      categorie?.categorie ?? Get.find<HomeController>().categorie?.categorie;
+
+  int get totalPrice {
+    final unitPrice = selectedCategory?.prix ?? 0;
+    return (int.tryParse(controllerQuantite.text) ?? 1) * unitPrice;
   }
 
-  void changeFailedPaymentStatue(bool val) {
-    failedPayment = val;
-    update();
-  }
+  int get serviceFee => selectedPaymentService?.serviceFeeFor(totalPrice) ?? 0;
 
-  void chanRaisonFialedPayment(String? val) {
-    raisonFailedPayment = val;
-    update();
-  }
+  int get totalAmount => totalPrice + serviceFee;
 
-  void changePaymentProvider(PaiementProvider? newPaiementProvider) {
-    paiementProvider = newPaiementProvider;
-    update();
-  }
+  void changeQuantity(String _) => update();
 
-  void selectPaymentProviderFromNumber(String numero) {
-    final data = paiementProviderState.data ?? [];
-    // paiementProvider =
-    //     paiementProviderState.data?.firstWhereOrNull((element) {});
-    for (var element in data) {
-      printer(element.regExp);
-      printer(element.sens);
-      printer(RegExp(element.regExp).hasMatch(numero));
-      if (RegExp(element.regExp).hasMatch(numero) && element.sens == "IN") {
-        paiementProvider = element;
+  void selectPaymentServiceFromNumber(String phoneNumber) {
+    final normalizedNumber = phoneNumber.replaceAll(RegExp(r'\D'), '');
+    selectedPaymentService = null;
+
+    for (final service in paymentServiceState.data ?? <PaymentService>[]) {
+      if (service.acceptsPhoneNumber(normalizedNumber)) {
+        selectedPaymentService = service;
         break;
       }
     }
+
     update();
-    if (paiementProvider == null) {
-      Notify.toastError("Numero du payeur invalide");
+  }
+
+  bool validateSelectedPaymentService({bool showError = true}) {
+    selectPaymentServiceFromNumber(controllerNumeroPayeur.text);
+    final valid = selectedPaymentService != null;
+
+    if (!valid && showError) {
+      Notify.toastError(
+        'Aucun service de paiement ne correspond à ce numéro'.tr,
+      );
     }
+
+    return valid;
   }
 
-  int get totalPrice =>
-      (int.tryParse(controllerQuantite.text) ?? 1) * categorie!.categorie.prix!;
-  void changeQuantite(String val) {
-    update();
-  }
+  Future<bool> requestPayment() async {
+    if (!validateSelectedPaymentService()) {
+      return false;
+    }
 
-  Future requestPaiement() async {
-    paiementState = AppState(status: AppStatus.loading);
+    final categoryId = selectedCategory?.id;
+    if (categoryId == null) {
+      Notify.toastError('La catégorie sélectionnée est invalide'.tr);
+      return false;
+    }
+
+    stopPolling();
+    paymentFlowStatus = PaymentFlowStatus.creating;
+    paymentFailureReason = null;
+    pollingError = null;
+    currentTransaction = null;
+    paymentCreationState = AppState.loading();
     update();
+
     try {
-      Paiements paiements = Paiements(
-        numero_payeur: controllerNumeroPayeur.text,
-        numero_client: controllerNumeroClient.text,
-        nombre_de_code: int.tryParse(controllerQuantite.text) ?? 1,
-        categorie_id: categorie?.categorie.id ??
-            Get.find<HomeController>().categorie?.categorie.id,
-        subscription_id: paiementProvider?.subscriptionId,
+      final result = await repository.createPayment(
+        PaymentRequest(
+          payerPhoneNumber: controllerNumeroPayeur.text,
+          beneficiaryPhoneNumber: controllerNumeroClient.text,
+          quantity: int.tryParse(controllerQuantite.text) ?? 1,
+          categoryId: categoryId,
+          paymentServiceId: selectedPaymentService!.id,
+        ),
       );
-      chanRaisonFialedPayment(null);
-      changeSuccessPaymentStatue(false);
-      changeFailedPaymentStatue(false);
-      final response = await repository.requestPaiements(paiements);
-      paiementState = AppState(data: response, status: AppStatus.data);
+
+      paymentCreationState = AppState.complete(result);
+      currentTransaction = result.transaction;
+      _applyTransactionStatus(result.transaction);
+
+      if (!result.transaction.isFinal) {
+        paymentFlowStatus = PaymentFlowStatus.pending;
+        startPolling();
+      }
+
       update();
-    } catch (e) {
-      paiementState = AppState(
-        status: AppStatus.error,
-        errorModel: returnError(e),
-      );
+      return true;
+    } catch (error) {
+      paymentCreationState = AppState.track(error);
+      paymentFlowStatus = PaymentFlowStatus.failed;
+      paymentFailureReason = returnError(error).error;
+      update();
+      return false;
+    }
+  }
+
+  void startPolling() {
+    if (currentTransaction == null || currentTransaction!.isFinal) {
+      return;
+    }
+
+    _pollingTimer?.cancel();
+    _pollingTimer = Timer.periodic(pollingInterval, (_) {
+      checkTransactionStatus();
+    });
+  }
+
+  void stopPolling() {
+    _pollingTimer?.cancel();
+    _pollingTimer = null;
+  }
+
+  Future<void> checkTransactionStatus() async {
+    final transaction = currentTransaction;
+    if (transaction == null ||
+        transaction.isFinal ||
+        _statusRequestInProgress) {
+      return;
+    }
+
+    _statusRequestInProgress = true;
+    try {
+      final updatedTransaction =
+          await repository.getTransactionStatus(transaction.id);
+      pollingError = null;
+      currentTransaction = updatedTransaction;
+      _applyTransactionStatus(updatedTransaction);
+    } catch (error) {
+      // Une coupure réseau ne doit pas transformer un paiement en échec.
+      pollingError = returnError(error).error;
+    } finally {
+      _statusRequestInProgress = false;
       update();
     }
   }
 
-  Future activeCode() async {
-    paiementState = AppState(status: AppStatus.loading);
+  void _applyTransactionStatus(PaymentTransaction transaction) {
+    if (!transaction.isFinal) {
+      paymentFlowStatus = PaymentFlowStatus.pending;
+      return;
+    }
+
+    stopPolling();
+    if (transaction.isSuccessful) {
+      paymentFlowStatus = PaymentFlowStatus.success;
+      paymentFailureReason = null;
+    } else {
+      paymentFlowStatus = PaymentFlowStatus.failed;
+      paymentFailureReason =
+          transaction.failureReason?.trim().isNotEmpty == true
+              ? transaction.failureReason
+              : 'Le paiement a été refusé'.tr;
+    }
+  }
+
+  Future<void> getPaymentServices() async {
+    paymentServiceState = AppState.loading();
     update();
+
+    paymentServiceState = await repository.getPaymentServices();
+    update();
+
+    if (paymentServiceState.hasError) {
+      Notify.toastError(
+        paymentServiceState.errorModel?.error ??
+            'Impossible de charger les services de paiement'.tr,
+      );
+    }
+  }
+
+  Future<void> activeCode() async {
+    codeActivationState = AppState.loading();
+    update();
+
     try {
       final response = await repository.activeCode(controllerCode.text);
-      paiementState = AppState(data: response, status: AppStatus.data);
-      update();
-    } catch (e) {
-      paiementState = AppState(
-        status: AppStatus.error,
-        errorModel: returnError(e),
-      );
+      codeActivationState = AppState.complete(response);
+    } catch (error) {
+      codeActivationState = AppState.track(error);
+    } finally {
       update();
     }
   }
 
-  Future<void> getPaiementProviders() async {
-    try {
-      paiementProviderState = AppState(status: AppStatus.loading);
-      update();
-      final response = await repository.getPaymentServices();
-      paiementProviderState = response;
-      update();
-    } catch (e) {
-      paiementProviderState = AppState.track(e);
-      update();
-    } finally {
-      update();
-      if (paiementProviderState.hasError) {
-        Notify.toastError(
-          paiementProviderState.errorModel?.error ??
-              'Une erreur est survenue lors du chargement des services de paiement',
-        );
-      }
-    }
+  void resetPaymentFlow() {
+    stopPolling();
+    paymentCreationState = AppState();
+    currentTransaction = null;
+    paymentFlowStatus = PaymentFlowStatus.idle;
+    paymentFailureReason = null;
+    pollingError = null;
+    update();
+  }
+
+  @override
+  void onClose() {
+    stopPolling();
+    controllerQuantite.dispose();
+    controllerNumeroClient.dispose();
+    controllerNumeroPayeur.dispose();
+    controllerCode.dispose();
+    super.onClose();
   }
 }

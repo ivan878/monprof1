@@ -74,9 +74,7 @@ class _CoursBodyState extends State<CoursBody> {
                               child: Column(
                                 children: [
                                   // if (cours.open || Platform.isAndroid)
-                                    BuildCourComponen(
-                                      cours: cours
-                                    ),
+                                  BuildCourComponen(cours: cours),
                                 ],
                               ),
                             ),
@@ -122,27 +120,69 @@ class _BuildCourComponenState extends State<BuildCourComponen> {
       builder: (controller) => ListTile(
         leading: CircleAvatar(
           backgroundColor: Colors.blue,
-          child: controller.isDownloaded
-              ? const Icon(Icons.play_circle, color: Colors.white)
-              : !controller.loading
-                  ? const Icon(Icons.download, color: Colors.white)
-                  : Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        value: controller.progrees,
-                      ),
-                    ),
+          child: controller.loading
+              ? Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    value: controller.totalBytes == null
+                        ? null
+                        : controller.progrees,
+                  ),
+                )
+              : controller.isDownloaded
+                  ? const Icon(Icons.play_circle, color: Colors.white)
+                  : controller.hasPartialDownload
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                                value: controller.totalBytes == null
+                                    ? null
+                                    : controller.progrees,
+                              ),
+                            ),
+                            const Icon(
+                              Icons.download,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ],
+                        )
+                      : const Icon(Icons.download, color: Colors.white),
         ),
         title: SimpleText(
           text: widget.cours.libelle,
           maxlines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: SimpleText(
-          text: widget.cours.description,
-          maxlines: 1,
-          overflow: TextOverflow.ellipsis,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SimpleText(
+              text: widget.cours.description,
+              maxlines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            if (controller.loading || controller.hasPartialDownload)
+              Text(
+                controller.loading
+                    ? 'Téléchargement ${controller.progressLabel}'.tr
+                    : 'Téléchargement interrompu • ${controller.progressLabel} • toucher pour reprendre'
+                        .tr,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+          ],
         ),
         trailing: Container(
           child: !widget.cours.open
@@ -155,22 +195,22 @@ class _BuildCourComponenState extends State<BuildCourComponen> {
           if (!widget.cours.open) {
             changeScreen(context, const PaiementsScreen());
           } else {
-          printer(widget.cours.video_url);
-          if (controller.isDownloaded) {
-            final File cryptedFile = controller.files;
-            final decryptedFile =
-                await controller.getFileDecrypted(cryptedFile);
-            if (context.mounted) {
-              changeScreen(
-                context,
-                LectureCoursVideo(
-                  video: decryptedFile,
-                ),
-              );
+            printer(widget.cours.video_url);
+            if (controller.isDownloaded) {
+              final File cryptedFile = controller.files;
+              final decryptedFile =
+                  await controller.getFileDecrypted(cryptedFile);
+              if (context.mounted) {
+                changeScreen(
+                  context,
+                  LectureCoursVideo(
+                    video: decryptedFile,
+                  ),
+                );
+              }
+              return;
             }
-            return;
-          }
-          await controller.downloadvideo();
+            await controller.downloadvideo();
           }
         },
       ),
@@ -181,15 +221,19 @@ class _BuildCourComponenState extends State<BuildCourComponen> {
     return PopupMenuButton(
       itemBuilder: ((context) => [
             PopupMenuItem(
-                child: Text('retélécharger'.tr),
+                child: Text(
+                  controller.hasPartialDownload
+                      ? 'Reprendre le téléchargement'.tr
+                      : 'retélécharger'.tr,
+                ),
                 onTap: () async {
-                  await controller.downloadvideo().then((value) {
-                    setState(() {});
-                    if (!value) {
-                      Notify.toastError(
-                          "Erreur de téléchargement de la vidéo".tr);
-                    }
-                  });
+                  final downloaded = await controller.downloadvideo();
+                  if (mounted) setState(() {});
+                  if (!downloaded && !controller.hasPartialDownload) {
+                    Notify.toastError(
+                      "Erreur de téléchargement de la vidéo".tr,
+                    );
+                  }
                 }),
             PopupMenuItem(
                 child: Text('Supprimer'.tr),

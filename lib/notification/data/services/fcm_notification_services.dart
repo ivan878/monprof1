@@ -89,12 +89,9 @@ class NotificationService {
       }
       if (type == 'PAYMENT_STATUS') {
         if (Get.isRegistered<PaiementsController>()) {
-          final controller = Get.find<PaiementsController>();
-          controller
-              .changeSuccessPaymentStatue(message.data['status'] == 'SUCCESS');
-          controller.changeFailedPaymentStatue(
-              message.data['status'].toString().toUpperCase() != 'SUCCESS');
-          controller.chanRaisonFialedPayment(message.data['raison_reject']);
+          // La notification accélère le rafraîchissement, mais le serveur reste
+          // la source de vérité pour le statut et la raison d'un éventuel rejet.
+          Get.find<PaiementsController>().checkTransactionStatus();
         }
       }
     }

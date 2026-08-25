@@ -1,20 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/material.dart';
-import 'package:monprof/corps/utils/helper.dart';
-import 'package:monprof/corps/utils/notify.dart';
-import 'package:monprof/corps/widgets/theme.dart';
-import 'package:monprof/components/row_compte.dart';
-import 'package:form_validator/form_validator.dart';
 import 'package:monprof/corps/widgets/app_bouton.dart';
-import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/app_text_field.dart';
+import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/home/data/models/categorie_model.dart';
 import 'package:monprof/home/logique_metier/home_controller.dart';
-import 'package:monprof/paiements/logique_metier/paiement_controller.dart';
 import 'package:monprof/paiements/datas/reposytory/paiement_ripository.dart';
-import 'package:monprof/paiements/presentation/component/paiements_provider_information.dart';
+import 'package:monprof/paiements/logique_metier/paiement_controller.dart';
+import 'package:monprof/paiements/presentation/payment_confirmation_screen.dart';
+import 'package:monprof/paiements/presentation/widgets/payment_service_logo.dart';
 
 class PaimentParentScreen extends StatefulWidget {
   const PaimentParentScreen({super.key});
@@ -24,283 +21,274 @@ class PaimentParentScreen extends StatefulWidget {
 }
 
 class _PaimentParentScreenState extends State<PaimentParentScreen> {
-  final formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final PaiementsController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final homeController = Get.find<HomeController>();
+    _controller = PaiementsController(
+      repository: GetIt.instance<PaiementRepository>(),
+      categorie: homeController.categorieParent,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.getPaymentServices();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final HomeController homeController = Get.find<HomeController>();
-    return GetBuilder(
-      init: PaiementsController(
-          repository: GetIt.instance<PaiementRepository>(),
-          categorie: homeController.categorieParent),
-      builder: (PaiementsController controller) {
+    final homeController = Get.find<HomeController>();
+    final colors = Theme.of(context).colorScheme;
+
+    return GetBuilder<PaiementsController>(
+      init: _controller,
+      builder: (controller) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text("Paiement d'un abonnement".tr),
-          ),
-          body: controller.paiementState.isLoading
-              ? Center(
-                  child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.transparent,
+          appBar: AppBar(title: Text("Paiement d'un abonnement".tr)),
+          body: SafeArea(
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                padding: const EdgeInsets.all(18),
+                children: [
+                  _Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Abonnement'.tr,
+                          style: textStyle.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        DropdownButtonFormField<CategorieParentStatus>(
+                          initialValue: controller.categorie,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) => value == null
+                              ? 'Choisissez une catégorie'.tr
+                              : null,
+                          items:
+                              (homeController.categorieParentState.data ?? [])
+                                  .map(
+                                    (item) => DropdownMenuItem(
+                                      value: item,
+                                      child: Text(item.categorie.libelle ?? ''),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: controller.changeCategorieParent,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFielApp(
+                          hinText: 'Quantité'.tr,
+                          inputType: TextInputType.number,
+                          controller: controller.controllerQuantite,
+                          onChanged: controller.changeQuantity,
+                          validator: (value) {
+                            final quantity = int.tryParse(value ?? '');
+                            if (quantity == null || quantity < 1) {
+                              return 'Saisissez une quantité valide'.tr;
+                            }
+                            if (quantity > 100) {
+                              return 'La quantité maximale est 100'.tr;
+                            }
+                            return null;
+                          },
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: colors.primaryContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              _AmountRow(
+                                label: 'Montant'.tr,
+                                value: controller.totalPrice,
+                              ),
+                              if (controller.selectedPaymentService !=
+                                  null) ...[
+                                const SizedBox(height: 8),
+                                _AmountRow(
+                                  label: 'Frais de service'.tr,
+                                  value: controller.serviceFee,
+                                ),
+                                const SizedBox(height: 8),
+                                Divider(color: colors.outlineVariant),
+                                const SizedBox(height: 4),
+                                _AmountRow(
+                                  label: 'Total à payer'.tr,
+                                  value: controller.totalAmount,
+                                  emphasize: true,
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    child: const CircularProgressIndicator(),
                   ),
-                ))
-              : Container(
-                  padding: const EdgeInsets.all(8.0),
-                  margin: const EdgeInsets.all(10.0),
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: formKey,
-                      child: Column(
-                        children: [
-                          Material(
-                            borderRadius: BorderRadius.circular(10),
-                            elevation: 2,
-                            child: Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                children: [
-                                  (homeController.categorieParentState.data ??
-                                              [])
-                                          .isEmpty
-                                      ? SimpleText(
-                                          text:
-                                              'Impossible de charger les catégrie'
-                                                  .tr)
-                                      : DropdownButtonFormField<
-                                              CategorieParentStatus?>(
-                                          initialValue: controller.categorie,
-                                          validator: (value) {
-                                            return value == null
-                                                ? "choisir une catégorie".tr
-                                                : null;
-                                          },
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                          isExpanded: true,
-                                          style: textStyle.copyWith(),
-                                          // iconEnabledColor: Colors.black,
-                                          iconSize: 30,
-                                          elevation: 16,
-                                          decoration: appInputDecoration(),
-                                          items: (homeController
-                                                      .categorieParentState
-                                                      .data ??
-                                                  [])
-                                              .map((e) => e)
-                                              .toList()
-                                              .map<
-                                                      DropdownMenuItem<
-                                                          CategorieParentStatus?>>(
-                                                  (CategorieParentStatus
-                                                      value) {
-                                            return DropdownMenuItem<
-                                                CategorieParentStatus>(
-                                              value: value,
-                                              child: SimpleText(
-                                                text: value.categorie.libelle ??
-                                                    '',
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium!
-                                                    .color,
-                                                size: 16,
-                                              ),
-                                            );
-                                          }).toList(),
-                                          hint: Text(
-                                            "Categorie",
-                                            style: textStyle.copyWith(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          onChanged:
-                                              (CategorieParentStatus? value) {
-                                            controller
-                                                .changeCategorieParent(value);
-                                          }),
-                                  SpacerHeight(15),
-                                  Container(
-                                    height: 55,
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          99, 163, 163, 163),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        '${"Prix Unitaire".tr}${controller.categorie!.categorie.prix} Fcfa',
-                                        style: textStyle.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17,
-                                            color: Colors.green),
-                                      ),
-                                    ),
-                                  ),
-                                  SpacerHeight(15),
-                                  TextFielApp(
-                                    hinText: 'Quantité'.tr,
-                                    inputType: TextInputType.number,
-                                    fillColor: Colors.blue.withOpacity(0.3),
-                                    filled: true,
-                                    side: BorderSide.none,
-                                    controller: controller.controllerQuantite,
-                                    onChanged: controller.changeQuantite,
-                                    validator: ValidationBuilder(
-                                            requiredMessage:
-                                                'veillez choisir une quantité'
-                                                    .tr)
-                                        .required()
-                                        .build(),
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
-                                    ],
-                                  ),
-                                  SpacerHeight(10),
-                                  Container(
-                                    height: 55,
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          99, 163, 163, 163),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          'Total'.tr,
-                                          style: textStyle.copyWith(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          '${"Montant".tr} ${controller.totalPrice}  Fcfa',
-                                          style: textStyle.copyWith(
-                                              fontSize: 17,
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                  const SizedBox(height: 18),
+                  _Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Informations de paiement'.tr,
+                          style: textStyle.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
                           ),
-                          SpacerHeight(15),
-                          rowCompte(
-                            Colors.blue,
-                            "Informations sur le contact".tr,
-                            Icons.phone_android_outlined,
-                          ),
-                          SpacerHeight(10),
-                          Material(
-                            borderRadius: BorderRadius.circular(10),
-                            elevation: 2,
-                            child: Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.blue),
+                        ),
+                        const SizedBox(height: 16),
+                        TextFielApp(
+                          lenght: 9,
+                          controller: controller.controllerNumeroClient,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: ValidationBuilder(
+                            requiredMessage: 'Numéro du bénéficiaire requis'.tr,
+                          ).minLength(9).maxLength(9).build(),
+                          inputType: TextInputType.phone,
+                          hinText: 'Numéro du bénéficiaire'.tr,
+                        ),
+                        const SizedBox(height: 14),
+                        TextFielApp(
+                          lenght: 9,
+                          controller: controller.controllerNumeroPayeur,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: ValidationBuilder(
+                            requiredMessage: 'Numéro du payeur requis'.tr,
+                          ).minLength(9).maxLength(9).build(),
+                          inputType: TextInputType.phone,
+                          hinText: 'Numéro du payeur'.tr,
+                          onChanged: controller.selectPaymentServiceFromNumber,
+                        ),
+                        if (controller.selectedPaymentService != null) ...[
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              PaymentServiceLogo(
+                                imageUrl:
+                                    controller.selectedPaymentService!.imageUrl,
+                                size: 36,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SimpleText(
-                                    text: 'Numéro qui recevra le SMS'.tr,
-                                    weight: FontWeight.bold,
+                              const SizedBox(width: 9),
+                              Expanded(
+                                child: Text(
+                                  controller.selectedPaymentService!.title,
+                                  style: textStyle.copyWith(
+                                    color: colors.primary,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  SpacerHeight(10),
-                                  TextFielApp(
-                                    lenght: 9,
-                                    controller:
-                                        controller.controllerNumeroClient,
-                                    validator: ValidationBuilder(
-                                            requiredMessage:
-                                                'Numéro du bénéficiaire'.tr)
-                                        .maxLength(
-                                            9, 'entrer un numéro valide'.tr)
-                                        .minLength(9, 'numéro invalide'.tr)
-                                        .build(),
-                                    inputType: TextInputType.phone,
-                                    hinText: '--- --- ---',
-                                  ),
-                                  // SpacerHeight(15),
-                                  Text(
-                                    'Numéro du payeur'.tr,
-                                    style: textStyle.copyWith(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SpacerHeight(10),
-                                  TextFielApp(
-                                    controller:
-                                        controller.controllerNumeroPayeur,
-                                    lenght: 9,
-                                    validator: ValidationBuilder(
-                                            requiredMessage:
-                                                'Numéro du payeur'.tr)
-                                        .maxLength(
-                                            9, 'entrer un numéro valide'.tr)
-                                        .minLength(9, 'numéro invalide'.tr)
-                                        .build(),
-                                    inputType: TextInputType.phone,
-                                    hinText: '--- --- ---',
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                          SpacerHeight(15),
-                          const PaiementsProviderInformation(),
-                          DefaultButton(
-                            wdiget: SimpleText(
-                              text: "Valider ma commande".tr,
-                              color: white,
-                              size: 17,
-                              weight: FontWeight.bold,
-                            ),
-                            onPressed: () async {
-                              if (formKey.currentState!.validate()) {
-                                await controller
-                                    .requestPaiement()
-                                    .then((value) {
-                                  if (controller.paiementState.hasError) {
-                                    Notify.showFailure(
-                                        context,
-                                        controller.paiementState.errorModel
-                                                ?.error ??
-                                            "");
-                                  } else if (controller.paiementState.hasData) {
-                                    Notify.showSuccess(
-                                        context,
-                                        'Demande de paiment prise en compte'
-                                            .tr);
-                                    Navigator.pop(context);
-                                  }
-                                });
-                              } else {
-                                null;
-                              }
-                            },
+                            ],
                           ),
                         ],
-                      ),
+                      ],
                     ),
                   ),
-                ),
+                  if (controller.paymentServiceState.hasError) ...[
+                    const SizedBox(height: 12),
+                    TextButton.icon(
+                      onPressed: controller.getPaymentServices,
+                      icon: const Icon(Icons.refresh),
+                      label: Text('Recharger les services de paiement'.tr),
+                    ),
+                  ],
+                  const SizedBox(height: 26),
+                  DefaultButton(
+                    onPressed: controller.paymentServiceState.hasData
+                        ? () {
+                            if (!(_formKey.currentState?.validate() ?? false)) {
+                              return;
+                            }
+                            if (!controller.validateSelectedPaymentService()) {
+                              return;
+                            }
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const PaymentConfirmationScreen(),
+                              ),
+                            );
+                          }
+                        : null,
+                    text: 'Continuer'.tr,
+                  ),
+                ],
+              ),
+            ),
+          ),
         );
       },
+    );
+  }
+}
+
+class _Card extends StatelessWidget {
+  final Widget child;
+
+  const _Card({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.outlineVariant),
+      ),
+      child: child,
+    );
+  }
+}
+
+class _AmountRow extends StatelessWidget {
+  final String label;
+  final int value;
+  final bool emphasize;
+
+  const _AmountRow({
+    required this.label,
+    required this.value,
+    this.emphasize = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
+        Text(
+          '$value XAF',
+          style: textStyle.copyWith(
+            color: colors.primary,
+            fontSize: emphasize ? 17 : 15,
+            fontWeight: emphasize ? FontWeight.w800 : FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 }

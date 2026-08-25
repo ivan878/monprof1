@@ -13,6 +13,7 @@ class Cours {
   String created_at;
   String updated_at;
   bool open;
+  bool supportsRange;
   Cours({
     required this.id,
     required this.video_url,
@@ -24,6 +25,7 @@ class Cours {
     required this.created_at,
     required this.updated_at,
     required this.open,
+    this.supportsRange = true,
   });
 
   Cours copyWith({
@@ -37,6 +39,7 @@ class Cours {
     String? created_at,
     String? updated_at,
     bool? open,
+    bool? supportsRange,
   }) {
     return Cours(
       id: id ?? this.id,
@@ -49,6 +52,7 @@ class Cours {
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
       open: open ?? this.open,
+      supportsRange: supportsRange ?? this.supportsRange,
     );
   }
 
@@ -64,6 +68,10 @@ class Cours {
       'created_at': created_at,
       'updated_at': updated_at,
       'open': open,
+      'video_delivery': {
+        'supports_range': supportsRange,
+        'resume_strategy': 'http-range',
+      },
     };
   }
 
@@ -81,6 +89,8 @@ class Cours {
       open: map['open'].toString() == '0' || map['open'].toString() == 'false'
           ? false
           : true,
+      supportsRange:
+          (map['video_delivery'] as Map?)?['supports_range'] != false,
     );
   }
 
@@ -91,7 +101,7 @@ class Cours {
 
   @override
   String toString() {
-    return 'Cours(id: $id, video_url: $video_url, libelle: $libelle, description: $description, classe_id: $classe_id, matieres_id: $matieres_id, categorie_id: $categorie_id, created_at: $created_at, updated_at: $updated_at, open: $open)';
+    return 'Cours(id: $id, video_url: $video_url, libelle: $libelle, description: $description, classe_id: $classe_id, matieres_id: $matieres_id, categorie_id: $categorie_id, created_at: $created_at, updated_at: $updated_at, open: $open, supportsRange: $supportsRange)';
   }
 
   @override
@@ -107,7 +117,8 @@ class Cours {
         other.categorie_id == categorie_id &&
         other.created_at == created_at &&
         other.updated_at == updated_at &&
-        other.open == open;
+        other.open == open &&
+        other.supportsRange == supportsRange;
   }
 
   @override
@@ -121,6 +132,7 @@ class Cours {
         categorie_id.hashCode ^
         created_at.hashCode ^
         updated_at.hashCode ^
-        open.hashCode;
+        open.hashCode ^
+        supportsRange.hashCode;
   }
 }

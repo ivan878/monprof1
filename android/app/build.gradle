@@ -39,7 +39,7 @@ if (flutterVersionName == null) {
 android {
     namespace "mutrix_tech.monprof.app"
     compileSdk 36
-    ndkVersion '28.0.13004108' 
+    ndkVersion flutter.ndkVersion //'28.0.13004108' 
     buildFeatures {
         buildConfig true
     }

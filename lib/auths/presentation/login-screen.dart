@@ -131,9 +131,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const HomeParentScreen(),
                                     );
                                   } else {
-                                    changeScreen(
+                                    Navigator.pushAndRemoveUntil(
                                       context,
-                                      const Home(),
+                                      MaterialPageRoute(
+                                          builder: (context) => Home()),
+                                      (route) => false,
                                     );
                                   }
                                 } else {

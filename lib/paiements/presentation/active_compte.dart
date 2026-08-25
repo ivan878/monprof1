@@ -57,24 +57,27 @@ class _ActiveCompteState extends State<ActiveCompte> {
                   DefaultButton(
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
-                        await controller.activeCode().then((value) async {
-                          if (controller.paiementState.hasError) {
-                            Notify.showFailure(
-                                context,
-                                controller.paiementState.errorModel?.error ??
-                                    "");
-                          } else if (controller.paiementState.hasData) {
-                            Notify.showSuccess(
-                                context, 'Code active avec succes'.tr);
-                            Navigator.pop(context);
+                        await controller.activeCode();
+                        if (!context.mounted) return;
 
-                            await Get.find<HomeController>().getCategorie();
-                          }
-                        });
+                        if (controller.codeActivationState.hasError) {
+                          Notify.showFailure(
+                            context,
+                            controller.codeActivationState.errorModel?.error ??
+                                "",
+                          );
+                        } else if (controller.codeActivationState.hasData) {
+                          Notify.showSuccess(
+                            context,
+                            'Code active avec succes'.tr,
+                          );
+                          Navigator.pop(context);
+                          await Get.find<HomeController>().getCategorie();
+                        }
                       }
                     },
                     text: 'Valider'.tr,
-                    wdiget: controller.paiementState.isLoading
+                    wdiget: controller.codeActivationState.isLoading
                         ? const Padding(
                             padding: EdgeInsets.all(5.0),
                             child:

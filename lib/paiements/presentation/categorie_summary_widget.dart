@@ -9,6 +9,7 @@ class CategorieSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final home = Get.find<HomeController>();
+    final colors = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -48,7 +49,7 @@ class CategorieSummaryWidget extends StatelessWidget {
                 style: textStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-                  color: primaryColor,
+                  color: colors.primary,
                 ),
               ),
             ),
@@ -68,7 +69,7 @@ class CategorieSummaryWidget extends StatelessWidget {
               style: textStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-                  color: primaryColor),
+                  color: colors.primary),
             ),
           ],
         ),
