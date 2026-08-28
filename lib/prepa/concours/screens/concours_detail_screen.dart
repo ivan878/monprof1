@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:monprof/corps/utils/local_storage/hive_service.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
@@ -48,6 +49,7 @@ class _ConcoursDetailScreenState extends State<ConcoursDetailScreen> {
     super.initState();
     _ctrl = ConcoursDetailController(
       repository: GetIt.instance<ConcoursRepository>(),
+      hiveService: GetIt.instance<HiveService>(),
       concoursId: widget.concoursId,
     );
     _subRepo = GetIt.instance<SubscriptionRepository>();

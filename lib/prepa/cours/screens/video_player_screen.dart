@@ -6,10 +6,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:monprof/corps/utils/helper.dart';
 import 'package:monprof/corps/utils/local_storage/hive_service.dart';
-import 'package:monprof/prepa/cours/data/crypto/encrypted_video_server.dart';
-import 'package:monprof/prepa/cours/data/crypto/mxv_container.dart';
-import 'package:monprof/prepa/cours/data/repository/video_key_repository.dart';
+import 'package:monprof/prepa/cours/data/crypto/video_decryption_service.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:video_player/video_player.dart';
 
@@ -20,9 +19,19 @@ class VideoPlayerScreen extends StatefulWidget {
   final String? matiereId;
   final String? videoUrl;
 
-  /// Vrai si [filePath] désigne un conteneur chiffré : la lecture passe alors
-  /// par le serveur local de déchiffrement plutôt que par le fichier direct.
-  final bool isCrypted;
+  /// Clé de la copie en clair à supprimer à la fermeture.
+  ///
+  /// Renseignée quand [filePath] désigne un fichier déchiffré temporaire :
+  /// il ne doit pas subsister une fois la lecture terminée.
+  final String? temporaryCacheKey;
+
+  /// Fichier à mémoriser dans l'historique de lecture.
+  ///
+  /// Distinct de [filePath] pour une vidéo chiffrée : ce dernier pointe sur la
+  /// copie temporaire, effacée à la fermeture. Enregistrer ce chemin rendrait
+  /// l'entrée d'historique inexploitable dès la lecture suivante. On conserve
+  /// donc le conteneur d'origine, qui, lui, demeure.
+  final String? sourceFilePath;
 
   const VideoPlayerScreen({
     super.key,
@@ -31,7 +40,8 @@ class VideoPlayerScreen extends StatefulWidget {
     this.matiereId,
     this.title,
     this.videoUrl,
-    this.isCrypted = false,
+    this.temporaryCacheKey,
+    this.sourceFilePath,
   });
 
   @override
@@ -84,19 +94,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   // ── Plein écran : true = l'image remplit l'écran (rognée), false = adaptée ──
   bool _isFullscreen = false;
 
-  /// Identifiant de la source publiée sur le serveur local, à libérer à la sortie.
-  String? _serverSourceId;
-
   @override
   void initState() {
     super.initState();
     _hive = GetIt.instance<HiveService>();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+    // L'orientation suit le bouton plein écran, elle n'est pas laissée libre :
+    // une rotation subie pendant la lecture est plus gênante qu'utile.
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _loadBrightness();
     _initPlayer();
   }
@@ -122,14 +127,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         return;
       }
 
-      // Vidéo chiffrée : les octets en clair sont produits à la volée par un
-      // serveur local et ne touchent jamais le disque. Sinon, lecture directe.
-      final VideoPlayerController ctrl;
-      if (widget.isCrypted) {
-        ctrl = await _buildEncryptedController(file);
-      } else {
-        ctrl = VideoPlayerController.file(file);
-      }
+      // Le fichier reçu est toujours en clair : le déchiffrement éventuel a
+      // eu lieu avant l'ouverture de cet écran. La lecture retrouve donc les
+      // performances natives, et le déplacement dans la vidéo est immédiat.
+      final ctrl = VideoPlayerController.file(file);
       await ctrl.initialize();
 
       // Seek to saved position
@@ -167,66 +168,35 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       if (mounted) {
         setState(() {
           _hasError = true;
-          // Une clé absente n'est pas un fichier corrompu : le message doit
-          // orienter vers la vraie cause, en général une lecture hors ligne
-          // d'une vidéo dont la clé n'a jamais été récupérée.
-          _errorMessage = e is StateError
-              ? 'Clé de lecture indisponible.\nConnectez-vous à Internet une '
-                  'fois pour débloquer cette vidéo.'
-              : 'Impossible de lire la vidéo.\nFormat non supporté ou fichier corrompu.';
+          _errorMessage =
+              'Impossible de lire la vidéo.\nFormat non supporté ou fichier corrompu.';
         });
       }
     }
   }
 
-  /// Publie le conteneur chiffré sur le serveur local et renvoie un contrôleur
-  /// pointant vers son URL. Le déchiffrement se fait bloc par bloc, à la demande.
-  Future<VideoPlayerController> _buildEncryptedController(File file) async {
-    // L'en-tête porte l'identifiant de la clé attendue. Le comparer à la clé
-    // en coffre permet de détecter une vidéo re-chiffrée côté administration
-    // et de renouveler la clé au lieu d'échouer sur un tag GCM invalide.
-    final handle = await file.open();
-    final String expectedKeyId;
-    try {
-      expectedKeyId = (await MxvHeader.readFrom(handle)).keyId;
-    } finally {
-      await handle.close();
-    }
-
-    final keyState = await GetIt.instance<VideoKeyRepository>()
-        .resolve(widget.coursId, expectedKeyId: expectedKeyId);
-
-    if (!keyState.hasData || keyState.data == null) {
-      throw StateError(keyState.errorModel?.error ??
-          'Clé de déchiffrement indisponible');
-    }
-
-    final server = await EncryptedVideoServer.instance();
-    _serverSourceId = '${widget.coursId}_${widget.matiereId ?? 'none'}';
-
-    final url = await server.publish(
-      id: _serverSourceId!,
-      encryptedFile: file,
-      key: keyState.data!.key,
-    );
-    return VideoPlayerController.networkUrl(url);
-  }
-
   void _onValueChanged() {
     if (!mounted) return;
-    final v = _controller!.value;
-    if (!_isDraggingSeek) {
-      setState(() {
-        _position = v.position;
-        _seekValue = _duration.inMilliseconds > 0
-            ? v.position.inMilliseconds / _duration.inMilliseconds
-            : 0;
-        _isBuffering = v.isBuffering;
-      });
-    }
-    // When playback ends → save as fully watched
-    if (!v.isPlaying && v.position >= v.duration && v.duration > Duration.zero) {
-      _persistPosition(force: true);
+    try {
+      final v = _controller!.value;
+
+      if (!_isDraggingSeek) {
+        setState(() {
+          _position = v.position;
+          _seekValue = _duration.inMilliseconds > 0
+              ? v.position.inMilliseconds / _duration.inMilliseconds
+              : 0;
+          _isBuffering = v.isBuffering;
+        });
+      }
+      // When playback ends → save as fully watched
+      if (!v.isPlaying &&
+          v.position >= v.duration &&
+          v.duration > Duration.zero) {
+        _persistPosition(force: true);
+      }
+    } catch (e) {
+      printer(e);
     }
   }
 
@@ -242,7 +212,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       positionMs: posMs,
       totalMs: totMs,
       title: widget.title,
-      filePath: widget.filePath,
+      filePath: widget.sourceFilePath ?? widget.filePath,
       videoUrl: widget.videoUrl,
     );
   }
@@ -263,8 +233,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     if (_showControls) _scheduleControlsHide();
   }
 
+  /// Bascule paysage <-> portrait.
+  ///
+  /// Le plein écran ne se limite pas à recadrer l'image : il fait pivoter
+  /// l'appareil en paysage, où la vidéo occupe réellement tout l'écran.
   void _toggleFullscreen() {
-    setState(() => _isFullscreen = !_isFullscreen);
+    final entering = !_isFullscreen;
+    setState(() => _isFullscreen = entering);
+
+    SystemChrome.setPreferredOrientations(entering
+        ? [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]
+        : [DeviceOrientation.portraitUp]);
+
     _scheduleControlsHide();
   }
 
@@ -299,7 +279,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       _flashForward = !isLeft;
     });
     _flashTimer = Timer(const Duration(milliseconds: 700), () {
-      if (mounted) setState(() { _flashRewind = false; _flashForward = false; });
+      if (mounted)
+        setState(() {
+          _flashRewind = false;
+          _flashForward = false;
+        });
     });
   }
 
@@ -351,15 +335,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _flashTimer?.cancel();
     _controller?.removeListener(_onValueChanged);
     _controller?.dispose();
-    // Referme le descripteur du conteneur chiffré et retire la source :
-    // aucun octet en clair ne reste accessible après la fermeture du lecteur.
-    final sourceId = _serverSourceId;
-    if (sourceId != null) {
-      EncryptedVideoServer.instance()
-          .then((server) => server.release(sourceId))
-          .catchError((_) {});
+    // La copie en clair produite pour la lecture ne doit pas survivre à la
+    // fermeture du lecteur : elle est supprimée du répertoire temporaire.
+    final cacheKey = widget.temporaryCacheKey;
+    if (cacheKey != null) {
+      VideoDecryptionService.instance.discard(cacheKey).catchError((_) {});
     }
-    ScreenBrightness().setScreenBrightness(_initialBrightness).catchError((_) {});
+    ScreenBrightness()
+        .setScreenBrightness(_initialBrightness)
+        .catchError((_) {});
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
@@ -369,7 +353,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_hasError) return Scaffold(backgroundColor: Colors.black, body: _buildError());
+    if (_hasError)
+      return Scaffold(backgroundColor: Colors.black, body: _buildError());
     if (!_isInitialized) {
       return const Scaffold(
         backgroundColor: Colors.black,
@@ -464,7 +449,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       children: [
         // Top gradient bar
         Positioned(
-          top: 0, left: 0, right: 0,
+          top: 0,
+          left: 0,
+          right: 0,
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -529,7 +516,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
         // Bottom gradient bar + seek + time
         Positioned(
-          bottom: 0, left: 0, right: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -684,8 +673,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   value: _overlayValue.clamp(0.0, 1.0),
                   minHeight: 5,
                   backgroundColor: Colors.white30,
-                  valueColor:
-                      const AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               ),
             ),
@@ -721,8 +709,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back, color: Colors.white70),
               // pas de position à persister : la vidéo n'a jamais démarré
-              label: const Text('Retour',
-                  style: TextStyle(color: Colors.white70)),
+              label:
+                  const Text('Retour', style: TextStyle(color: Colors.white70)),
               style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.white30)),
             ),
@@ -788,16 +776,13 @@ class _SeekFlashBubbleState extends State<_SeekFlashBubble>
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              widget.forward
-                  ? Icons.forward_5_rounded
-                  : Icons.replay_5_rounded,
+              widget.forward ? Icons.forward_5_rounded : Icons.replay_5_rounded,
               color: Colors.white,
               size: 32,
             ),
             const SizedBox(height: 4),
             Text(widget.label,
-                style:
-                    const TextStyle(color: Colors.white, fontSize: 13)),
+                style: const TextStyle(color: Colors.white, fontSize: 13)),
           ],
         ),
       ),

@@ -47,6 +47,15 @@ class PrepaCoursService {
     return res.data['data'] as Map<String, dynamic>;
   }
 
+  /// GET /cours/{id}/video-metadata
+  ///
+  /// Taille et empreinte du fichier distant, nécessaires pour valider la
+  /// reprise d'un téléchargement partiel.
+  Future<Map<String, dynamic>> getVideoMetadata(String coursId) async {
+    final res = await dio.get('/cours/$coursId/video-metadata');
+    return res.data['data'] as Map<String, dynamic>;
+  }
+
   /// GET /cours/{id}/video-key
   ///
   /// Clé de déchiffrement d'une vidéo chiffrée. Le serveur ne la délivre qu'aux

@@ -50,6 +50,11 @@ class HomeController extends ChangeNotifier {
     }
   }
 
+  void initialize() {
+    load();
+    loadUser();
+  }
+
   Future<void> load() async {
     if (_isLoading) return;
     _isLoading = true;

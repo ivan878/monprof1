@@ -4,7 +4,7 @@ import 'package:monprof/corps/utils/local_storage/hive_service.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
-import 'package:monprof/prepa/cours/screens/video_player_screen.dart';
+import 'package:monprof/prepa/cours/screens/video_launcher.dart';
 import 'package:monprof/prepa/home/home_controller.dart';
 import 'package:monprof/prepa/home/widgets/home_empty_state.dart';
 import 'package:page_transition/page_transition.dart';
@@ -62,19 +62,16 @@ class _VideoHistoryTile extends StatelessWidget {
               final cache = GetIt.instance<HiveService>()
                   .getVideoCache(entry.coursId, entry.matiereId);
 
-              await Navigator.push(
+              // Passe par le lanceur commun : une vidéo chiffrée doit être
+              // déchiffrée avant d'atteindre le lecteur.
+              await VideoLauncher.open(
                 context,
-                PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: VideoPlayerScreen(
-                    filePath: entry.filePath!,
-                    coursId: entry.coursId,
-                    matiereId: entry.matiereId,
-                    title: entry.title,
-                    videoUrl: entry.videoUrl,
-                    isCrypted: cache?.isCrypted ?? false,
-                  ),
-                ),
+                filePath: entry.filePath!,
+                coursId: entry.coursId,
+                matiereId: entry.matiereId,
+                title: entry.title,
+                videoUrl: entry.videoUrl,
+                isCrypted: cache?.isCrypted ?? false,
               );
               // Recharge l'historique : la position vient de changer
               onReturn();

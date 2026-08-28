@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monprof/corps/utils/device_identity.dart';
+import 'package:monprof/prepa/cours/data/crypto/video_decryption_service.dart';
 import 'package:monprof/corps/utils/local_storage/app_storage_cleaner.dart';
 import 'package:monprof/corps/utils/local_storage/hive_service.dart';
 import 'package:monprof/prepa/auth/data/repository/prepa_auth_repository.dart';
@@ -16,6 +17,7 @@ import 'package:monprof/prepa/concours/data/services/concours_service.dart';
 import 'package:monprof/prepa/cours/controllers/matieres_controller.dart';
 import 'package:monprof/prepa/cours/data/repository/cours_repository.dart';
 import 'package:monprof/prepa/cours/data/repository/video_key_repository.dart';
+import 'package:monprof/prepa/cours/data/services/video_download_manager.dart';
 import 'package:monprof/prepa/cours/data/services/cours_service.dart';
 import 'package:monprof/prepa/home/home_controller.dart';
 import 'package:monprof/prepa/subscription/controllers/mes_transactions_controller.dart';
@@ -29,6 +31,10 @@ Future<void> setupDependencies() async {
   // Résolution anticipée de l'identifiant d'appareil : sans attendre, pour ne
   // pas retarder le démarrage — la première requête l'attendra si nécessaire.
   unawaited(DeviceIdentity.instance.warmUp());
+
+  // Une fermeture brutale peut laisser une copie déchiffrée dans le répertoire
+  // temporaire : elle ne doit pas survivre au redémarrage.
+  unawaited(VideoDecryptionService.instance.purgeAll());
 
   // ── Stockage sécurisé ─────────────────────────────────────────────────────
   const secureStorage = FlutterSecureStorage(
@@ -81,6 +87,15 @@ Future<void> setupDependencies() async {
     () => PrepaCoursRepository(service: GetIt.instance<PrepaCoursService>()),
   );
 
+  // Téléchargement des vidéos avec reprise après interruption.
+  GetIt.instance.registerLazySingleton<VideoDownloadManager>(
+    () => VideoDownloadManager(
+      dio: GetIt.instance<PrepaApiClient>().dio,
+      hiveService: GetIt.instance<HiveService>(),
+      coursService: GetIt.instance<PrepaCoursService>(),
+    ),
+  );
+
   // Clés de déchiffrement des vidéos — mises en coffre pour la lecture hors ligne.
   GetIt.instance.registerLazySingleton<VideoKeyRepository>(
     () => VideoKeyRepository(
@@ -126,6 +141,7 @@ Future<void> setupDependencies() async {
   GetIt.instance.registerLazySingleton<PrepaProfileController>(
     () => PrepaProfileController(
       repository: GetIt.instance<PrepaUserRepository>(),
+      hiveService: GetIt.instance<HiveService>(),
     ),
   );
 

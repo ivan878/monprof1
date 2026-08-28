@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monprof/corps/utils/local_storage/hive_service.dart';
@@ -10,17 +9,19 @@ import 'package:monprof/corps/utils/notify.dart';
 import 'package:monprof/corps/widgets/loading.dart';
 import 'package:monprof/corps/widgets/simple_text.dart';
 import 'package:monprof/corps/widgets/theme.dart';
-import 'package:monprof/prepa/auth/data/services/prepa_api_client.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/concours/data/models/concours_model.dart';
 import 'package:monprof/prepa/cours/controllers/cours_detail_controller.dart';
 import 'package:monprof/prepa/cours/data/models/cours_model.dart';
 import 'package:monprof/prepa/cours/data/repository/cours_repository.dart';
+import 'package:monprof/prepa/cours/data/models/video_download_model.dart';
+import 'package:monprof/prepa/cours/data/crypto/mxv_container.dart';
+import 'package:monprof/prepa/cours/data/crypto/video_decryption_service.dart';
 import 'package:monprof/prepa/cours/data/repository/video_key_repository.dart';
+import 'package:monprof/prepa/cours/data/services/video_download_manager.dart';
 import 'package:monprof/prepa/cours/screens/video_player_screen.dart';
 import 'package:monprof/prepa/subscription/screens/payment_screen.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:path_provider/path_provider.dart';
 
 class CoursConcoursDetailScreen extends StatefulWidget {
   final String coursId;
@@ -46,7 +47,14 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
   double _progress = 0.0;
   bool _downloadComplete = false;
   String? _downloadError;
-  CancelToken? _cancelToken;
+
+  /// Téléchargement en cours ou interrompu, restauré au chargement de l'écran.
+  VideoDownloadModel? _download;
+
+  /// Déchiffrement préalable à la lecture.
+  bool _isDecrypting = false;
+  double _decryptProgress = 0;
+  bool _decryptCancelled = false;
 
   // Local video file path — non-null means the video is available offline
   String? _localFilePath;
@@ -76,6 +84,17 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
 
   Future<void> _checkVideoCache(PrepaCoursModel cours) async {
     if (cours.videoUrl == null) return;
+
+    // Téléchargement laissé en plan lors d'une session précédente : on le
+    // restaure pour proposer la reprise plutôt que de repartir de zéro.
+    final pending = GetIt.instance<VideoDownloadManager>()
+        .stateOf(cours.id, cours.matiereId);
+    if (pending != null && !pending.isComplete && mounted) {
+      setState(() {
+        _download = pending;
+        _progress = pending.progress;
+      });
+    }
 
     final cache = _hiveService.getVideoCache(cours.id, cours.matiereId);
     if (cache == null) return;
@@ -133,113 +152,170 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
   @override
   void dispose() {
     _ctrl.removeListener(_onControllerChanged);
-    _cancelToken?.cancel();
+    // Le téléchargement continue de vivre dans le gestionnaire : quitter
+    // l'écran le met en pause plutôt que de perdre les octets reçus.
+    final cours = _ctrl.state.data;
+    if (cours != null && _isDownloading) {
+      GetIt.instance<VideoDownloadManager>()
+          .pause(cours.id, cours.matiereId);
+    }
     _ctrl.dispose();
     super.dispose();
   }
 
+  /// Démarre ou reprend le téléchargement.
+  ///
+  /// La reprise est transparente : le gestionnaire retrouve le fragment déjà
+  /// reçu et ne redemande que la suite. Un appui pendant le téléchargement
+  /// met en pause sans perdre les octets acquis.
   Future<void> _startDownload(PrepaCoursModel cours) async {
     final url = cours.videoUrl;
     if (url == null || _isDownloading) return;
 
+    final manager = GetIt.instance<VideoDownloadManager>();
+
     setState(() {
       _isDownloading = true;
-      _progress = 0.0;
       _downloadComplete = false;
       _downloadError = null;
+      // Repart de la progression connue plutôt que de zéro : l'utilisateur
+      // qui reprend doit voir sa barre là où il l'avait laissée.
+      _progress = _download?.progress ?? 0.0;
     });
 
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      final ext = _extensionFromUrl(url);
-      // Deterministic filename: never re-downloaded unless URL changes or file missing
-      final key = '${cours.id}_${cours.matiereId ?? 'none'}';
-      final savePath = '${dir.path}/$key.$ext';
-
-      _cancelToken = CancelToken();
-      final dio = GetIt.instance<PrepaApiClient>().dio;
-
-      await dio.download(
-        url,
-        savePath,
-        cancelToken: _cancelToken,
-        onReceiveProgress: (received, total) {
-          if (total > 0 && mounted) {
-            setState(() => _progress = received / total);
-          }
-        },
-      );
-
-      // La clé est récupérée MAINTENANT, tant que le réseau est disponible :
-      // c'est ce qui rend la vidéo lisible hors connexion. La demander au
-      // moment de lire condamnerait toute lecture hors ligne.
-      String? keyWarning;
-      if (cours.hasBeenCrypted) {
-        final keyState =
-            await GetIt.instance<VideoKeyRepository>().fetchAndStore(cours.id);
-        if (!keyState.hasData) {
-          keyWarning = 'Vidéo téléchargée, mais la clé de lecture n\'a pas pu '
-              'être obtenue : elle ne sera pas lisible hors connexion.';
+    final result = await manager.download(
+      coursId: cours.id,
+      matiereId: cours.matiereId,
+      url: url,
+      isCrypted: cours.hasBeenCrypted,
+      onProgress: (received, total) {
+        if (total > 0 && mounted) {
+          setState(() => _progress = received / total);
         }
-      }
+      },
+    );
 
-      // Persist in local cache
-      // L'état de chiffrement vient du backend : il détermine comment la
-      // vidéo sera lue, et permet de détecter plus tard une copie obsolète.
-      _hiveService.saveVideoCache(
-        cours.id,
-        cours.matiereId,
-        savePath,
-        url,
-        isCrypted: cours.hasBeenCrypted,
-      );
+    if (!mounted) return;
 
-      if (keyWarning != null) Notify.toast(keyWarning);
+    if (result.status != VideoDownloadStatus.completed) {
+      setState(() {
+        _isDownloading = false;
+        _download = result;
+        _progress = result.progress;
+        _downloadError = result.status == VideoDownloadStatus.failed
+            ? 'Échec du téléchargement. Réessayez.'
+            : null;
+      });
+      return;
+    }
 
-      if (mounted) {
-        setState(() {
-          _isDownloading = false;
-          _downloadComplete = true;
-          _progress = 1.0;
-          _localFilePath = savePath;
-          _localIsCrypted = cours.hasBeenCrypted;
-        });
-        await _openVideoPlayer(cours, savePath);
+    // La clé est récupérée MAINTENANT, tant que le réseau est disponible :
+    // c'est ce qui rend la vidéo lisible hors connexion. La demander au
+    // moment de lire condamnerait toute lecture hors ligne.
+    String? keyWarning;
+    if (cours.hasBeenCrypted) {
+      final keyState =
+          await GetIt.instance<VideoKeyRepository>().fetchAndStore(cours.id);
+      if (!keyState.hasData) {
+        keyWarning = 'Vidéo téléchargée, mais la clé de lecture n\'a pas pu '
+            'être obtenue : elle ne sera pas lisible hors connexion.';
       }
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.cancel) {
-        if (mounted) setState(() => _isDownloading = false);
-      } else {
-        if (mounted) {
-          setState(() {
-            _isDownloading = false;
-            _downloadError =
-                'Échec du téléchargement. Vérifiez votre connexion.';
-          });
-        }
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _isDownloading = false;
-          _downloadError = 'Une erreur est survenue.';
-        });
-      }
+    }
+
+    if (keyWarning != null) Notify.toast(keyWarning);
+
+    if (!mounted) return;
+    setState(() {
+      _isDownloading = false;
+      _downloadComplete = true;
+      _progress = 1.0;
+      _download = result;
+      _localFilePath = result.filePath;
+      _localIsCrypted = cours.hasBeenCrypted;
+    });
+    await _openVideoPlayer(cours, result.filePath);
+  }
+
+  /// Met en pause en conservant les octets déjà reçus.
+  void _cancelDownload() {
+    final cours = _ctrl.state.data;
+    if (cours == null) return;
+    GetIt.instance<VideoDownloadManager>().pause(cours.id, cours.matiereId);
+    if (mounted) {
+      setState(() {
+        _isDownloading = false;
+        _download = GetIt.instance<VideoDownloadManager>()
+            .stateOf(cours.id, cours.matiereId);
+      });
     }
   }
 
+  /// Prépare la lecture puis ouvre le lecteur.
+  ///
+  /// Vidéo chiffrée : elle est déchiffrée intégralement avant l'ouverture, avec
+  /// une barre de progression à la place du bouton de lecture. Déchiffrer
+  /// pendant la lecture donnait une expérience inutilisable — saccades sur iOS,
+  /// échec sur Android, et déplacement dans la vidéo très lent.
   Future<void> _openVideoPlayer(PrepaCoursModel cours, String filePath) async {
+    String playablePath = filePath;
+    String? temporaryCacheKey;
+
+    if (_localIsCrypted) {
+      final cacheKey = '${cours.id}_${cours.matiereId ?? 'none'}';
+      _decryptCancelled = false;
+
+      setState(() {
+        _isDecrypting = true;
+        _decryptProgress = 0;
+      });
+
+      try {
+        final keyState = await GetIt.instance<VideoKeyRepository>()
+            .resolve(cours.id, expectedKeyId: await _keyIdOf(filePath));
+
+        if (!keyState.hasData || keyState.data == null) {
+          throw StateError(keyState.errorModel?.error ??
+              'Clé de lecture indisponible. Connectez-vous une fois à Internet '
+                  'pour débloquer cette vidéo.');
+        }
+
+        playablePath = await VideoDecryptionService.instance.decryptToTemp(
+          encryptedPath: filePath,
+          key: keyState.data!.key,
+          cacheKey: cacheKey,
+          onProgress: (p) {
+            if (mounted) setState(() => _decryptProgress = p);
+          },
+          cancelled: () => _decryptCancelled,
+        );
+        temporaryCacheKey = cacheKey;
+      } catch (e) {
+        if (mounted) {
+          setState(() => _isDecrypting = false);
+          // L'annulation est un choix de l'utilisateur, pas une erreur.
+          if (!_decryptCancelled) Notify.toastError(_decryptMessage(e));
+        }
+        return;
+      }
+
+      if (!mounted) return;
+      setState(() => _isDecrypting = false);
+    }
+
     await Navigator.push(
       context,
       PageTransition(
         type: PageTransitionType.bottomToTop,
         child: VideoPlayerScreen(
-          filePath: filePath,
+          filePath: playablePath,
           title: cours.title,
           coursId: cours.id,
           matiereId: cours.matiereId,
           videoUrl: cours.videoUrl,
-          isCrypted: _localIsCrypted,
+          temporaryCacheKey: temporaryCacheKey,
+          // L'historique doit pointer sur le conteneur d'origine : la copie
+          // en clair est effacée dès la fermeture du lecteur.
+          sourceFilePath: filePath,
         ),
       ),
     );
@@ -248,19 +324,29 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
     if (mounted) setState(() {});
   }
 
-  String _extensionFromUrl(String url) {
-    final path = Uri.tryParse(url)?.path ?? '';
-    final dot = path.lastIndexOf('.');
-    if (dot != -1 && dot < path.length - 1) {
-      final ext = path.substring(dot + 1).toLowerCase();
-      if (ext.length <= 5) return ext;
+  /// Identifiant de clé inscrit dans l'en-tête du conteneur.
+  ///
+  /// Le comparer à la clé en coffre détecte une vidéo re-chiffrée côté
+  /// administration et déclenche le renouvellement de la clé, au lieu
+  /// d'échouer plus tard sur un tag GCM invalide.
+  Future<String?> _keyIdOf(String path) async {
+    try {
+      final handle = await File(path).open();
+      try {
+        return (await MxvHeader.readFrom(handle)).keyId;
+      } finally {
+        await handle.close();
+      }
+    } catch (_) {
+      return null;
     }
-    return 'mp4';
   }
 
-  void _cancelDownload() {
-    _cancelToken?.cancel("Annulé par l'utilisateur");
-    setState(() => _isDownloading = false);
+  String _decryptMessage(Object e) =>
+      e is StateError ? e.message : 'Préparation de la vidéo impossible.';
+
+  void _cancelDecryption() {
+    _decryptCancelled = true;
   }
 
   @override
@@ -317,6 +403,11 @@ class _CoursConcoursDetailScreenState extends State<CoursConcoursDetailScreen> {
                         hiveService: _hiveService,
                         onDownload: () => _startDownload(cours),
                         onCancel: _cancelDownload,
+                        resumeProgress:
+                            _download?.isResumable == true ? _download!.progress : 0,
+                        isDecrypting: _isDecrypting,
+                        decryptProgress: _decryptProgress,
+                        onCancelDecrypt: _cancelDecryption,
                         onPlay: _localFilePath != null
                             ? () => _openVideoPlayer(cours, _localFilePath!)
                             : null,
@@ -543,6 +634,14 @@ class _DownloadCard extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback? onPlay;
 
+  /// Fraction déjà téléchargée lors d'une tentative précédente, 0 si aucune.
+  final double resumeProgress;
+
+  /// Déchiffrement en cours avant l'ouverture du lecteur.
+  final bool isDecrypting;
+  final double decryptProgress;
+  final VoidCallback? onCancelDecrypt;
+
   const _DownloadCard({
     required this.cours,
     this.concours,
@@ -555,6 +654,10 @@ class _DownloadCard extends StatelessWidget {
     required this.onDownload,
     required this.onCancel,
     this.onPlay,
+    this.resumeProgress = 0,
+    this.isDecrypting = false,
+    this.decryptProgress = 0,
+    this.onCancelDecrypt,
   });
 
   @override
@@ -607,11 +710,18 @@ class _DownloadCard extends StatelessWidget {
               coursId: cours.id,
               matiereId: cours.matiereId,
               hiveService: hiveService,
+              isDecrypting: isDecrypting,
+              decryptProgress: decryptProgress,
+              onCancelDecrypt: onCancelDecrypt,
             )
           else if (isDownloading)
             _ProgressState(progress: progress, onCancel: onCancel)
           else
-            _ReadyState(error: error, onDownload: onDownload),
+            _ReadyState(
+              error: error,
+              onDownload: onDownload,
+              resumeProgress: resumeProgress,
+            ),
         ],
       ),
     );
@@ -752,11 +862,19 @@ class _CachedState extends StatelessWidget {
   final String? matiereId;
   final HiveService hiveService;
 
+  /// Déchiffrement en cours avant l'ouverture du lecteur.
+  final bool isDecrypting;
+  final double decryptProgress;
+  final VoidCallback? onCancelDecrypt;
+
   const _CachedState({
     required this.onPlay,
     required this.coursId,
     this.matiereId,
     required this.hiveService,
+    this.isDecrypting = false,
+    this.decryptProgress = 0,
+    this.onCancelDecrypt,
   });
 
   @override
@@ -807,33 +925,65 @@ class _CachedState extends StatelessWidget {
           color: Colors.green.withValues(alpha: 0.07),
           borderRadius: BorderRadius.circular(12),
           child: InkWell(
-            onTap: onPlay,
+            // Pendant la préparation, la ligne ne relance pas la lecture.
+            onTap: isDecrypting ? null : onPlay,
             borderRadius: BorderRadius.circular(12),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               child: Row(
                 children: [
-                  Icon(
-                    hasSaved
-                        ? Icons.play_circle_rounded
-                        : Icons.play_circle_outline_rounded,
-                    color: Colors.green.shade600,
-                    size: 38,
-                  ),
+                  // Le bouton de lecture cède la place à la progression du
+                  // déchiffrement : l'attente est ainsi visible là où
+                  // l'utilisateur vient de cliquer.
+                  if (isDecrypting)
+                    SizedBox(
+                      width: 38,
+                      height: 38,
+                      child: CircularProgressIndicator(
+                        value: decryptProgress > 0 ? decryptProgress : null,
+                        strokeWidth: 3,
+                        color: Colors.green.shade600,
+                        backgroundColor: Colors.green.withValues(alpha: 0.15),
+                      ),
+                    )
+                  else
+                    Icon(
+                      hasSaved
+                          ? Icons.play_circle_rounded
+                          : Icons.play_circle_outline_rounded,
+                      color: Colors.green.shade600,
+                      size: 38,
+                    ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          label,
+                          isDecrypting
+                              ? 'Préparation de la vidéo… '
+                                  '${(decryptProgress * 100).round()}%'
+                              : label,
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.green.shade800,
                           ),
                         ),
-                        if (hasSaved) ...[
+                        if (isDecrypting) ...[
+                          const SizedBox(height: 6),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: decryptProgress,
+                              minHeight: 4,
+                              backgroundColor: Colors.grey.shade200,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.green.shade500),
+                            ),
+                          ),
+                        ],
+                        if (hasSaved && !isDecrypting) ...[
                           const SizedBox(height: 6),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(4),
@@ -871,7 +1021,14 @@ class _ReadyState extends StatelessWidget {
   final String? error;
   final VoidCallback onDownload;
 
-  const _ReadyState({this.error, required this.onDownload});
+  /// Fraction déjà téléchargée lors d'une tentative précédente, 0 si aucune.
+  final double resumeProgress;
+
+  const _ReadyState({
+    this.error,
+    required this.onDownload,
+    this.resumeProgress = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -902,12 +1059,48 @@ class _ReadyState extends StatelessWidget {
             ),
           ),
         ],
+        // Un téléchargement partiel existe : proposer la reprise plutôt qu'un
+        // nouveau départ, et montrer où il s'était arrêté.
+        if (resumeProgress > 0) ...[
+          Row(
+            children: [
+              Icon(Icons.pause_circle_outline_rounded,
+                  size: 15, color: prepaPrimaryColor),
+              const SizedBox(width: 6),
+              SimpleText(
+                text: 'Téléchargement interrompu à '
+                    '${(resumeProgress * 100).round()}%',
+                size: 12.5,
+                color: onGrey300,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: resumeProgress,
+              minHeight: 4,
+              backgroundColor: Colors.grey.shade200,
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(prepaPrimaryColor),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
         ElevatedButton.icon(
           onPressed: onDownload,
-          icon: const Icon(Icons.download_rounded, size: 20),
-          label: const Text(
-            'Télécharger le cours',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          icon: Icon(
+            resumeProgress > 0
+                ? Icons.play_arrow_rounded
+                : Icons.download_rounded,
+            size: 20,
+          ),
+          label: Text(
+            resumeProgress > 0
+                ? 'Reprendre le téléchargement'
+                : 'Télécharger le cours',
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: prepaPrimaryColor,

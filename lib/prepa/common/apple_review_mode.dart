@@ -18,6 +18,7 @@ class AppleReviewMode {
 
   /// Compte pour lequel le mode restreint s'applique.
   static const String reviewEmail = 'engel@rich.dev';
+  static const String reviewPhone = '+237673737373';
 
   bool _active = false;
 
@@ -32,8 +33,10 @@ class AppleReviewMode {
 
   bool _matches(PrepaUser? user) {
     if (!_isIOS) return false;
-    final email = user?.email?.trim().toLowerCase();
-    return email != null && email == reviewEmail;
+    if (user == null) return false;
+    final email = user.email?.trim().toLowerCase();
+    final phone = user.phone?.trim().toLowerCase();
+    return email != null && email == reviewEmail || phone == reviewPhone;
   }
 
   /// `Platform` lève sur le web : la vérification est isolée ici.

@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monprof/prepa/auth/data/repository/prepa_auth_repository.dart';
 import 'package:monprof/prepa/auth/screens/prepa_login_screen.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
 import 'package:monprof/prepa/home/prepa_home_screen.dart';
+import 'package:monprof/prepa/splash/prepa_splash_controller.dart';
 import 'package:monprof/prepa/user/data/repository/user_repository.dart';
 import 'package:monprof/prepa/user/screens/complete_profile_screen.dart';
 
@@ -19,6 +19,10 @@ class _PrepaSplashScreenState extends State<PrepaSplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _anim;
   late final Animation<double> _fade;
+  late final SplashController _controller;
+
+  bool _isOpening = true;
+  String? _openingError;
 
   @override
   void initState() {
@@ -28,8 +32,12 @@ class _PrepaSplashScreenState extends State<PrepaSplashScreen>
       duration: const Duration(milliseconds: 800),
     );
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeIn);
+    _controller = SplashController(
+      authRepository: GetIt.instance<PrepaAuthRepository>(),
+      userRepository: GetIt.instance<PrepaUserRepository>(),
+    );
     _anim.forward();
-    _checkAuth();
+    _openApp();
   }
 
   @override
@@ -38,43 +46,48 @@ class _PrepaSplashScreenState extends State<PrepaSplashScreen>
     super.dispose();
   }
 
-  Future<void> _checkAuth() async {
+  Future<void> _openApp({bool showLoading = false}) async {
+    if (showLoading && mounted) {
+      setState(() {
+        _isOpening = true;
+        _openingError = null;
+      });
+    }
+
+    // Laisse l'animation du splash visible au minimum 1,5 seconde, sans
+    // retarder le travail du contrôleur.
+    final opening = _controller.openApp();
     await Future.delayed(const Duration(milliseconds: 1500));
-    try {
-      // Vérifie la session Firebase — l'ID Token est géré automatiquement par le SDK.
-      final firebaseUser = FirebaseAuth.instance.currentUser;
+    final result = await opening;
 
-      if (!mounted) return;
+    if (!mounted) return;
 
-      if (firebaseUser == null) {
+    switch (result.destination) {
+      case SplashDestination.login:
         _goToLogin();
         return;
-      }
-
-      // Session Firebase active → vérifie que le compte existe bien côté backend.
-      final userRepo = GetIt.instance<PrepaUserRepository>();
-      final meState = await userRepo.getMe();
-
-      if (!mounted) return;
-
-      if (meState.hasData) {
-        final user = meState.data!;
-        if (!user.hasProfileCompleted || !user.hasPassword) {
-          _navigate(CompleteProfileScreen(user: user, isFirstSetup: true));
-        } else {
-          _navigate(const PrepaHomeScreen());
+      case SplashDestination.home:
+        _navigate(const PrepaHomeScreen());
+        return;
+      case SplashDestination.completeProfile:
+        final user = result.user;
+        if (user == null) {
+          _showOpeningError();
+          return;
         }
-      } else {
-        // Firebase OK mais backend rejette → déconnexion complète.
-        final authRepo = GetIt.instance<PrepaAuthRepository>();
-        await authRepo.logout();
-        _goToLogin();
-      }
-    } catch (e) {
-      final authRepo = GetIt.instance<PrepaAuthRepository>();
-      authRepo.logout();
-      _goToLogin();
+        _navigate(CompleteProfileScreen(user: user, isFirstSetup: true));
+        return;
+      case SplashDestination.connectionRequired:
+        _showOpeningError(result.message);
+        return;
     }
+  }
+
+  void _showOpeningError([String? message]) {
+    setState(() {
+      _isOpening = false;
+      _openingError = message;
+    });
   }
 
   void _goToLogin() => _navigate(const PrepaLoginScreen());
@@ -132,14 +145,49 @@ class _PrepaSplashScreenState extends State<PrepaSplashScreen>
                 ),
               ),
               const SizedBox(height: 60),
-              const SizedBox(
-                width: 28,
-                height: 28,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2.5,
+              if (_isOpening)
+                const SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2.5,
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.wifi_off_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        _openingError?.isNotEmpty == true
+                            ? _openingError!
+                            : 'Une connexion est nécessaire pour cette première ouverture.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      OutlinedButton.icon(
+                        onPressed: () => _openApp(showLoading: true),
+                        icon: const Icon(Icons.refresh_rounded),
+                        label: const Text('Réessayer'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

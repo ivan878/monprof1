@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:monprof/prepa/common/prepa_theme.dart';
+import 'package:country_flags/country_flags.dart';
 
 // ── Country data ──────────────────────────────────────────────────────────────
 
@@ -22,19 +23,25 @@ const List<CountryData> kCountries = [
   // Cameroun en premier
   CountryData(isoCode: 'CM', name: 'Cameroun', dialCode: '+237', flag: '🇨🇲'),
   // Afrique (ordre alphabétique)
-  CountryData(isoCode: 'ZA', name: 'Afrique du Sud', dialCode: '+27', flag: '🇿🇦'),
+  CountryData(
+      isoCode: 'ZA', name: 'Afrique du Sud', dialCode: '+27', flag: '🇿🇦'),
   CountryData(isoCode: 'DZ', name: 'Algérie', dialCode: '+213', flag: '🇩🇿'),
   CountryData(isoCode: 'AO', name: 'Angola', dialCode: '+244', flag: '🇦🇴'),
   CountryData(isoCode: 'BJ', name: 'Bénin', dialCode: '+229', flag: '🇧🇯'),
   CountryData(isoCode: 'BW', name: 'Botswana', dialCode: '+267', flag: '🇧🇼'),
-  CountryData(isoCode: 'BF', name: 'Burkina Faso', dialCode: '+226', flag: '🇧🇫'),
+  CountryData(
+      isoCode: 'BF', name: 'Burkina Faso', dialCode: '+226', flag: '🇧🇫'),
   CountryData(isoCode: 'BI', name: 'Burundi', dialCode: '+257', flag: '🇧🇮'),
-  CountryData(isoCode: 'CV', name: 'Cabo Verde', dialCode: '+238', flag: '🇨🇻'),
-  CountryData(isoCode: 'CF', name: 'Centrafrique', dialCode: '+236', flag: '🇨🇫'),
+  CountryData(
+      isoCode: 'CV', name: 'Cabo Verde', dialCode: '+238', flag: '🇨🇻'),
+  CountryData(
+      isoCode: 'CF', name: 'Centrafrique', dialCode: '+236', flag: '🇨🇫'),
   CountryData(isoCode: 'KM', name: 'Comores', dialCode: '+269', flag: '🇰🇲'),
   CountryData(isoCode: 'CG', name: 'Congo', dialCode: '+242', flag: '🇨🇬'),
-  CountryData(isoCode: 'CD', name: 'Congo (RDC)', dialCode: '+243', flag: '🇨🇩'),
-  CountryData(isoCode: 'CI', name: "Côte d'Ivoire", dialCode: '+225', flag: '🇨🇮'),
+  CountryData(
+      isoCode: 'CD', name: 'Congo (RDC)', dialCode: '+243', flag: '🇨🇩'),
+  CountryData(
+      isoCode: 'CI', name: "Côte d'Ivoire", dialCode: '+225', flag: '🇨🇮'),
   CountryData(isoCode: 'DJ', name: 'Djibouti', dialCode: '+253', flag: '🇩🇯'),
   CountryData(isoCode: 'EG', name: 'Égypte', dialCode: '+20', flag: '🇪🇬'),
   CountryData(isoCode: 'ER', name: 'Érythrée', dialCode: '+291', flag: '🇪🇷'),
@@ -44,20 +51,28 @@ const List<CountryData> kCountries = [
   CountryData(isoCode: 'GM', name: 'Gambie', dialCode: '+220', flag: '🇬🇲'),
   CountryData(isoCode: 'GH', name: 'Ghana', dialCode: '+233', flag: '🇬🇭'),
   CountryData(isoCode: 'GN', name: 'Guinée', dialCode: '+224', flag: '🇬🇳'),
-  CountryData(isoCode: 'GQ', name: 'Guinée Équatoriale', dialCode: '+240', flag: '🇬🇶'),
-  CountryData(isoCode: 'GW', name: 'Guinée-Bissau', dialCode: '+245', flag: '🇬🇼'),
+  CountryData(
+      isoCode: 'GQ',
+      name: 'Guinée Équatoriale',
+      dialCode: '+240',
+      flag: '🇬🇶'),
+  CountryData(
+      isoCode: 'GW', name: 'Guinée-Bissau', dialCode: '+245', flag: '🇬🇼'),
   CountryData(isoCode: 'KE', name: 'Kenya', dialCode: '+254', flag: '🇰🇪'),
   CountryData(isoCode: 'LS', name: 'Lesotho', dialCode: '+266', flag: '🇱🇸'),
   CountryData(isoCode: 'LR', name: 'Libéria', dialCode: '+231', flag: '🇱🇷'),
   CountryData(isoCode: 'LY', name: 'Libye', dialCode: '+218', flag: '🇱🇾'),
-  CountryData(isoCode: 'MG', name: 'Madagascar', dialCode: '+261', flag: '🇲🇬'),
+  CountryData(
+      isoCode: 'MG', name: 'Madagascar', dialCode: '+261', flag: '🇲🇬'),
   CountryData(isoCode: 'MW', name: 'Malawi', dialCode: '+265', flag: '🇲🇼'),
   CountryData(isoCode: 'ML', name: 'Mali', dialCode: '+223', flag: '🇲🇱'),
   CountryData(isoCode: 'MA', name: 'Maroc', dialCode: '+212', flag: '🇲🇦'),
   CountryData(isoCode: 'MU', name: 'Maurice', dialCode: '+230', flag: '🇲🇺'),
-  CountryData(isoCode: 'MR', name: 'Mauritanie', dialCode: '+222', flag: '🇲🇷'),
+  CountryData(
+      isoCode: 'MR', name: 'Mauritanie', dialCode: '+222', flag: '🇲🇷'),
   CountryData(isoCode: 'YT', name: 'Mayotte', dialCode: '+262', flag: '🇾🇹'),
-  CountryData(isoCode: 'MZ', name: 'Mozambique', dialCode: '+258', flag: '🇲🇿'),
+  CountryData(
+      isoCode: 'MZ', name: 'Mozambique', dialCode: '+258', flag: '🇲🇿'),
   CountryData(isoCode: 'NA', name: 'Namibie', dialCode: '+264', flag: '🇳🇦'),
   CountryData(isoCode: 'NE', name: 'Niger', dialCode: '+227', flag: '🇳🇪'),
   CountryData(isoCode: 'NG', name: 'Nigéria', dialCode: '+234', flag: '🇳🇬'),
@@ -65,12 +80,19 @@ const List<CountryData> kCountries = [
   CountryData(isoCode: 'RE', name: 'Réunion', dialCode: '+262', flag: '🇷🇪'),
   CountryData(isoCode: 'RW', name: 'Rwanda', dialCode: '+250', flag: '🇷🇼'),
   CountryData(isoCode: 'SN', name: 'Sénégal', dialCode: '+221', flag: '🇸🇳'),
-  CountryData(isoCode: 'SC', name: 'Seychelles', dialCode: '+248', flag: '🇸🇨'),
-  CountryData(isoCode: 'SL', name: 'Sierra Leone', dialCode: '+232', flag: '🇸🇱'),
+  CountryData(
+      isoCode: 'SC', name: 'Seychelles', dialCode: '+248', flag: '🇸🇨'),
+  CountryData(
+      isoCode: 'SL', name: 'Sierra Leone', dialCode: '+232', flag: '🇸🇱'),
   CountryData(isoCode: 'SO', name: 'Somalie', dialCode: '+252', flag: '🇸🇴'),
   CountryData(isoCode: 'SD', name: 'Soudan', dialCode: '+249', flag: '🇸🇩'),
-  CountryData(isoCode: 'SS', name: 'Soudan du Sud', dialCode: '+211', flag: '🇸🇸'),
-  CountryData(isoCode: 'ST', name: 'São Tomé-et-Príncipe', dialCode: '+239', flag: '🇸🇹'),
+  CountryData(
+      isoCode: 'SS', name: 'Soudan du Sud', dialCode: '+211', flag: '🇸🇸'),
+  CountryData(
+      isoCode: 'ST',
+      name: 'São Tomé-et-Príncipe',
+      dialCode: '+239',
+      flag: '🇸🇹'),
   CountryData(isoCode: 'TZ', name: 'Tanzanie', dialCode: '+255', flag: '🇹🇿'),
   CountryData(isoCode: 'TD', name: 'Tchad', dialCode: '+235', flag: '🇹🇩'),
   CountryData(isoCode: 'TG', name: 'Togo', dialCode: '+228', flag: '🇹🇬'),
@@ -82,7 +104,8 @@ const List<CountryData> kCountries = [
   CountryData(isoCode: 'BE', name: 'Belgique', dialCode: '+32', flag: '🇧🇪'),
   CountryData(isoCode: 'ES', name: 'Espagne', dialCode: '+34', flag: '🇪🇸'),
   CountryData(isoCode: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷'),
-  CountryData(isoCode: 'GB', name: 'Royaume-Uni', dialCode: '+44', flag: '🇬🇧'),
+  CountryData(
+      isoCode: 'GB', name: 'Royaume-Uni', dialCode: '+44', flag: '🇬🇧'),
   CountryData(isoCode: 'IT', name: 'Italie', dialCode: '+39', flag: '🇮🇹'),
   CountryData(isoCode: 'NL', name: 'Pays-Bas', dialCode: '+31', flag: '🇳🇱'),
   CountryData(isoCode: 'PT', name: 'Portugal', dialCode: '+351', flag: '🇵🇹'),
@@ -96,8 +119,13 @@ const List<CountryData> kCountries = [
   CountryData(isoCode: 'IN', name: 'Inde', dialCode: '+91', flag: '🇮🇳'),
   CountryData(isoCode: 'JP', name: 'Japon', dialCode: '+81', flag: '🇯🇵'),
   CountryData(isoCode: 'LB', name: 'Liban', dialCode: '+961', flag: '🇱🇧'),
-  CountryData(isoCode: 'SA', name: 'Arabie Saoudite', dialCode: '+966', flag: '🇸🇦'),
-  CountryData(isoCode: 'AE', name: 'Émirats Arabes Unis', dialCode: '+971', flag: '🇦🇪'),
+  CountryData(
+      isoCode: 'SA', name: 'Arabie Saoudite', dialCode: '+966', flag: '🇸🇦'),
+  CountryData(
+      isoCode: 'AE',
+      name: 'Émirats Arabes Unis',
+      dialCode: '+971',
+      flag: '🇦🇪'),
 ];
 
 CountryData _findByDialCode(String dialCode) {
@@ -203,8 +231,7 @@ class _CountryPhoneFieldState extends State<CountryPhoneField> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         hintText: '6 XX XX XX XX',
-        hintStyle:
-            TextStyle(color: Colors.grey.shade400, fontSize: 14),
+        hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
         border: borderStyle,
         enabledBorder: borderStyle,
         errorBorder: const OutlineInputBorder(
@@ -213,8 +240,7 @@ class _CountryPhoneFieldState extends State<CountryPhoneField> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          borderSide:
-              BorderSide(color: Colors.grey.shade400, width: 1),
+          borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
         ),
         focusedErrorBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -232,10 +258,18 @@ class _CountryPhoneFieldState extends State<CountryPhoneField> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        _selectedCountry.flag,
-                        style: const TextStyle(fontSize: 22),
+                      CountryFlag.fromCountryCode(
+                        _selectedCountry.isoCode,
+                        theme: const ImageTheme(
+                          width: 28,
+                          height: 20,
+                          shape: RoundedRectangle(4),
+                        ),
                       ),
+                      // Text(
+                      //   _selectedCountry.flag,
+                      //   style: const TextStyle(fontSize: 22),
+                      // ),
                       const SizedBox(width: 4),
                       Text(
                         _selectedCountry.dialCode,
@@ -353,12 +387,10 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                 autofocus: true,
                 decoration: InputDecoration(
                   hintText: 'Rechercher un pays ou indicatif...',
-                  prefixIcon:
-                      const Icon(Icons.search, color: Colors.grey),
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   filled: true,
                   fillColor: Colors.grey.shade100,
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 10),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -380,11 +412,19 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                         final c = _filtered[i];
                         final isSelected =
                             c.isoCode == widget.selected.isoCode &&
-                            c.dialCode == widget.selected.dialCode;
+                                c.dialCode == widget.selected.dialCode;
                         return ListTile(
-                          leading: Text(
-                            c.flag,
-                            style: const TextStyle(fontSize: 26),
+                          // leading: Text(
+                          //   c.flag,
+                          //   style: const TextStyle(fontSize: 26),
+                          // ),
+                          leading: CountryFlag.fromCountryCode(
+                            c.isoCode,
+                            theme: const ImageTheme(
+                              width: 32,
+                              height: 22,
+                              shape: RoundedRectangle(4),
+                            ),
                           ),
                           title: Text(
                             c.name,
@@ -397,9 +437,8 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                           trailing: Text(
                             c.dialCode,
                             style: TextStyle(
-                              color: isSelected
-                                  ? prepaPrimaryColor
-                                  : Colors.grey,
+                              color:
+                                  isSelected ? prepaPrimaryColor : Colors.grey,
                               fontWeight: isSelected
                                   ? FontWeight.bold
                                   : FontWeight.normal,

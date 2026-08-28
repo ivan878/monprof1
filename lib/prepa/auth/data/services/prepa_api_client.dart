@@ -83,17 +83,37 @@ class _PrepaInterceptor extends InterceptorsWrapper {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final body = err.response?.data;
+    final statusCode = err.response?.statusCode;
+    final hasActiveSession = FirebaseAuth.instance.currentUser != null;
+    final isDeviceMismatch = body is Map &&
+        body['code']?.toString() == SessionInvalidation.deviceMismatch;
 
     // Le compte a été réactivé sur un autre appareil : la session locale est
     // morte. On le signale une seule fois ; la couche présentation déclenche
     // la déconnexion complète — l'intercepteur n'a pas à naviguer.
-    if (body is Map &&
-        body['code']?.toString() == SessionInvalidation.deviceMismatch) {
+    if (isDeviceMismatch) {
       loger('[PrepaAPI] DEVICE_MISMATCH — session invalidée par le serveur');
       SessionGuard.instance.signal(SessionInvalidation(
         code: SessionInvalidation.deviceMismatch,
         message: body['error']?.toString() ??
             'Votre compte a été connecté sur un autre appareil.',
+      ));
+    } else if (hasActiveSession && (statusCode == 401 || statusCode == 403)) {
+      // Toute réponse d'authentification ou d'autorisation refusée invalide la
+      // session applicative. PrepaApp écoute ce signal, exécute logout(), purge
+      // les contrôleurs puis remplace toute la pile par l'écran de connexion.
+      final isUnauthorized = statusCode == 401;
+      final message = body is Map ? body['error']?.toString() : null;
+
+      loger('[PrepaAPI] HTTP $statusCode — session invalidée');
+      SessionGuard.instance.signal(SessionInvalidation(
+        code: isUnauthorized
+            ? SessionInvalidation.unauthorized
+            : SessionInvalidation.forbidden,
+        message: message ??
+            (isUnauthorized
+                ? 'Votre session a expiré. Veuillez vous reconnecter.'
+                : 'Votre session n’est plus autorisée. Veuillez vous reconnecter.'),
       ));
     }
 

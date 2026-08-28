@@ -180,6 +180,9 @@ class PrepaAuthRepository {
 
   Future<PrepaUser?> getCachedUser() => tokenStorage.getUser();
 
+  /// Met à jour le profil servant à l'ouverture hors ligne de l'application.
+  Future<void> cacheUser(PrepaUser user) => tokenStorage.setUser(user);
+
   /// Ferme la session et efface toute trace locale du compte :
   /// caches métier, vidéos téléchargées, préférences et stockage sécurisé.
   /// Chaque étape est isolée pour qu'un échec n'empêche pas la déconnexion.

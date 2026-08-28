@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.2+7
+version: 1.0.2+8
 
 environment:
   sdk: ">=3.6.1 <4.0.0"
@@ -83,6 +83,16 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   screen_brightness: ^0.2.2+1
+  country_flags: ^4.1.2
+
+# path_provider_foundation 2.6.0 est passé aux « code assets » : son code natif
+# est distribué sous forme de framework FFI (objective_c) chargé au runtime.
+# Ce mécanisme demande --enable-native-assets, encore expérimental, et le
+# framework n'est pas embarqué dans le bundle iOS — d'où l'échec au démarrage :
+#   Failed to load dynamic library 'objective_c.framework/objective_c'
+# 2.5.1 est la dernière version à utiliser un plugin natif classique.
+dependency_overrides:
+  path_provider_foundation: 2.5.1
 
 dev_dependencies:
   flutter_test:

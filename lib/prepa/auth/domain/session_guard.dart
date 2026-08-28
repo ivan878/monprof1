@@ -6,8 +6,6 @@ import 'dart:async';
 /// la couche présentation écoute et décide quoi faire. Cela évite d'appeler
 /// un `Navigator` depuis un intercepteur Dio.
 ///
-/// Aujourd'hui la seule cause est `DEVICE_MISMATCH` : le compte a été
-/// réactivé sur un autre appareil, la session locale n'est plus valable.
 class SessionGuard {
   SessionGuard._();
 
@@ -39,4 +37,6 @@ class SessionInvalidation {
   const SessionInvalidation({required this.code, required this.message});
 
   static const String deviceMismatch = 'DEVICE_MISMATCH';
+  static const String unauthorized = 'UNAUTHORIZED';
+  static const String forbidden = 'FORBIDDEN';
 }

@@ -32,7 +32,16 @@ class PrepaCoursListController extends ChangeNotifier {
     this.sessionId = sessionId;
     if (matiereId == null) return;
 
-    if (items.isEmpty) {
+    hasMore = false;
+    currentPage = 1;
+
+    // Affichage immédiat depuis le cache local, avant tout appel réseau.
+    final cached = hiveService.getSessionCours(sessionId, matiereId!);
+    if (cached.isNotEmpty) {
+      items = cached;
+      state = AppState(status: AppStatus.data);
+      notifyListeners();
+    } else if (items.isEmpty) {
       state = AppState(status: AppStatus.loading);
       notifyListeners();
     }
@@ -42,10 +51,11 @@ class PrepaCoursListController extends ChangeNotifier {
 
     if (result.hasData) {
       items = result.data ?? [];
-      hasMore = false;
-      currentPage = 1;
+      hiveService.saveSessionCours(sessionId, matiereId!, items);
       state = AppState(status: AppStatus.data);
     } else if (items.isEmpty) {
+      // Une erreur n'est remontée que faute de contenu à afficher : sans
+      // réseau, la liste en cache doit rester visible.
       state = AppState(status: AppStatus.error, errorModel: result.errorModel);
     }
     notifyListeners();

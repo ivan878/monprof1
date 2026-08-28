@@ -62,7 +62,7 @@ class _PrepaAppState extends State<PrepaApp> {
   @override
   void initState() {
     super.initState();
-    // Session invalidée côté serveur (compte réactivé ailleurs) :
+    // Session rejetée par le serveur (401, 403 ou compte activé ailleurs) :
     // on purge tout et on renvoie à l'écran de connexion.
     _sessionSub = SessionGuard.instance.onInvalidated.listen(_onSessionLost);
   }

@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:monprof/prepa/concours/data/models/concours_model.dart';
 import 'package:monprof/prepa/cours/data/models/cours_model.dart';
 import 'package:monprof/prepa/cours/data/models/matiere_model.dart';
+import 'package:monprof/prepa/cours/data/models/video_download_model.dart';
 
 // Playback history entry — one per video with a saved position
 typedef PlaybackEntry = ({
@@ -23,6 +24,9 @@ class HiveService {
   late Box<String> _coursByMatiere;
   late Box<String> _videoCache;
   late Box<String> _playback; // reading positions
+  late Box<String> _downloads; // téléchargements en cours ou interrompus
+  late Box<String> _sessionCours; // cours d'une matière dans une session
+  late Box<String> _profile; // profil utilisateur (auth/me)
 
   Future<void> init() async {
     await Hive.initFlutter();
@@ -32,6 +36,9 @@ class HiveService {
     _coursByMatiere = await Hive.openBox<String>('cache_cours_by_matiere');
     _videoCache = await Hive.openBox<String>('cache_video');
     _playback = await Hive.openBox<String>('cache_playback');
+    _downloads = await Hive.openBox<String>('cache_downloads');
+    _sessionCours = await Hive.openBox<String>('cache_session_cours');
+    _profile = await Hive.openBox<String>('cache_profile');
   }
 
   // ── Shared key helper ───────────────────────────────────────────────────────
@@ -219,6 +226,90 @@ class HiveService {
     _playback.delete(_key(coursId, matiereId));
   }
 
+  // ── Cours d'une matière dans une session ────────────────────────────────────
+
+  /// Ces cours dépendent du couple session + matière : la clé combine les deux,
+  /// sinon deux sessions partageant une matière se écraseraient mutuellement.
+  String _sessionKey(String sessionId, String matiereId) =>
+      '${sessionId}__$matiereId';
+
+  List<PrepaCoursModel> getSessionCours(String sessionId, String matiereId) {
+    final raw = _sessionCours.get(_sessionKey(sessionId, matiereId));
+    if (raw == null) return [];
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      return list
+          .map((e) => PrepaCoursModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  void saveSessionCours(
+      String sessionId, String matiereId, List<PrepaCoursModel> items) {
+    _sessionCours.put(_sessionKey(sessionId, matiereId),
+        jsonEncode(items.map((e) => e.toJson()).toList()));
+  }
+
+  // ── Profil utilisateur ──────────────────────────────────────────────────────
+
+  /// Le profil est déjà en coffre sécurisé, mais uniquement tel qu'il était à
+  /// la connexion. Cette copie porte la version la plus récente vue du serveur
+  /// et permet d'afficher l'écran de profil sans réseau.
+  Map<String, dynamic>? getProfile() {
+    final raw = _profile.get('me');
+    if (raw == null) return null;
+    try {
+      return jsonDecode(raw) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void saveProfile(Map<String, dynamic> profile) {
+    _profile.put('me', jsonEncode(profile));
+  }
+
+  // ── Téléchargements (reprise) ───────────────────────────────────────────────
+
+  VideoDownloadModel? getDownload(String coursId, String? matiereId) {
+    final raw = _downloads.get(_key(coursId, matiereId));
+    if (raw == null) return null;
+    try {
+      return VideoDownloadModel.fromJson(
+          jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void saveDownload(VideoDownloadModel download) {
+    _downloads.put(
+      _key(download.coursId, download.matiereId),
+      jsonEncode(download.toJson()),
+    );
+  }
+
+  void deleteDownload(String coursId, String? matiereId) {
+    _downloads.delete(_key(coursId, matiereId));
+  }
+
+  /// Téléchargements interrompus, tous cours confondus.
+  List<VideoDownloadModel> getPendingDownloads() {
+    final pending = <VideoDownloadModel>[];
+    for (final raw in _downloads.values) {
+      try {
+        final model =
+            VideoDownloadModel.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+        if (model.status != VideoDownloadStatus.completed) pending.add(model);
+      } catch (_) {
+        continue;
+      }
+    }
+    return pending;
+  }
+
   // ── Purge ───────────────────────────────────────────────────────────────────
 
   /// Chemins de tous les fichiers vidéo référencés en cache, quelle que soit
@@ -253,6 +344,9 @@ class HiveService {
       _coursByMatiere.clear(),
       _videoCache.clear(),
       _playback.clear(),
+      _downloads.clear(),
+      _sessionCours.clear(),
+      _profile.clear(),
     ]);
   }
 
